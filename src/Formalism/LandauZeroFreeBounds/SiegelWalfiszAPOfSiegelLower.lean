@@ -1,1781 +1,952 @@
 module
 
-import Formalism.ZeroFreeRegion.PerronKernelBounds
-
-public import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf
+import Mathlib.Analysis.Calculus.Deriv.ZPow
+import Mathlib.Analysis.Complex.BorelCaratheodory
+import Mathlib.Analysis.Complex.Liouville
+import Mathlib.Analysis.Complex.TaylorSeries
+import Mathlib.Analysis.MellinInversion
+import Mathlib.NumberTheory.Chebyshev
+import Mathlib.NumberTheory.Harmonic.Bounds
 public import Mathlib.NumberTheory.LSeries.Nonvanishing
-public import Formalism.LandauZeroFreeBounds.NoZeroComplexOf
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LandauLemmaLfunctionZeros
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
-public import Mathlib.Analysis.MeanInequalities
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
-public import Mathlib.Analysis.Complex.ExponentialBounds
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SumVonMangoldtNotCoprimeLe
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PerronHorizontalSegmentBound
-public import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.NormIntegralComplLe
-public import Mathlib.Analysis.Real.Pi.Bounds
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LDerivNearOne
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LRight
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LandauLocal3
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PerronChi
-public import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.RectShiftChi
-public import Formalism.LandauZeroFreeBounds.FinalSiegel
-public import Formalism.LandauZeroFreeBounds.NoZeroComplex
-import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogTwoLeLogAnalyticConductor
-import Std.Tactic.BVDecide.Normalize.Prop
-import Mathlib.Tactic.Linter.Style
-import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LGrowth
-import Formalism.ZeroFreeRegion.LogDerivRegion
+import Mathlib.NumberTheory.LSeries.Positivity
+public import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf
+public import Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.InRegionMono
 
--- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExcBoundOf, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivSubExceptionalZeros, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivRegionChiOf, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.AbsZeroTermSecondDifferenceLe, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LeOfSecondDifferenceBound, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PsiChiBoundOf, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SiegelWalfiszOf, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExistsContourAvoidingRealZero, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ChebyshevCharacterExplicitGeneral, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExpGainFromZeroFreeRegion, Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SmoothChiOf, Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExcBoundOf =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExcBoundOf", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\npublic import Mathlib.NumberTheory.LSeries.Nonvanishing\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
 @[expose] public section
 
-open Complex
-
-noncomputable section
-
+open Complex hiding log exp
+open Real Set Filter MeasureTheory Metric Topology Asymptotics LSeries DirichletCharacter ArithmeticFunction Finset
+open Iff (mp mpr)
+open Eventually (of_forall)
+open scoped ArithmeticFunction.Moebius ComplexConjugate ComplexOrder
 namespace Formalism.ZeroFreeDirichlet
 
-lemma log_le_const_mul_rpow (δ : ℝ) (hδ : 0 < δ) :
-    ∃ K : ℝ, 0 < K ∧ ∀ x : ℝ, 1 ≤ x → Real.log (3 * x) ≤ K * x ^ δ := by
-  have hl3 : 0 < Real.log 3 := Real.log_pos (by norm_num)
-  refine ⟨Real.log 3 + 1 / δ, add_pos hl3 (div_pos one_pos hδ), fun x hx => ?_⟩
-  have hx0 : 0 < x := by linarith
-  have h1 : 1 ≤ x ^ δ := Real.one_le_rpow hx hδ.le
-  have h2 : Real.log x ≤ x ^ δ / δ := Real.log_le_rpow_div hx0.le hδ
-  have h4 : Real.log 3 ≤ Real.log 3 * x ^ δ := le_mul_of_one_le_right hl3.le h1
-  have h5 : (Real.log 3 + 1 / δ) * x ^ δ = Real.log 3 * x ^ δ + x ^ δ / δ := by ring
-  rw [Real.log_mul (by norm_num) hx0.ne', h5]
-  linarith
+variable {q : ℕ} [NeZero q]
 
-lemma rpow_neg_eq_inv_pow (x ε : ℝ) (hx : 0 < x) (k : ℕ) (hk : 0 < k) :
-    x ^ (-ε) = ((x ^ (ε / k)) ^ k)⁻¹ := by
-  have hk' : (k : ℝ) ≠ 0 := by exact_mod_cast hk.ne'
-  rw [← Real.rpow_mul_natCast hx.le, div_mul_cancel₀ ε hk', Real.rpow_neg hx.le]
-
-theorem exceptional_zero_bound_of : ExcBoundOf := by
-  unfold ExcBoundOf ExcBound
-  intro hS hL ε hε
-  have hε3 : 0 < ε / 3 := by linarith
-  obtain ⟨c0, hc0, hS'⟩ := hS (ε / 3) hε3
-  obtain ⟨C, hC⟩ := hL
-  obtain ⟨K, hK, hKb⟩ := log_le_const_mul_rpow (ε / 3) hε3
-  obtain ⟨M, hM, hCM⟩ : ∃ M : ℝ, 0 < M ∧ C ≤ M := ⟨max C 1, lt_max_of_lt_right one_pos, le_max_left _ _⟩
-  have hcpos : 0 < min (1 / K) (c0 / (M * K ^ 2)) :=
-    lt_min (div_pos one_pos hK) (div_pos hc0 (mul_pos hM (pow_pos hK 2)))
-  refine ⟨min (1 / K) (c0 / (M * K ^ 2)), hcpos, ?_⟩
-  intro q _ χ β hχ2 hχ1 hβ
-  have hcK : min (1 / K) (c0 / (M * K ^ 2)) ≤ 1 / K := min_le_left _ _
-  have hc2 : min (1 / K) (c0 / (M * K ^ 2)) ≤ c0 / (M * K ^ 2) := min_le_right _ _
-  generalize min (1 / K) (c0 / (M * K ^ 2)) = c at hcpos hcK hc2 ⊢
-  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-  have hq0 : (0 : ℝ) < q := by linarith
-  have hu1 : 1 ≤ (q : ℝ) ^ (ε / 3) := Real.one_le_rpow hq1 hε3.le
-  have hqε : (q : ℝ) ^ (-ε) = (((q : ℝ) ^ (ε / 3)) ^ 3)⁻¹ := by
-    have h := rpow_neg_eq_inv_pow (q : ℝ) ε hq0 3 (by norm_num)
-    simpa using h
-  have hq3 : (q : ℝ) ^ (-(ε / 3)) = ((q : ℝ) ^ (ε / 3))⁻¹ := Real.rpow_neg hq0.le _
-  have hlogK : Real.log (3 * q) ≤ K * (q : ℝ) ^ (ε / 3) := hKb q hq1
-  have hlog_pos : 0 < Real.log (3 * q) := Real.log_pos (by linarith)
-  have hβ1 : β < 1 := by
-    by_contra hge
-    simp only [not_lt] at hge
-    exact DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inl hχ1) (by simpa using hge) hβ
-  have hlow := hS' q χ hχ2 hχ1
-  rw [hq3] at hlow
-  rw [hqε]
-  generalize (q : ℝ) ^ (ε / 3) = u at hu1 hlogK hlow ⊢
-  have hu0 : 0 < u := by linarith
-  by_cases hcase : β ≤ 1 - 1 / Real.log (3 * q)
-  · have key : c * Real.log (3 * q) ≤ u ^ 3 := by
-      have hu3 : u ≤ u ^ 3 := le_self_pow₀ hu1 (by norm_num)
-      calc c * Real.log (3 * q) ≤ (1 / K) * (K * u) :=
-            mul_le_mul hcK hlogK hlog_pos.le (div_pos one_pos hK).le
-        _ = u := by field_simp
-        _ ≤ u ^ 3 := hu3
-    have h1 : c * (u ^ 3)⁻¹ ≤ 1 / Real.log (3 * q) := by
-      rw [← div_eq_mul_inv, div_le_div_iff₀ (pow_pos hu0 3) hlog_pos, one_mul]
-      exact key
-    linarith
-  · simp only [not_le] at hcase
-    have hdiff := DirichletCharacter.differentiable_LFunction hχ1
-    have hmvt : ‖(fun t : ℝ => DirichletCharacter.LFunction χ (t : ℂ)) 1 -
-        (fun t : ℝ => DirichletCharacter.LFunction χ (t : ℂ)) β‖ ≤
-        (C * Real.log (3 * q) ^ 2) * (1 - β) := by
-      refine norm_image_sub_le_of_norm_deriv_le_segment'
-        (f := fun t : ℝ => DirichletCharacter.LFunction χ (t : ℂ)) (a := β) (b := 1)
-        (f' := fun t : ℝ => deriv (DirichletCharacter.LFunction χ) (t : ℂ)) ?_ ?_ 1 ⟨hβ1.le, le_refl _⟩
-      · intro t _
-        exact ((hdiff (t : ℂ)).hasDerivAt.comp_ofReal).hasDerivWithinAt
-      · intro t ht
-        exact hC q χ hχ1 t (by linarith [ht.1]) ht.2.le
-    simp only [hβ, sub_zero, Complex.ofReal_one] at hmvt
-    have h1β : 0 < 1 - β := by linarith
-    have hlog2 : Real.log (3 * q) ^ 2 ≤ (K * u) ^ 2 := pow_le_pow_left₀ hlog_pos.le hlogK 2
-    have hCle : C * Real.log (3 * q) ^ 2 ≤ M * (K * u) ^ 2 :=
-      mul_le_mul hCM hlog2 (sq_nonneg _) hM.le
-    have hmain : c0 * u⁻¹ ≤ M * (K * u) ^ 2 * (1 - β) :=
-      le_trans hlow (le_trans hmvt (mul_le_mul_of_nonneg_right hCle h1β.le))
-    have hc0' : c0 ≤ M * K ^ 2 * u ^ 3 * (1 - β) := by
-      have h := mul_le_mul_of_nonneg_right hmain hu0.le
-      have e1 : c0 * u⁻¹ * u = c0 := by field_simp
-      have e2 : M * (K * u) ^ 2 * (1 - β) * u = M * K ^ 2 * u ^ 3 * (1 - β) := by ring
-      linarith
-    have hMKu : 0 < M * K ^ 2 * u ^ 3 := mul_pos (mul_pos hM (pow_pos hK 2)) (pow_pos hu0 3)
-    have hfin : c * (u ^ 3)⁻¹ ≤ 1 - β := by
-      calc c * (u ^ 3)⁻¹ ≤ c0 / (M * K ^ 2) * (u ^ 3)⁻¹ :=
-            mul_le_mul_of_nonneg_right hc2 (inv_nonneg.2 (pow_pos hu0 3).le)
-        _ = c0 / (M * K ^ 2 * u ^ 3) := by field_simp
-        _ ≤ 1 - β := by
-          rw [div_le_iff₀ hMKu]
-          linarith
-    linarith
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExcBoundOf =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivSubExceptionalZeros =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivSubExceptionalZeros", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.NoZeroComplexOf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open Complex
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-lemma log_deriv_sub_exceptional_zeros {c₁ : ℝ} (hc₁ : 0 < c₁) {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
-    {B : Finset ℝ} (hχ : χ ≠ 1) (hBcard : B.card ≤ 1)
-    (hBmem : ∀ β ∈ B, χ ≠ 1 ∧ InRegion c₁ q (β : ℂ) ∧ DirichletCharacter.LFunction χ (β : ℂ) = 0 ∧
-      deriv (DirichletCharacter.LFunction χ) (β : ℂ) ≠ 0)
-    (hBall : ∀ s : ℂ, InRegion c₁ q s → IsLZero χ s → ∃ β ∈ B, s = (β : ℂ))
-    {s : ℂ} (hs : InRegion (c₁ / 2) q s) (hσ1 : 26 / 27 ≤ s.re) (hσ2 : s.re < 11 / 10)
-    {Z : Finset ℂ} {m : ℂ → ℕ}
-    (hZ : ∀ ρ : ℂ, ρ ∈ Z ↔ (ρ ∈ Metric.closedBall ((21 / 20 : ℂ) + s.im * I) (11 / 20 / 3) ∧
-        DirichletCharacter.LFunction χ ρ = 0))
-    (hm3 : ∀ ρ ∈ Z, deriv (DirichletCharacter.LFunction χ) ρ ≠ 0 → m ρ = 1)
-    {K : ℝ}
-    (hsum : (∑ ρ ∈ Z, (m ρ : ℝ)) ≤ K * Real.log ((q : ℝ) * (|s.im| + 2)) / Real.log 2)
-    (hE : ‖deriv (DirichletCharacter.LFunction χ) s / DirichletCharacter.LFunction χ s -
-          ∑ ρ ∈ Z, (m ρ : ℂ) / (s - ρ)‖ ≤ 1440 / 11 * (K * Real.log ((q : ℝ) * (|s.im| + 2)))) :
-    ‖negLD χ s + ∑ β ∈ B, 1 / (s - (β : ℂ))‖ ≤
-      1440 / 11 * (K * Real.log ((q : ℝ) * (|s.im| + 2))) +
-      3 * K / (c₁ * Real.log 2) * Real.log ((q : ℝ) * (|s.im| + 2)) ^ 2 + 120 / 11 := by
-  have hs' : 1 - c₁ / 2 / Real.log ((q : ℝ) * (|s.im| + 2)) ≤ s.re := hs
-  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-  have hlog2 : (0.6931 : ℝ) < Real.log 2 := by have := Real.log_two_gt_d9; linarith
-  set L := Real.log ((q : ℝ) * (|s.im| + 2)) with hLdef
-  have hL2 : Real.log 2 ≤ L :=
-    Real.log_le_log (by norm_num) (by calc (2 : ℝ) ≤ |s.im| + 2 := by linarith [abs_nonneg s.im]
-      _ ≤ (q : ℝ) * (|s.im| + 2) := le_mul_of_one_le_left (by linarith [abs_nonneg s.im]) hq1)
-  have hLpos : 0 < L := by linarith
-  have hLne : L ≠ 0 := hLpos.ne'
-  have hfar : ∀ ρ ∈ Z, (∀ β ∈ B, ρ ≠ (β : ℂ)) → ‖1 / (s - ρ)‖ ≤ 3 * L / c₁ := by
-    intro ρ hρ hne
-    obtain ⟨hball, hzero⟩ := (hZ ρ).mp hρ
-    have hnot : ¬ InRegion c₁ q ρ := by
-      intro hreg
-      obtain ⟨β, hβ, hρβ⟩ := hBall ρ hreg ⟨Or.inl hχ, hzero⟩
-      exact hne β hβ hρβ
-    simp only [InRegion, not_le] at hnot
-    have him : |ρ.im - s.im| ≤ 11 / 60 := by
-      rw [Metric.mem_closedBall, dist_eq_norm] at hball
-      have h1 := Complex.abs_im_le_norm (ρ - ((21 / 20 : ℂ) + s.im * I))
-      have hime : (ρ - ((21 / 20 : ℂ) + s.im * I)).im = ρ.im - s.im := by simp
-      rw [hime] at h1
-      linarith
-    set Lρ := Real.log ((q : ℝ) * (|ρ.im| + 2)) with hLρdef
-    have hLρ2 : Real.log 2 ≤ Lρ :=
-      Real.log_le_log (by norm_num) (by calc (2 : ℝ) ≤ |ρ.im| + 2 := by linarith [abs_nonneg ρ.im]
-        _ ≤ (q : ℝ) * (|ρ.im| + 2) := le_mul_of_one_le_left (by linarith [abs_nonneg ρ.im]) hq1)
-    have hLρpos : 0 < Lρ := by linarith
-    have hLρ : Lρ ≤ 6 / 5 * L := by
-      have h1 : (q : ℝ) * (|ρ.im| + 2) ≤ (q : ℝ) * (|s.im| + 2) * (131 / 120) := by
-        have h0 : |ρ.im| ≤ |s.im| + 11 / 60 := by
-          have := abs_sub_abs_le_abs_sub ρ.im s.im
-          linarith
-        have h0' : |ρ.im| + 2 ≤ (|s.im| + 2) * (131 / 120) := by linarith [abs_nonneg s.im]
-        calc (q : ℝ) * (|ρ.im| + 2) ≤ (q : ℝ) * ((|s.im| + 2) * (131 / 120)) := mul_le_mul_of_nonneg_left h0' (by linarith)
-          _ = (q : ℝ) * (|s.im| + 2) * (131 / 120) := by ring
-      have h2 : Lρ ≤ L + Real.log (131 / 120) := by
-        rw [hLρdef, hLdef, ← Real.log_mul (by positivity) (by norm_num)]
-        exact Real.log_le_log (by positivity) h1
-      have h3 : Real.log (131 / 120) ≤ 131 / 120 - 1 := Real.log_le_sub_one_of_pos (by norm_num)
-      linarith
-    have h1 : c₁ / (6 / 5 * L) ≤ c₁ / Lρ := div_le_div_of_nonneg_left hc₁.le hLρpos hLρ
-    have h1' : c₁ / (6 / 5 * L) = 5 * c₁ / (6 * L) := by
-      rw [div_eq_div_iff (by positivity) (by positivity)]
-      ring
-    have h2 : c₁ / (3 * L) = 5 * c₁ / (6 * L) - c₁ / 2 / L := by
-      field_simp
-      ring
-    have hre : c₁ / (3 * L) ≤ (s - ρ).re := by
-      rw [Complex.sub_re]
-      linarith
-    have hpos : 0 < c₁ / (3 * L) := div_pos hc₁ (by linarith)
-    have hnorm : c₁ / (3 * L) ≤ ‖s - ρ‖ := hre.trans (Complex.re_le_norm _)
-    rw [norm_div, norm_one]
-    calc 1 / ‖s - ρ‖ ≤ 1 / (c₁ / (3 * L)) := one_div_le_one_div_of_le hpos hnorm
-      _ = 3 * L / c₁ := by rw [one_div_div]
-  have hnear : ∀ β ∈ B, (β : ℂ) ∉ Z → ‖1 / (s - (β : ℂ))‖ ≤ 120 / 11 := by
-    intro β hβ hβZ
-    have hout : ¬ (β : ℂ) ∈ Metric.closedBall ((21 / 20 : ℂ) + s.im * I) (11 / 20 / 3) := by
-      intro hin
-      exact hβZ ((hZ _).mpr ⟨hin, (hBmem β hβ).2.2.1⟩)
-    rw [Metric.mem_closedBall, dist_eq_norm, not_le] at hout
-    have hsc : ‖s - ((21 / 20 : ℂ) + s.im * I)‖ ≤ 47 / 540 := by
-      refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
-      have hre' : (s - ((21 / 20 : ℂ) + s.im * I)).re = s.re - 21 / 20 := by simp
-      have him' : (s - ((21 / 20 : ℂ) + s.im * I)).im = 0 := by simp
-      rw [hre', him', abs_zero, add_zero, abs_le]
-      constructor <;> linarith
-    have htri := norm_sub_le_norm_sub_add_norm_sub (β : ℂ) s ((21 / 20 : ℂ) + s.im * I)
-    rw [norm_sub_rev (β : ℂ) s] at htri
-    have hd : (11 : ℝ) / 120 ≤ ‖s - (β : ℂ)‖ := by linarith
-    rw [norm_div, norm_one]
-    calc 1 / ‖s - (β : ℂ)‖ ≤ 1 / (11 / 120) := one_div_le_one_div_of_le (by norm_num) hd
-      _ = 120 / 11 := by norm_num
-  have hmsum : ∀ Z' ⊆ Z, (∀ ρ ∈ Z', ∀ β ∈ B, ρ ≠ (β : ℂ)) →
-      ‖∑ ρ ∈ Z', (m ρ : ℂ) / (s - ρ)‖ ≤ 3 * K / (c₁ * Real.log 2) * L ^ 2 := by
-    intro Z' hZ' hne
-    have hc3 : 0 ≤ 3 * L / c₁ := div_nonneg (by linarith) hc₁.le
-    calc ‖∑ ρ ∈ Z', (m ρ : ℂ) / (s - ρ)‖ ≤ ∑ ρ ∈ Z', ‖(m ρ : ℂ) / (s - ρ)‖ := norm_sum_le _ _
-      _ ≤ ∑ ρ ∈ Z', (m ρ : ℝ) * (3 * L / c₁) := Finset.sum_le_sum fun ρ hρ => by
-          rw [div_eq_mul_one_div, norm_mul, Complex.norm_natCast]
-          exact mul_le_mul_of_nonneg_left (hfar ρ (hZ' hρ) (hne ρ hρ)) (Nat.cast_nonneg _)
-      _ = (∑ ρ ∈ Z', (m ρ : ℝ)) * (3 * L / c₁) := by rw [Finset.sum_mul]
-      _ ≤ (∑ ρ ∈ Z, (m ρ : ℝ)) * (3 * L / c₁) :=
-          mul_le_mul_of_nonneg_right
-            (Finset.sum_le_sum_of_subset_of_nonneg hZ' fun _ _ _ => Nat.cast_nonneg _) hc3
-      _ ≤ K * L / Real.log 2 * (3 * L / c₁) := mul_le_mul_of_nonneg_right hsum hc3
-      _ = 3 * K / (c₁ * Real.log 2) * L ^ 2 := by ring
-  have hdecomp : negLD χ s + ∑ β ∈ B, 1 / (s - (β : ℂ)) =
-      -(deriv (DirichletCharacter.LFunction χ) s / DirichletCharacter.LFunction χ s -
-          ∑ ρ ∈ Z, (m ρ : ℂ) / (s - ρ)) +
-        ((∑ β ∈ B, 1 / (s - (β : ℂ))) - ∑ ρ ∈ Z, (m ρ : ℂ) / (s - ρ)) := by
-    unfold negLD
+private lemma norm_mellin_tail_le {A B : ℝ} {F : ℂ → ℂ} {s : ℂ} {g : ℝ → ℂ} (hA : 0 < A) (hF : Differentiable ℂ F) (hm : Measurable g)
+    (hb : ∀ x, ‖g x‖ ≤ B) (he : ∀ z, 1 < re z → F z = z * ∫ t in Ioi A, g t * t ^ (-z - 1))
+    (hs : 0 < re s) : ‖F s‖ ≤ B * (‖s‖ / re s) * A ^ (-re s) := by
+  have hFb x : ‖indicator (Ioi A) g x‖ ≤ B := (norm_indicator_le_norm_self _ _).trans <| hb x
+  have hI z : ∫ t in Ioi A, g t * t ^ (-z - 1) = mellin (indicator (Ioi A) g) (-z) := by
+    rw [mellin, ← indicator_smul, setIntegral_indicator measurableSet_Ioi, mpr inter_eq_right <| Ioi_subset_Ioi hA.le]
     ring
-  have hdiff : ‖(∑ β ∈ B, 1 / (s - (β : ℂ))) - ∑ ρ ∈ Z, (m ρ : ℂ) / (s - ρ)‖ ≤
-      3 * K / (c₁ * Real.log 2) * L ^ 2 + 120 / 11 := by
-    rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hBcard with h0 | h1
-    · obtain rfl := Finset.card_eq_zero.mp h0
-      rw [Finset.sum_empty, zero_sub, norm_neg]
-      have h2 := hmsum Z subset_rfl (fun ρ _ β hβ => by simp at hβ)
-      linarith
-    · obtain ⟨β, rfl⟩ := Finset.card_eq_one.mp h1
-      rw [Finset.sum_singleton]
-      by_cases hβZ : (β : ℂ) ∈ Z
-      · rw [← Finset.add_sum_erase Z _ hβZ,
-          hm3 _ hβZ (hBmem β (Finset.mem_singleton_self β)).2.2.2, Nat.cast_one,
-          sub_add_eq_sub_sub, sub_self, zero_sub, norm_neg]
-        have h2 := hmsum (Z.erase (β : ℂ)) (Finset.erase_subset _ _) (fun ρ hρ β' hβ' => by
-          rw [Finset.mem_singleton] at hβ'
-          subst hβ'
-          exact Finset.ne_of_mem_erase hρ)
+  rw [AnalyticOnNhd.eqOn_of_preconnected_of_eventuallyEq (fun z _ => hF.analyticAt z)
+    (DifferentiableOn.analyticOnNhd (fun z hz => by
+      simp_rw [hI]
+      have := mellin_differentiableAt_of_isBigO_rpow (s := -z) (a := 0)
+        ((memLp_top_of_bound (hm.indicator measurableSet_Ioi).aestronglyMeasurable B <| of_forall hFb).locallyIntegrable le_top |>.locallyIntegrableOn _)
+        (isBigO_of_le' _ fun x => by aesop)
+        (by simp_all)
+        (IsBigO.of_bound' <| by filter_upwards [Ioo_mem_nhdsGT hA] with x hx
+                                simp [mpr not_lt hx.2.le])
+        (sub_one_lt _)
+      fun_prop) <| isOpen_lt continuous_const continuous_re) (convex_halfSpace_re_gt 0).isPreconnected (by norm_num)
+    (((continuous_re.tendsto 2).eventually <| eventually_gt_nhds <| by norm_num).mono he) hs, norm_mul]
+  grw [norm_integral_le_of_norm_le ((integrableOn_Ioi_cpow_of_lt (by simp
+                                                                     linarith) hA).norm.const_mul B)
+      (of_forall fun x => norm_mul_le_of_le (hb x) le_rfl),
+    integral_const_mul, setIntegral_congr_fun measurableSet_Ioi fun t ht => norm_cpow_eq_rpow_re_of_pos (hA.trans ht) _,
+    integral_Ioi_rpow_of_lt (by simp
+                                linarith) hA]
+  simp
+  grind
+
+private lemma norm_zeta_sub_pole_sub_one_le {s : ℂ} (hs : 0 < re s) : ‖riemannZeta₀ s - 1‖ ≤ ‖s‖ / re s := by
+  have hfb (x : ℝ) : ‖ofReal (Int.fract x)‖ ≤ 1 := by
+    simp
+    grind [Int.abs_fract, Int.fract_lt_one]
+  have := norm_mellin_tail_le zero_lt_one (differentiable_riemannZeta₀.const_sub 1) (by fun_prop) hfb ?_ hs
+  · simpa [norm_sub_rev] using this
+  intro z hz
+  have h := LSeries_one_eq_riemannZeta hz ▸ LSeries_eq_mul_integral' 1 zero_le_one hz (by aesop)
+  rw [(setIntegral_congr_fun measurableSet_Ioi fun x hx => by
+        have hx0 := lt_trans zero_lt_one hx.out
+        simp [Int.fract, ← Int.natCast_floor_eq_floor hx0.le, neg_add_eq_sub, cpow_sub _ _ <| mpr ofReal_ne_zero hx0.ne']
+        field).trans <| integral_sub (integrableOn_Ioi_cpow_of_lt (by simpa) zero_lt_one)
+      ((integrableOn_Ioi_cpow_of_lt (a := -z - 1) (by simp
+                                                      linarith) zero_lt_one).bdd_mul
+        (by fun_prop) <| of_forall hfb),
+    integral_Ioi_cpow_of_lt (by simpa) zero_lt_one] at h
+  simp at *
+  grind [riemannZeta₀, one_re]
+
+private lemma norm_lfunction_sub_partial_sum_le {χ : DirichletCharacter ℂ q} (hχ : χ ≠ 1) {s : ℂ} (hs : 0 < re s) {N : ℕ} (hN : 1 ≤ N) :
+    ‖LFunction χ s - ∑ n ∈ range (N + 1), term (χ ·) s n‖ ≤ 2 * q * (‖s‖ / re s) * N ^ (-re s) := by
+  have hS (m : ℕ) : ∑ k ∈ Icc 1 m, (if N < k then χ k else 0) = ∑ k ∈ range (max m N + 1) \ range (N + 1), χ k := by
+    rw [← sum_filter]
+    congr
+    grind
+  have hc (m : ℕ) : ‖∑ k ∈ range m, χ k‖ ≤ q := by
+    induction m using Nat.strong_induction_on with
+    | _ m ih =>
+      by_cases h : m < q
+      · grw [norm_sum_le_of_le _ fun k _ => norm_le_one χ _]
+        simpa using h.le
+      obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le <| not_lt.1 h
+      rw [sum_range_add, show ∑ k ∈ range q, χ k = 0 by
+        rw [← MulChar.sum_eq_zero_of_ne_one hχ]
+        exact sum_nbij' (↑) ZMod.val (by simp) (by grind) (by simp +contextual [Nat.mod_eq_of_lt]) (by simp) <| by simp, zero_add]
+      simpa using ih m <| lt_add_of_pos_left _ <| NeZero.pos q
+  have hb (m : ℕ) : ‖∑ k ∈ Icc 1 m, if N < k then χ k else 0‖ ≤ 2 * q := by
+    grw [hS, sum_sdiff_eq_sub <| range_subset_range.2 <| by lia, norm_sub_le, hc, hc]
+    linarith
+  refine norm_mellin_tail_le (mpr Nat.cast_pos hN) ((differentiable_LFunction hχ).fun_sub (Differentiable.fun_sum fun n _ s => (hasDerivAt_term _ n s).differentiableAt)) (by fun_prop) (fun t => hb ⌊t⌋₊) (fun z hz => ?_) hs
+  rw [← setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi (Ioi_subset_Ioi (mpr Nat.one_le_cast hN))
+      fun t ht => by simp at ht
+                     simp [hS, Nat.floor_le_of_le ht.2],
+    ← neg_add', ← LSeries_eq_mul_integral _ le_rfl (by linarith) (LSeriesSummable_of_bounded_of_one_lt_re (m := 1)
+      (fun n _ => by split_ifs <;> simp [norm_le_one]) hz) <| isBigO_of_le' _ fun n => by simpa using hb n,
+    LFunction_eq_LSeries χ hz, LSeries, LSeries, ← (LSeriesSummable_of_one_lt_re χ hz).sum_add_tsum_compl,
+    add_sub_cancel_left, _root_.tsum_subtype]
+  exact tsum_congr fun n => by simp [term, indicator_apply]
+                               grind
+
+private lemma norm_von_mangoldt_lseries_near_one_le : ∃ δ > 0, ∀ (a : ℕ → ℂ) (s : ℂ), (∀ n, ‖a n‖ ≤ 1) → 1 < re s → re s < 1 + δ →
+    ‖LSeries (a * fun n => (Λ n : ℂ)) s‖ ≤ 1 / (re s - 1) + 2 := by
+  obtain ⟨δ, hδ, h⟩ := mp Metric.eventually_nhds_iff <| mp eventually_nhdsWithin_iff <|
+    log_deriv_riemannZeta_add_inv_sub_sub_isLittleO.bound one_pos
+  refine ⟨δ, hδ, fun a s ha hs hs2 => ?_⟩
+  have h1 : 1 < re (re s : ℂ) := by simpa
+  refine (tsum_of_norm_bounded (hasSum_re (LSeries_vonMangoldt_eq_deriv_riemannZeta_div h1 ▸ (LSeriesSummable_vonMangoldt h1).LSeriesHasSum)) fun n => (norm_term_le s <| by simpa using mul_le_of_le_one_left (norm_nonneg (Λ n : ℂ)) <| ha n).trans
+    ((norm_term_le_of_re_le_re _ (by simp) n).trans (re_eq_norm.2 <| term_nonneg (by simp) _).symm.le)).trans ?_
+  have h4 := neg_le_of_abs_le ((abs_re_le_norm _).trans (h (y := re s) (by simp [Complex.dist_eq, ← ofReal_one, ← ofReal_sub, abs_of_pos (sub_pos.2 hs)]
+                                                                           linarith) (by aesop)))
+  simp [← ofReal_one, ← ofReal_sub, neg_div] at h4 ⊢
+  linarith [one_half_lt_eulerMascheroniConstant]
+
+private noncomputable def regularizedLFunction (ψ : DirichletCharacter ℂ q) : ℂ → ℂ := if ψ = 1 then LFunctionTrivChar₁ q else LFunction ψ
+
+private lemma regularizedLFunction_differentiable (ψ : DirichletCharacter ℂ q) : Differentiable ℂ (regularizedLFunction ψ) := by
+  unfold regularizedLFunction
+  split_ifs with h
+  exacts [differentiable_LFunctionTrivChar₁ q, differentiable_LFunction h]
+
+private lemma regularizedLFunction_log_deriv (ψ : DirichletCharacter ℂ q) {s : ℂ} (hs : 1 < re s) :
+    LSeries ((fun n : ℕ => ψ n) * fun n => (Λ n : ℂ)) s = -logDeriv (regularizedLFunction ψ) s + if ψ = 1 then (s - 1)⁻¹ else 0 := by
+  have h1 : s ≠ 1 := by aesop
+  have h2 := LFunction_ne_zero_of_one_le_re ψ (.inr h1) hs.le
+  rw [LSeries_twist_vonMangoldt_eq ψ hs, ← deriv_LFunction_eq_deriv_LSeries ψ hs, ← LFunction_eq_LSeries ψ hs]
+  unfold regularizedLFunction
+  split_ifs with h
+  · simp [logDeriv_apply, deriv_LFunctionTrivChar₁_apply_of_ne_one, h1]
+    grind
+  simp [logDeriv_apply, neg_div]
+
+private lemma regularizedLFunction_lower_bound (ψ : DirichletCharacter ℂ q) {s : ℂ} (hs : 1 < re s) (hs2 : re s ≤ 2) :
+    (re s - 1) ^ 2 / 3 ≤ ‖regularizedLFunction ψ s‖ := by
+  have h1 : s ≠ 1 := by aesop
+  have hb : 1 ≤ ‖LFunction ψ s‖ * re (riemannZeta <| re s) := by
+    rw [← norm_one (α := ℂ), ← LSeries.mul_mu_eq_one ψ hs, LFunction_eq_LSeries ψ hs, norm_mul]
+    gcongr
+    exact tsum_of_norm_bounded (hasSum_re <| LSeriesHasSum_one <| by simpa) fun n =>
+      (norm_term_le s <| by simp
+                            exact (mul_le_mul (norm_le_one ψ n) (by exact_mod_cast abs_moebius_le_one) (abs_nonneg _) zero_le_one).trans_eq (one_mul _)).trans
+        ((norm_term_le_of_re_le_re _ (by simp) n).trans (re_eq_norm.2 <| term_nonneg (by simp) _).symm.le)
+  have h0 : 0 < re s := by linarith
+  have hR : re (riemannZeta <| re s) * (re s - 1) ≤ 3 := by
+    have hz := (re_le_norm _).trans (norm_zeta_sub_pole_sub_one_le (s := re s) (by simpa))
+    simp [riemannZeta_eq_inv_sub_add, hs.ne', ← ofReal_one, ← ofReal_sub, add_mul, sub_ne_zero, abs_of_pos h0, h0.ne'] at hz ⊢
+    nlinarith
+  have h5 : re s - 1 ≤ 3 * ‖LFunction ψ s‖ := by nlinarith [norm_nonneg <| LFunction ψ s]
+  unfold regularizedLFunction
+  split_ifs with h
+  · subst h
+    simp [h1]
+    have := re_le_norm <| s - 1
+    simp at this
+    nlinarith
+  nlinarith
+
+private lemma regularizedLFunction_growth (ψ : DirichletCharacter ℂ q) {s : ℂ} (hs : 1 / 2 ≤ re s) : ‖regularizedLFunction ψ s‖ ≤ 3 * q * (‖s‖ + 1) ^ 2 := by
+  have hq : (1 : ℝ) ≤ q := by exact_mod_cast NeZero.pos q
+  have hs' : ‖s‖ / re s ≤ 2 * ‖s‖ := by rw [div_le_iff₀ (by linarith)]
+                                        nlinarith [norm_nonneg s]
+  unfold regularizedLFunction
+  split_ifs with h
+  · obtain ⟨P, hP, e⟩ : ∃ P : ℂ, ‖P‖ ≤ q ∧ LFunctionTrivChar₁ q s = P * (s + (s - 1) * (riemannZeta₀ s - 1)) := by
+      refine ⟨∏ p ∈ q.primeFactors, (1 - (p : ℂ) ^ (-s)), (Finset.norm_prod_le _ _).trans <| (prod_le_prod₀ (fun _ _ => norm_nonneg _) fun p hp => ?_).trans <|
+        (Nat.cast_prod _ _).symm.trans_le (Nat.cast_le.2 (Nat.le_of_dvd (NeZero.pos q) (Nat.prod_primeFactors_dvd q))), ?_⟩
+      · have := (Nat.prime_of_mem_primeFactors hp).two_le
+        grw [norm_sub_le, norm_natCast_cpow_le_norm_natCast_cpow_of_pos (by lia) (z := 0) (by simp; linarith)]
+        norm_num [this]
+      rcases eq_or_ne s 1 with rfl | h1
+      · simp [cpow_neg_one]
+      simp [h1, LFunctionTrivChar_eq_mul_riemannZeta, riemannZeta_eq_inv_sub_add]
+      grind
+    rw [e, norm_mul]
+    grw [hP, norm_add_le, norm_mul, norm_sub_le s 1, norm_zeta_sub_pole_sub_one_le <| by linarith, hs', norm_one]
+    nlinarith [norm_nonneg s]
+  have := norm_lfunction_sub_partial_sum_le h (by linarith : 0 < re s) le_rfl
+  simp [sum_range_succ] at this
+  grw [norm_le_norm_sub_add (LFunction ψ s) 1, this, hs', norm_one]
+  nlinarith [sq_nonneg ‖s‖]
+
+private lemma regularizedLFunction_ne_zero (ψ : DirichletCharacter ℂ q) {s : ℂ} (hs : 1 ≤ re s) : regularizedLFunction ψ s ≠ 0 := by
+  unfold regularizedLFunction
+  split_ifs with h
+  · rcases eq_or_ne s 1 with rfl | h1
+    · exact LFunctionTrivChar₁_apply_one_ne_zero q
+    simp [h1, sub_eq_zero, LFunction_ne_zero_of_one_le_re _ (.inr h1) hs]
+  exact LFunction_ne_zero_of_one_le_re _ (.inl h) hs
+
+private lemma norm_log_deriv_le {f : ℂ → ℂ} {c : ℂ} {R M : ℝ} (hR : 0 < R) (hM : 0 < M) (hf : DifferentiableOn ℂ f (ball c R))
+    (h0 : ∀ z ∈ ball c R, f z ≠ 0) (hb : ∀ z ∈ ball c R, ‖f z‖ ≤ ‖f c‖ * rexp M) {z : ℂ} (hz : ‖z - c‖ ≤ R / 2) :
+    ‖logDeriv f z‖ ≤ 24 * M / R := by
+  obtain ⟨g, hg0, hg⟩ := ((hf.deriv isOpen_ball).div hf h0).isExactOn_ball.with_val_at c 0
+  have hgd : DifferentiableOn ℂ g _ := fun z hz => (hg z hz).differentiableAt.differentiableWithinAt
+  obtain ⟨k, hk, hfg⟩ := mp (logDeriv_eqOn_iff hf hgd.cexp isOpen_ball isPreconnected_ball
+    (by simp) h0) fun z hz => by simp [logDeriv_apply, (hg z hz).cexp.deriv]
+  rw [logDeriv, ← (hg z <| mem_ball_iff_norm.2 <| by linarith).deriv]
+  refine (norm_deriv_le_of_forall_mem_sphere_norm_le (R := R / 4) (by positivity) (hgd.diffContOnCl_ball <| closedBall_subset_ball' <| by rw [Complex.dist_eq]
+                                                                                                                                          linarith) (C := 6 * M) fun w hw => ?_).trans_eq <| by ring
+  have := mem_sphere_iff_norm.1 hw
+  have := norm_sub_le_norm_sub_add_norm_sub w z c
+  have := borelCaratheodory_zero (f := fun w => g <| c + w) hM
+    (hgd.comp (by fun_prop) fun w hw => by simp_all) (fun w hw => ?_) hR (mem_ball_zero_iff.2 <| by linarith) <| by simpa
+  · simp at this
+    refine this.trans ?_
+    rw [div_le_iff₀ <| by linarith]
+    nlinarith
+  have h1 := hb (c + w) <| by simpa using hw
+  rw [hfg <| by simp_all, hfg <| mem_ball_self hR] at h1
+  simpa [norm_exp, hk, hg0] using h1
+private lemma landau_zero_sum_le {f : ℂ → ℂ} (c : ℂ) (M : ℝ) (hd : Differentiable ℂ f)
+    (hb : ∀ w ∈ closedBall c 0.37182818286, ‖f w‖ ≤ ‖f c‖ * rexp M) (hz : ∀ p, re c ≤ re p → f p ≠ 0)
+    (S : Finset ℂ) (hS : ∀ q ∈ S, dist c q ≤ 0.1 ∧ f q = 0) :
+    ∑ q ∈ S, re (c - q)⁻¹ - re (logDeriv f c) ≤ 240 * (M + 1) := by
+  obtain ⟨n, hn⟩ := exists_nat_gt M
+  induction n generalizing f M S
+  all_goals
+    have hM := hb c <| by norm_num
+    simp [hz c le_rfl] at hM
+    push_cast at hn
+  · linarith
+  next n ih =>
+    by_cases hp : ∃ p, dist c p ≤ 0.1 ∧ f p = 0
+    · obtain ⟨p, hr, hzero⟩ := hp
+      have hre : 0 ≤ re (c - p)⁻¹ := by
+        simp
+        exact div_nonneg (by grind) <| normSq_nonneg _
+      obtain ⟨g, hg, rfl⟩ : ∃ g, Differentiable ℂ g ∧ (· - p) * g = f :=
+        ⟨_, differentiableOn_univ.1 ((differentiableOn_dslope univ_mem).2 hd.differentiableOn),
+          funext (sub_smul_dslope_of_zero hzero)⟩
+      simp at hz hS
+      have := ih (M - 1) hg (fun w hw => norm_le_of_forall_mem_frontier_norm_le isBounded_closedBall
+        hg.diffContOnCl (fun u hu => by
+          simp [frontier_closedBall', ← Complex.dist_eq] at hu hb
+          specialize hb u hu.le
+          grw [← (by linarith [dist_triangle_right u c p] : dist u c - dist c p ≤ dist u p), hu, hr] at hb
+          grw [Real.exp_sub, exp_one_lt_d9]
+          norm_num at hb ⊢
+          linarith)
+        (by simpa)) (by grind) (S.erase p) (fun q hq => by grind) <| by linarith
+      rw [logDeriv_mul] <;> simp_all [logDeriv_apply, hg c]
+      by_cases hpS : p ∈ S
+      · rw [← add_sum_erase S _ hpS]
         linarith
-      · refine (norm_sub_le _ _).trans ?_
-        have h2 := hnear β (Finset.mem_singleton_self β) hβZ
-        have h3 := hmsum Z subset_rfl (fun ρ hρ β' hβ' => by
-          rw [Finset.mem_singleton] at hβ'
-          subst hβ'
-          exact fun h => hβZ (h ▸ hρ))
+      · rw [erase_eq_of_notMem hpS] at this
         linarith
-  rw [hdecomp]
-  refine (norm_add_le _ _).trans ?_
-  rw [norm_neg]
-  linarith [hE, hdiff]
+    · push Not at hp
+      rw [sum_eq_zero fun q hq => (hp q (hS q hq).1 (hS q hq).2).elim]
+      have := norm_log_deriv_le (R := 0.1) (M := M + 1) (by norm_num) (by linarith)
+        hd.differentiableOn
+        (fun z hz => hp z (mem_ball'.1 hz).le)
+        (fun z hz => (hb z (by simp at hz ⊢
+                               linarith)).trans (by simp_all)) (z := c) (by norm_num)
+      norm_num at this
+      linarith [(abs_le.1 <| abs_re_le_norm <| logDeriv f c).1]
 
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivSubExceptionalZeros =====
+private lemma regularizedLFunction_growth_ratio (ψ : DirichletCharacter ℂ q) {z w : ℂ} {d D : ℝ} (hd : 0 < d) (hd1 : d ≤ 1) (hz : re z = 1 + d)
+    (hw : ‖w‖ ≤ 1 / 2) (hD : q * (‖z‖ + 2) ≤ D) : ‖regularizedLFunction ψ (z + w)‖ ≤ ‖regularizedLFunction ψ z‖ * (9 * D ^ 2 / d ^ 2) := by
+  have hq : (1 : ℝ) ≤ q := Nat.one_le_cast.2 NeZero.one_le
+  refine (regularizedLFunction_growth ψ <| by simp
+                                              linarith [(abs_le.1 <| abs_re_le_norm w).1]).trans ?_
+  calc _ ≤ 3 * D ^ 2 := by nlinarith [pow_le_pow_left₀ (by positivity) (by nlinarith [norm_add_le z w] : q * (‖z + w‖ + 1) ≤ D) 2]
+    _ ≤ _ := by rw [mul_div_assoc', le_div_iff₀ <| by positivity]
+                nlinarith [hz ▸ regularizedLFunction_lower_bound ψ (by linarith) <| by linarith]
 
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivRegionChiOf =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivRegionChiOf", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LandauLemmaLfunctionZeros\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivSubExceptionalZeros\nimport Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogTwoLeLogAnalyticConductor\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LSeries.Nonvanishing\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
+private lemma trigonometric_polynomial_nonneg (w : ℂ) (hw : ‖w‖ ≤ 1) : 0 ≤ re (3 + 4 * w + w ^ 2) := by
+  simp [sq]
+  nlinarith [sq_nonneg (w.re + 1), norm_nonneg w, Complex.sq_norm w, normSq_apply w]
 
-open Complex
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-theorem log_deriv_in_zero_free_region : LogDerivRegionChiOf := by
-  intro hLL hG hInv hR c₁ hc₁ hc₁'
-  obtain ⟨C, hC⟩ := hG
-  obtain ⟨C₀, hC₀, hR⟩ := hR
-  set A : ℝ := 21 * (|C| + 1) with hA
-  have hA1 : 21 ≤ A := by have := abs_nonneg C; linarith
-  set K₁ : ℝ := Real.log (2 * A) / Real.log 2 + 1 with hK₁
-  have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  have hK₁0 : 1 ≤ K₁ := by
-    have : 0 ≤ Real.log (2 * A) / Real.log 2 := div_nonneg (Real.log_nonneg (by linarith)) hl2.le
-    linarith
-  refine ⟨2880 / 11 * K₁ + 3 * K₁ / (c₁ * Real.log 2) + 480 / 11 + 4 * (20 + C₀), ?_⟩
-  intro q _ χ B hχ hB s hs hsB
-  obtain ⟨hBcard, hBmem, hBall⟩ := hB
-  have hq := one_le_modulus_real q
-  set L := Real.log ((q : ℝ) * (|s.im| + 2)) with hLdef
-  have hL69 : 69 / 100 ≤ L := log_analytic_conductor_ge_const q s.im
-  have hL : 1 / 2 ≤ L := by linarith
-  have hLsq : 1 ≤ 4 * L ^ 2 := by have := mul_le_mul hL hL (by norm_num) (by linarith); linarith
-  have hLsq' : L ≤ 2 * L ^ 2 := by have := mul_le_mul_of_nonneg_right hL (by linarith : (0 : ℝ) ≤ L); linarith
-  have hT1 : 0 ≤ 2880 / 11 * K₁ := by positivity
-  have hT2 : 0 ≤ 3 * K₁ / (c₁ * Real.log 2) := by positivity
-  have hβlt : ∀ β ∈ B, β < 1 := by
-    intro β hβ
-    by_contra h
-    exact DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inl hχ) (by simpa using le_of_not_gt h)
-      (hBmem β hβ).2.2.1
-  have hσlow : 1 - c₁ / 2 / L ≤ s.re := hs
-  by_cases hσ : 11 / 10 ≤ s.re
-  ·
-    have h1 : ‖negLD χ s‖ ≤ 10 + C₀ := by
-      have := hR q χ s (by linarith)
-      have : 1 / (s.re - 1) ≤ 10 := by rw [div_le_iff₀ (by linarith)]; linarith
+private theorem regularizedLFunction_zero_free : ∃ c > 0, ∃ L₀ : ℝ, ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (ρ : ℂ) (L : ℝ),
+    L₀ ≤ L → q * (|ρ.im| + 2) ≤ rexp L → 1 - c / L ≤ ρ.re → regularizedLFunction χ ρ = 0 → χ ^ 2 = 1 ∧ χ ≠ 1 ∧ ρ.im = 0 := by
+  obtain ⟨δ₀, hδ₀, hv⟩ := norm_von_mangoldt_lseries_near_one_le
+  obtain ⟨r₁, hr₁, hζ⟩ := Metric.eventually_nhds_iff.1 riemannZeta_eventually_ne_zero_nhds_one
+  obtain ⟨L₀, hL₀⟩ := eventually_atTop.1 <| (tendsto_exp_div_pow_atTop 2).eventually_ge_atTop 4e9
+  refine ⟨80000⁻¹, by norm_num, max L₀ <| max 1 <| max δ₀⁻¹ (r₁ ^ 2)⁻¹, fun q _ χ ρ L hL hρL hβ hρ => ?_⟩
+  simp at hL
+  obtain ⟨hL0, hL1, hLδ, hLr⟩ := hL
+  generalize hγd : ρ.im = γ at *
+  rw [div_eq_mul_inv _ L] at hβ
+  generalize hd : L⁻¹ / 10000 = d
+  generalize hs : 1 + d + γ * I = s
+  have hd0 : 0 < d := by bound
+  have := inv_le_one_of_one_le₀ hL1
+  have hβ1 : ρ.re < 1 := lt_of_not_ge fun h => regularizedLFunction_ne_zero χ h hρ
+  have hu0 : 0 < 1 + d - ρ.re := by linarith
+  have hu : 8 / 9 * d⁻¹ ≤ re (s - ρ)⁻¹ := hs ▸ by
+    simp [normSq_apply, hγd]
+    exact (inv_anti₀ hu0 (by linarith : 1 + d - ρ.re ≤ 9 / 8 * d)).trans_eq' <| by ring
+  have hn1 : dist s ρ ≤ 0.1 := hs ▸ by
+    rw [dist_eq_re_im, sqrt_le_left <| by norm_num]
+    simp
+    nlinarith
+  by_contra H
+  obtain ⟨S, hS, hX⟩ : ∃ S : Finset ℂ, (∀ w ∈ S, dist s w ≤ 0.1 ∧ regularizedLFunction χ w = 0) ∧
+      re (s - ρ)⁻¹ + (if χ = 1 then d / (d ^ 2 + γ ^ 2) else 0) + (if χ ^ 2 = 1 then d / (d ^ 2 + (γ + γ) ^ 2) else 0) / 4 ≤
+        ∑ w ∈ S, re (s - w)⁻¹ + 9 := by
+    by_cases hg : d ≤ γ ^ 2 ∨ χ ^ 2 ≠ 1
+    · refine ⟨{ρ}, by simp_all, ?_⟩
+      rw [sum_singleton]
+      rcases hg with hg | hg
+      · split_ifs <;> linarith [div_le_one_of_le₀ (by nlinarith : d ≤ d ^ 2 + γ ^ 2) (by positivity), div_le_one_of_le₀ (by nlinarith : d ≤ d ^ 2 + (γ + γ) ^ 2) (by positivity)]
+      · split_ifs <;> simp_all
+    push Not at hg
+    obtain ⟨hg, hc2⟩ := hg
+    by_cases hc1 : χ = 1
+    · have hρ1 : ρ ≠ 1 := by aesop
+      simp [hc1, regularizedLFunction, LFunctionTrivChar_eq_mul_riemannZeta hρ1, sub_eq_zero, hρ1, prod_eq_zero_iff, hζ (y := ρ) (by
+        rw [Complex.dist_eq_re_im, Real.sqrt_lt' hr₁]
+        simp [hγd]
+        nlinarith [inv_le_of_inv_le₀ (by positivity) hLr])] at hρ
+      obtain ⟨p, hp, h⟩ := hρ
+      have := (norm_natCast_cpow_le_norm_natCast_cpow_iff hp.1.one_lt (w := 0) (z := -ρ)).1 (by simp_all)
+      simp at this
       linarith
-    have h2 : ‖∑ β ∈ B, 1 / (s - (β : ℂ))‖ ≤ 10 := by
-      calc ‖∑ β ∈ B, 1 / (s - (β : ℂ))‖ ≤ ∑ β ∈ B, ‖1 / (s - (β : ℂ))‖ := norm_sum_le _ _
-        _ ≤ ∑ β ∈ B, (10 : ℝ) := by
-          apply Finset.sum_le_sum
-          intro β hβ
-          have hb := hβlt β hβ
-          have hre : (s - (β : ℂ)).re = s.re - β := by simp
-          have hn : 1 / 10 ≤ ‖s - (β : ℂ)‖ := by
-            have := Complex.re_le_norm (s - (β : ℂ))
-            linarith
-          rw [norm_div, norm_one, div_le_iff₀ (by linarith)]
-          linarith
-        _ = B.card * 10 := by rw [Finset.sum_const, nsmul_eq_mul]
-        _ ≤ 1 * 10 := by gcongr; exact_mod_cast hBcard
-        _ = 10 := by ring
-    have h3 : 0 ≤ (2880 / 11 * K₁ + 3 * K₁ / (c₁ * Real.log 2) + 480 / 11) * L ^ 2 := by positivity
-    calc ‖negLD χ s + ∑ β ∈ B, 1 / (s - (β : ℂ))‖
-        ≤ ‖negLD χ s‖ + ‖∑ β ∈ B, 1 / (s - (β : ℂ))‖ := norm_add_le _ _
-      _ ≤ 20 + C₀ := by linarith
-      _ ≤ 4 * (20 + C₀) * L ^ 2 := by have := mul_le_mul_of_nonneg_left hLsq (by linarith : (0 : ℝ) ≤ 20 + C₀); linarith
-      _ ≤ _ := by linarith only [h3]
-  · have hσ' : s.re < 11 / 10 := lt_of_not_ge hσ
-    have hshift : c₁ / 2 / L ≤ 1 / 27 := by
-      rw [div_le_iff₀ (by linarith)]
-      linarith [hc₁', hL69]
-    have hσ1 : 26 / 27 ≤ s.re := by linarith
-    have hfs : DirichletCharacter.LFunction χ s ≠ 0 := by
-      intro h0
-      obtain ⟨β, hβ, hsβ⟩ := hBall s (zero_free_region_mono_half hc₁ q s hs) ⟨Or.inl hχ, h0⟩
-      exact hsB β hβ hsβ
-    obtain ⟨Z, m, hZ, hm3, hsum, hE⟩ := landau_lemma_lfunction_zeros hLL hC hInv hχ hσ1 hσ' hfs
-    have hmain := log_deriv_sub_exceptional_zeros hc₁ hχ hBcard hBmem hBall hs hσ1 hσ' hZ hm3 hsum hE
-    have hKL : 0 ≤ K₁ * L := by positivity
-    have h4 : 0 ≤ 4 * (20 + C₀) * L ^ 2 := by positivity
-    refine le_trans hmain ?_
-    have h5 : K₁ * L ≤ 2 * K₁ * L ^ 2 := by have := mul_le_mul_of_nonneg_left hLsq' (by positivity : (0 : ℝ) ≤ K₁); linarith
-    have h6 : 120 / 11 ≤ 480 / 11 * L ^ 2 := by linarith
-    linarith [h5, h6, h4]
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivRegionChiOf =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.AbsZeroTermSecondDifferenceLe =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.AbsZeroTermSecondDifferenceLe", "h": "module\n\npublic import Mathlib.Analysis.SpecialFunctions.Pow.Real\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\npublic import Mathlib.Analysis.MeanInequalities\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-private theorem one_add_rpow_le_one_add_mul {s p : ℝ} (hs : 0 ≤ s) (hp0 : 0 ≤ p) (hp1 : p ≤ 1) :
-    (1 + s) ^ p ≤ 1 + p * s := by
-  have t := Real.geom_mean_le_arith_mean2_weighted hp0 (sub_nonneg.2 hp1)
-    (by linarith : (0:ℝ) ≤ 1 + s) zero_le_one (by ring : p + (1 - p) = 1)
-  rw [Real.one_rpow, mul_one] at t
-  linarith [t]
-
-private theorem le_one_add_mul_log_one_add {h : ℝ} (hh : 0 ≤ h) : h ≤ (1 + h) * Real.log (1 + h) := by
-  have h1 : (0:ℝ) < 1 + h := by linarith
-  have t := Real.log_le_sub_one_of_pos (inv_pos.2 h1)
-  rw [Real.log_inv] at t
-  have e : (1 + h) * (1 + h)⁻¹ = 1 := mul_inv_cancel₀ h1.ne'
-  linarith [mul_le_mul_of_nonneg_left t h1.le]
-
-lemma abs_zero_term_second_difference_le {y h β : ℝ} (hy : 1 ≤ y) (hh : 0 < h) (_hh1 : h ≤ 1) (hβ1 : 1 / 2 ≤ β)
-    (hβ2 : β < 1) :
-    |(y * (1 + h)) * (y ^ β / (β * (β - 1))) - y * ((y * (1 + h)) ^ β / (β * (β - 1)))
-        + y * h * (y ^ β / β)| ≤ 2 * y ^ 2 * h ^ 2 := by
-  have hy0 : 0 ≤ y := by linarith
-  have h1 : (0:ℝ) < 1 + h := by linarith
-  have hβ0 : 0 < β := by linarith
-  have hq : 0 < 1 - β := by linarith
-  have hβne : β ≠ 0 := hβ0.ne'
-  have hβ1ne : β - 1 ≠ 0 := by linarith
-  have hq1ne : 1 - β ≠ 0 := hq.ne'
-  have hmul : (y * (1 + h)) ^ β = y ^ β * (1 + h) ^ β := Real.mul_rpow hy0 h1.le
-  have hAq : (1 + h) ^ β * (1 + h) ^ (1 - β) = 1 + h := by
-    have e : β + (1 - β) = 1 := by ring
-    rw [← Real.rpow_add h1, e, Real.rpow_one]
-  have hBern : (1 + h) ^ (1 - β) ≤ 1 + (1 - β) * h :=
-    one_add_rpow_le_one_add_mul hh.le hq.le (by linarith)
-  have hD0 : (1 + h) ^ β ≤ 1 + β * h := one_add_rpow_le_one_add_mul hh.le hβ0.le hβ2.le
-  have hA0 : 0 ≤ (1 + h) ^ β := Real.rpow_nonneg h1.le _
-  have hB0 : 0 ≤ y ^ β := Real.rpow_nonneg hy0 _
-  have hBy : y ^ β ≤ y := by
-    have t := Real.rpow_le_rpow_of_exponent_le hy hβ2.le
-    rwa [Real.rpow_one] at t
-  set A := (1 + h) ^ β with hA
-  set B := y ^ β with hB
-  have hD1 : (1 + β * h - A) * (1 + (1 - β) * h) ≤ β * (1 - β) * h ^ 2 := by
-    linarith [mul_le_mul_of_nonneg_left hBern hA0]
-  have hD2 : 1 + β * h - A ≤ β * (1 - β) * h ^ 2 := by
-    linarith [mul_nonneg (sub_nonneg.2 hD0) (mul_nonneg hq.le hh.le)]
-  have key : (y * (1 + h)) * (B / (β * (β - 1))) - y * ((y * (1 + h)) ^ β / (β * (β - 1)))
-      + y * h * (B / β) = -(y * B * ((1 + β * h - A) / (β * (1 - β)))) := by
-    rw [hmul]
-    field_simp
-    ring
-  rw [key, abs_neg]
-  have hpos : 0 < β * (1 - β) := mul_pos hβ0 hq
-  have hE0 : 0 ≤ (1 + β * h - A) / (β * (1 - β)) := div_nonneg (by linarith) hpos.le
-  have hE : (1 + β * h - A) / (β * (1 - β)) ≤ h ^ 2 := by
-    rw [div_le_iff₀ hpos]
-    linarith
-  rw [abs_of_nonneg (mul_nonneg (mul_nonneg hy0 hB0) hE0)]
-  have s1 : y * B * ((1 + β * h - A) / (β * (1 - β))) ≤ y * B * h ^ 2 :=
-    mul_le_mul_of_nonneg_left hE (mul_nonneg hy0 hB0)
-  have s2 : y * B * h ^ 2 ≤ y * y * h ^ 2 :=
-    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hBy hy0) (sq_nonneg h)
-  linarith [mul_nonneg (sq_nonneg y) (sq_nonneg h)]
-
-lemma abs_main_term_second_difference_le {y h γ : ℝ} (hy : 0 < y) (hh : 0 < h) :
-    |y * ((y * (1 + h)) * Real.log (y * (1 + h)) - (1 + γ) * (y * (1 + h)))
-      - (y * (1 + h)) * (y * Real.log y - (1 + γ) * y) - y * h * y| ≤ y ^ 2 * h ^ 2 := by
-  have h1 : (0:ℝ) < 1 + h := by linarith
-  have hlog : Real.log (y * (1 + h)) = Real.log y + Real.log (1 + h) :=
-    Real.log_mul hy.ne' h1.ne'
-  have key : y * ((y * (1 + h)) * Real.log (y * (1 + h)) - (1 + γ) * (y * (1 + h)))
-      - (y * (1 + h)) * (y * Real.log y - (1 + γ) * y) - y * h * y
-      = y ^ 2 * ((1 + h) * Real.log (1 + h) - h) := by
-    rw [hlog]; ring
-  rw [key]
-  have hL1 : Real.log (1 + h) ≤ h := by
-    have := Real.log_le_sub_one_of_pos h1
-    linarith
-  have hL2 := le_one_add_mul_log_one_add hh.le
-  rw [abs_of_nonneg (mul_nonneg (sq_nonneg y) (by linarith))]
-  have t : (1 + h) * Real.log (1 + h) - h ≤ h ^ 2 := by
-    linarith [mul_le_mul_of_nonneg_left hL1 h1.le]
-  exact mul_le_mul_of_nonneg_left t (sq_nonneg y)
-
-lemma exp_neg_sqrt_log_le_sq {cs c₀ y z : ℝ} (hc0 : 0 ≤ c₀) (hcs : c₀ ≤ cs) (hy : 1 ≤ y) (hyz : y ≤ z) :
-    Real.exp (-cs * Real.sqrt (Real.log z)) ≤ Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)) ^ 2 := by
-  have hlyz : Real.log y ≤ Real.log z := Real.log_le_log (by linarith) hyz
-  have hs : Real.sqrt (Real.log y) ≤ Real.sqrt (Real.log z) := Real.sqrt_le_sqrt hlyz
-  rw [sq, ← Real.exp_add, Real.exp_le_exp]
-  linarith [mul_le_mul hcs hs (Real.sqrt_nonneg _) (le_trans hc0 hcs)]
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.AbsZeroTermSecondDifferenceLe =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LeOfSecondDifferenceBound =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LeOfSecondDifferenceBound", "h": "module\n\npublic import Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\npublic import Mathlib.Analysis.Complex.ExponentialBounds\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-lemma le_of_second_difference_bound {y c₀ C N eY ey h : ℝ} (hy : 2 ≤ y) (hc0 : 0 < c₀) (hc01 : c₀ ≤ 1) (hC : 0 ≤ C)
-    (hh : h = Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)))
-    (hey0 : 0 ≤ ey) (heY0 : 0 ≤ eY) (hey : ey ≤ h ^ 2) (heY : eY ≤ h ^ 2)
-    (hmain : y * h * N ≤ (y * (1 + h) - y + 1) * ((y * (1 + h) - y) * Real.log (y * (1 + h)))
-        + 2 * y ^ 2 * h ^ 2 + y * (C * (y * (1 + h)) * eY) + y * (1 + h) * (C * y * ey)) :
-    N ≤ (128 / c₀ ^ 2 + 2 + 4 * C) * y * Real.exp (-(c₀ / 4) * Real.sqrt (Real.log y)) := by
-  have hy0 : 0 < y := by linarith
-  have hc2 : c₀ ^ 2 ≤ 1 := pow_le_one₀ hc0.le hc01
-  have hL2 : Real.log 2 ≤ Real.log y := Real.log_le_log (by norm_num) hy
-  have hl2 := Real.log_two_gt_d9
-  have hlogmul : Real.log (y * (1 + h)) = Real.log y + Real.log (1 + h) := by
-    have hh0' : 0 < h := by rw [hh]; exact Real.exp_pos _
-    exact Real.log_mul hy0.ne' (by linarith)
-  set L := Real.log y with hLdef
-  have hL0 : 0 < L := by linarith
-  set s := Real.sqrt L with hsdef
-  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-  have hss : s ^ 2 = L := Real.sq_sqrt hL0.le
-  have hs_half : 1 / 2 ≤ s := (Real.le_sqrt (by norm_num) hL0.le).2 (by linarith)
-  set g := Real.exp (-(c₀ / 4) * s) with hgdef
-  have hg0 : 0 < g := Real.exp_pos _
-  have hg1 : g ≤ 1 := by
-    rw [hgdef, Real.exp_le_one_iff]
-    have : 0 ≤ c₀ / 4 * s := by positivity
-    linarith
-  have hhg : h = g * g := by
-    rw [hh, hgdef, ← Real.exp_add]; congr 1; ring
-  have hh0 : 0 < h := by rw [hhg]; positivity
-  have hhle : h ≤ g := by rw [hhg]; exact mul_le_of_le_one_left hg0.le hg1
-  have hh1 : h ≤ 1 := le_trans hhle hg1
-  have hyg : Real.exp (s ^ 2 / 2) ≤ y * g := by
-    have hyL : y = Real.exp L := (Real.exp_log hy0).symm
-    rw [hgdef, hyL, ← Real.exp_add]
-    apply Real.exp_le_exp.mpr
-    linarith [mul_le_mul_of_nonneg_right hc01 hs0, mul_nonneg hs0 (sub_nonneg.mpr hs_half)]
-  have hq := Real.quadratic_le_exp_of_nonneg (by positivity : (0 : ℝ) ≤ s ^ 2 / 2)
-  have hB : L + 1 ≤ 2 * (y * g) := by
-    have : 0 ≤ (s ^ 2 / 2) ^ 2 / 2 := by positivity
-    linarith
-  have ht := Real.quadratic_le_exp_of_nonneg (show (0 : ℝ) ≤ c₀ / 4 * s by positivity)
-  have hgt : g * Real.exp (c₀ / 4 * s) = 1 := by
-    rw [hgdef, ← Real.exp_add, show -(c₀ / 4) * s + c₀ / 4 * s = 0 by ring, Real.exp_zero]
-  have hA1 : g * (c₀ / 4 * s) ^ 2 ≤ 2 := by
-    have h0 : 0 ≤ c₀ / 4 * s := by positivity
-    have : (c₀ / 4 * s) ^ 2 ≤ 2 * Real.exp (c₀ / 4 * s) := by linarith
-    calc g * (c₀ / 4 * s) ^ 2 ≤ g * (2 * Real.exp (c₀ / 4 * s)) :=
-          mul_le_mul_of_nonneg_left this hg0.le
-      _ = 2 * (g * Real.exp (c₀ / 4 * s)) := by ring
-      _ = 2 := by rw [hgt]; ring
-  have hA : c₀ ^ 2 * g * (L + 1) ≤ 33 := by
-    have e : c₀ ^ 2 * g * (L + 1) = 16 * (g * (c₀ / 4 * s) ^ 2) + c₀ ^ 2 * g := by
-      rw [← hss]; ring
-    have : c₀ ^ 2 * g ≤ 1 := mul_le_one₀ hc2 hg0.le hg1
-    rw [e]; linarith
-  have hA' : g * (L + 1) ≤ 33 / c₀ ^ 2 := by
-    rw [le_div_iff₀ (by positivity)]
-    have e : g * (L + 1) * c₀ ^ 2 = c₀ ^ 2 * g * (L + 1) := by ring
-    rw [e]; exact hA
-  have hlog : Real.log (y * (1 + h)) ≤ L + 1 := by
-    rw [hlogmul]
-    have := Real.log_le_sub_one_of_pos (by linarith : 0 < 1 + h)
-    linarith
-  have hP : 0 < y * h := by positivity
-  have hyh1 : y * (1 + h) - y = y * h := by ring
-  rw [hyh1] at hmain
-  have T1 : (y * h + 1) * ((y * h) * Real.log (y * (1 + h))) ≤ (y * h) * ((y * h + 1) * (L + 1)) := by
-    have : (y * h) * Real.log (y * (1 + h)) ≤ (y * h) * (L + 1) :=
-      mul_le_mul_of_nonneg_left hlog hP.le
-    calc (y * h + 1) * ((y * h) * Real.log (y * (1 + h))) ≤ (y * h + 1) * ((y * h) * (L + 1)) :=
-          mul_le_mul_of_nonneg_left this (by positivity)
-      _ = (y * h) * ((y * h + 1) * (L + 1)) := by ring
-  have T1' : (y * h + 1) * (L + 1) ≤ (33 / c₀ ^ 2 + 2) * (y * g) := by
-    calc (y * h + 1) * (L + 1) = (y * g) * (g * (L + 1)) + (L + 1) := by rw [hhg]; ring
-      _ ≤ (y * g) * (33 / c₀ ^ 2) + 2 * (y * g) :=
-          add_le_add (mul_le_mul_of_nonneg_left hA' (by positivity)) hB
-      _ = (33 / c₀ ^ 2 + 2) * (y * g) := by ring
-  have T2 : 2 * y ^ 2 * h ^ 2 ≤ (y * h) * (2 * (y * g)) := by
-    have : y * h ≤ y * g := mul_le_mul_of_nonneg_left hhle hy0.le
-    calc 2 * y ^ 2 * h ^ 2 = (y * h) * (2 * (y * h)) := by ring
-      _ ≤ (y * h) * (2 * (y * g)) := mul_le_mul_of_nonneg_left (by linarith) hP.le
-  have hhh : (1 + h) * h ≤ 2 * g := by
-    have h1 : h * h ≤ h := mul_le_of_le_one_left hh0.le hh1
-    have e : (1 + h) * h = h + h * h := by ring
-    rw [e]; linarith
-  have hCy : 0 ≤ C * y := mul_nonneg hC hy0.le
-  have T3 : y * (C * (y * (1 + h)) * eY) ≤ (y * h) * (2 * C * (y * g)) := by
-    have hk : 0 ≤ C * (y * (1 + h)) := mul_nonneg hC (by positivity)
-    have : C * (y * (1 + h)) * eY ≤ C * (y * (1 + h)) * h ^ 2 := mul_le_mul_of_nonneg_left heY hk
-    calc y * (C * (y * (1 + h)) * eY) ≤ y * (C * (y * (1 + h)) * h ^ 2) :=
-          mul_le_mul_of_nonneg_left this hy0.le
-      _ = (y * h) * (C * y * ((1 + h) * h)) := by ring
-      _ ≤ (y * h) * (C * y * (2 * g)) :=
-          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hhh hCy) hP.le
-      _ = (y * h) * (2 * C * (y * g)) := by ring
-  have T4 : y * (1 + h) * (C * y * ey) ≤ (y * h) * (2 * C * (y * g)) := by
-    have hk : 0 ≤ y * (1 + h) * (C * y) := mul_nonneg (by positivity) hCy
-    have : y * (1 + h) * (C * y) * ey ≤ y * (1 + h) * (C * y) * h ^ 2 :=
-      mul_le_mul_of_nonneg_left hey hk
-    calc y * (1 + h) * (C * y * ey) = y * (1 + h) * (C * y) * ey := by ring
-      _ ≤ y * (1 + h) * (C * y) * h ^ 2 := this
-      _ = (y * h) * (C * y * ((1 + h) * h)) := by ring
-      _ ≤ (y * h) * (C * y * (2 * g)) :=
-          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hhh hCy) hP.le
-      _ = (y * h) * (2 * C * (y * g)) := by ring
-  have T1'' := mul_le_mul_of_nonneg_left T1' hP.le
-  have hfin : (33 / c₀ ^ 2 + 2) * (y * g) + 2 * (y * g) + 2 * C * (y * g) + 2 * C * (y * g) ≤
-      (128 / c₀ ^ 2 + 2 + 4 * C) * y * g := by
-    have h95 : 2 ≤ 95 / c₀ ^ 2 := by
-      rw [le_div_iff₀ (by positivity)]; linarith
-    have := mul_le_mul_of_nonneg_right h95 (by positivity : (0 : ℝ) ≤ y * g)
-    have e1 : (128 / c₀ ^ 2 + 2 + 4 * C) * y * g =
-        (33 / c₀ ^ 2 + 2) * (y * g) + 95 / c₀ ^ 2 * (y * g) + 2 * C * (y * g) + 2 * C * (y * g) := by
-      ring
-    rw [e1]; linarith
-  have hfin' := mul_le_mul_of_nonneg_left hfin hP.le
-  refine le_of_mul_le_mul_left ?_ hP
-  linarith
-
-lemma mul_le_of_log_bounds {y c₀ K lq : ℝ} (hy : 2 ≤ y) (hc0 : 0 < c₀) (hc01 : c₀ ≤ 1)
-    (hK : K * Real.log 2 ≤ Real.log y) (hK0 : 0 ≤ K) (hlq0 : 0 ≤ lq)
-    (hlq : lq ≤ c₀ / 4 * Real.sqrt (Real.log y)) :
-    K * lq ≤ 16 * y * Real.exp (-(c₀ / 4) * Real.sqrt (Real.log y)) := by
-  have hy0 : 0 < y := by linarith
-  have hL2 : Real.log 2 ≤ Real.log y := Real.log_le_log (by norm_num) hy
-  have hl2 := Real.log_two_gt_d9
-  have hyL : y = Real.exp (Real.log y) := (Real.exp_log hy0).symm
-  set L := Real.log y with hLdef
-  have hL0 : 0 < L := by linarith
-  set s := Real.sqrt L with hsdef
-  have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-  have hss : s ^ 2 = L := Real.sq_sqrt hL0.le
-  have hs_half : 1 / 2 ≤ s := (Real.le_sqrt (by norm_num) hL0.le).2 (by linarith)
-  have hKL : K ≤ 2 * L := by linarith [mul_nonneg hK0 (by linarith : (0 : ℝ) ≤ Real.log 2 - 1 / 2)]
-  have hlq' : lq ≤ s / 4 := by
-    have : c₀ / 4 * s ≤ 1 / 4 * s := mul_le_mul_of_nonneg_right (by linarith) hs0
-    linarith
-  have hKlq : K * lq ≤ (2 * L) * (s / 4) := mul_le_mul hKL hlq' hlq0 (by positivity)
-  have hexp : Real.exp (s ^ 2 / 2) ≤ y * Real.exp (-(c₀ / 4) * s) := by
-    rw [hyL, ← Real.exp_add]
-    apply Real.exp_le_exp.mpr
-    linarith [mul_le_mul_of_nonneg_right hc01 hs0, mul_nonneg hs0 (sub_nonneg.mpr hs_half)]
-  have hq := Real.quadratic_le_exp_of_nonneg (by positivity : (0 : ℝ) ≤ s ^ 2 / 2)
-  have hpoly : (2 * L) * (s / 4) ≤ 16 * (1 + s ^ 2 / 2 + (s ^ 2 / 2) ^ 2 / 2) := by
-    rw [← hss]; linarith [sq_nonneg (s ^ 2 - s), sq_nonneg s, sq_nonneg (s ^ 2)]
-  have e : 16 * y * Real.exp (-(c₀ / 4) * s) = 16 * (y * Real.exp (-(c₀ / 4) * s)) := by ring
-  rw [e]
-  linarith
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LeOfSecondDifferenceBound =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PsiChiBoundOf =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PsiChiBoundOf", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SumVonMangoldtNotCoprimeLe\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.AbsZeroTermSecondDifferenceLe\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LeOfSecondDifferenceBound\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\npublic import Mathlib.NumberTheory.LSeries.Nonvanishing\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.Monotonicity.Lemmas\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Presheaf\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open Complex Finset ArithmeticFunction
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-lemma chebyshev_smoothing_identity_complex (ψ Z SY Sy MY My A : ℂ) (y h : ℝ) :
-    ((y * h : ℝ) : ℂ) * (ψ + Z)
-      = -(((y : ℂ) * SY - ((y * (1 + h) : ℝ) : ℂ) * Sy) - ((y * (1 + h) - y : ℝ) : ℂ) * ψ)
-        + (((y * (1 + h) : ℝ) : ℂ) * My - (y : ℂ) * MY + ((y * h : ℝ) : ℂ) * Z)
-        + ((y : ℂ) * (SY - A * ((y * (1 + h) : ℝ) : ℂ) + MY)
-            - ((y * (1 + h) : ℝ) : ℂ) * (Sy - A * (y : ℂ) + My)) := by
-  push_cast; ring
-
-lemma chebyshev_smoothing_identity_real (ψ SY Sy GY Gy y h : ℝ) (hSY : SY = (y * (1 + h)) * Real.log (y * (1 + h))
-      - (1 + Real.eulerMascheroniConstant) * (y * (1 + h)) + GY)
-    (hSy : Sy = y * Real.log y - (1 + Real.eulerMascheroniConstant) * y + Gy) :
-    (y * h) * (ψ - y)
-      = -((y * SY - (y * (1 + h)) * Sy) - (y * (1 + h) - y) * ψ)
-        + (y * ((y * (1 + h)) * Real.log (y * (1 + h))
-            - (1 + Real.eulerMascheroniConstant) * (y * (1 + h)))
-          - (y * (1 + h)) * (y * Real.log y - (1 + Real.eulerMascheroniConstant) * y) - y * h * y)
-        + (y * GY - (y * (1 + h)) * Gy) := by
-  rw [hSY, hSy]; ring
-
-lemma exp_neg_sqrt_log_mem_unit_interval {c₀ y : ℝ} (hc0 : 0 < c₀) :
-    0 < Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)) ∧
-      Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)) ≤ 1 := by
-  refine ⟨Real.exp_pos _, Real.exp_le_one_iff.2 ?_⟩
-  linarith only [mul_nonneg hc0.le (Real.sqrt_nonneg (Real.log y))]
-
-lemma chebyshev_character_nonprincipal_bound {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (hχ : χ ≠ 1) {c₁ : ℝ}
-    (hc₁ : 0 < c₁) (hc₁' : c₁ ≤ 1 / 20) (B : Finset ℝ) (hB : ExcZeros c₁ χ B)
-    {cs Cs c₀ y : ℝ} (hc0 : 0 < c₀) (hc01 : c₀ ≤ 1) (hcs : c₀ ≤ cs) (hCs : 0 ≤ Cs) (hy : 2 ≤ y)
-    (hE : ∀ z : ℝ, y ≤ z →
-      ‖Schi χ z - negLD χ 1 * z + ∑ β ∈ B, (z : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))‖ ≤
-        Cs * z * Real.exp (-cs * Real.sqrt (Real.log z))) :
-    ‖psiChi χ y + ∑ β ∈ B, (y : ℂ) ^ (β : ℂ) / (β : ℂ)‖ ≤
-      (128 / c₀ ^ 2 + 2 + 4 * Cs) * y * Real.exp (-(c₀ / 4) * Real.sqrt (Real.log y)) := by
-  obtain ⟨hh0, hh1⟩ := exp_neg_sqrt_log_mem_unit_interval (y := y) hc0
-  set h := Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)) with hh
-  have hypos : 0 < y := by linarith
-  have hyY : y ≤ y * (1 + h) := le_mul_of_one_le_right hypos.le (by linarith)
-  have hY0 : 0 ≤ y * (1 + h) := by positivity
-
-  have hβ : ∀ β ∈ B, 1 / 2 ≤ β ∧ β < 1 := by
-    intro β hβB
-    obtain ⟨_, hreg, hzero, _⟩ := hB.2.1 β hβB
-    have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast Nat.one_le_iff_ne_zero.2 (NeZero.ne q)
-    simp only [InRegion, Complex.ofReal_im, abs_zero, zero_add, Complex.ofReal_re] at hreg
-    have hl : Real.log 2 ≤ Real.log ((q : ℝ) * 2) := Real.log_le_log (by norm_num) (by linarith)
-    have hl2 := Real.log_two_gt_d9
-    have hlpos : 0 < Real.log ((q : ℝ) * 2) := by linarith
-    have hfrac : c₁ / Real.log ((q : ℝ) * 2) ≤ 1 / 2 := by
-      rw [div_le_iff₀ hlpos]; linarith
-    refine ⟨by linarith, ?_⟩
-    by_contra hge
-    exact DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inl hχ)
-      (by simpa using not_lt.1 hge) hzero
-  set f : ℕ → ℂ := fun n => ((Λ n : ℝ) : ℂ) * χ (n : ZMod q) with hf
-  have hfb : ∀ n, ‖f n‖ ≤ Λ n := by
-    intro n
-    simp only [hf, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg vonMangoldt_nonneg]
-    exact mul_le_of_le_one_right vonMangoldt_nonneg (DirichletCharacter.norm_le_one χ _)
-  have hS : ∀ x, Schi χ x = weightedPartialSumUpTo f x := fun x => rfl
-  have hP : psiChi χ y = partialSumUpTo f y := rfl
-  have hD := norm_weightedSum_sub_le f hfb (show (1:ℝ) ≤ y by linarith) hyY
-  set MY := ∑ β ∈ B, (((y * (1 + h) : ℝ) : ℂ)) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1)) with hMY
-  set My := ∑ β ∈ B, (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1)) with hMy
-  set Z := ∑ β ∈ B, (y : ℂ) ^ (β : ℂ) / (β : ℂ) with hZ
-  have hid := chebyshev_smoothing_identity_complex (psiChi χ y) Z (Schi χ (y * (1 + h))) (Schi χ y) MY My (negLD χ 1) y h
-
-  have hM : ‖((y * (1 + h) : ℝ) : ℂ) * My - (y : ℂ) * MY + ((y * h : ℝ) : ℂ) * Z‖ ≤
-      2 * y ^ 2 * h ^ 2 := by
-    have e : ((y * (1 + h) : ℝ) : ℂ) * My - (y : ℂ) * MY + ((y * h : ℝ) : ℂ) * Z
-        = ∑ β ∈ B, (((y * (1 + h) * (y ^ β / (β * (β - 1))) - y * ((y * (1 + h)) ^ β / (β * (β - 1)))
-            + y * h * (y ^ β / β) : ℝ)) : ℂ) := by
-      rw [hMY, hMy, hZ, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib,
-        ← Finset.sum_add_distrib]
-      apply Finset.sum_congr rfl
-      intro β _
-      rw [← Complex.ofReal_cpow hypos.le, ← Complex.ofReal_cpow hY0]
-      push_cast; ring
-    rw [e]
-    calc _ ≤ ∑ β ∈ B, ‖(((y * (1 + h) * (y ^ β / (β * (β - 1)))
-              - y * ((y * (1 + h)) ^ β / (β * (β - 1))) + y * h * (y ^ β / β) : ℝ)) : ℂ)‖ :=
-          norm_sum_le _ _
-      _ ≤ ∑ β ∈ B, 2 * y ^ 2 * h ^ 2 := by
-          apply Finset.sum_le_sum
-          intro β hβB
-          rw [Complex.norm_real, Real.norm_eq_abs]
-          exact abs_zero_term_second_difference_le (by linarith) hh0 hh1 (hβ β hβB).1 (hβ β hβB).2
-      _ = (B.card : ℝ) * (2 * y ^ 2 * h ^ 2) := by rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ 1 * (2 * y ^ 2 * h ^ 2) := by
-          apply mul_le_mul_of_nonneg_right _ (by positivity)
-          exact_mod_cast hB.1
-      _ = 2 * y ^ 2 * h ^ 2 := one_mul _
-  have hEY := hE (y * (1 + h)) hyY
-  have hEy := hE y le_rfl
-  set eY := Real.exp (-cs * Real.sqrt (Real.log (y * (1 + h))))
-  set ey := Real.exp (-cs * Real.sqrt (Real.log y))
-  have hmain : y * h * ‖psiChi χ y + Z‖ ≤
-      (y * (1 + h) - y + 1) * ((y * (1 + h) - y) * Real.log (y * (1 + h)))
-        + 2 * y ^ 2 * h ^ 2 + y * (Cs * (y * (1 + h)) * eY) + y * (1 + h) * (Cs * y * ey) := by
-    have hn : ‖((y * h : ℝ) : ℂ) * (psiChi χ y + Z)‖ = y * h * ‖psiChi χ y + Z‖ := by
-      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
-    rw [← hn, hid]
-    have hD' : ‖((y : ℂ) * Schi χ (y * (1 + h)) - ((y * (1 + h) : ℝ) : ℂ) * Schi χ y)
-        - ((y * (1 + h) - y : ℝ) : ℂ) * psiChi χ y‖
-        ≤ (y * (1 + h) - y + 1) * ((y * (1 + h) - y) * Real.log (y * (1 + h))) := by
-      rw [hS, hS, hP]; exact hD
-    have h1 : ‖(y : ℂ) * (Schi χ (y * (1 + h)) - negLD χ 1 * ((y * (1 + h) : ℝ) : ℂ) + MY)‖
-        ≤ y * (Cs * (y * (1 + h)) * eY) := by
-      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hypos]
-      exact mul_le_mul_of_nonneg_left hEY hypos.le
-    have h2 : ‖((y * (1 + h) : ℝ) : ℂ) * (Schi χ y - negLD χ 1 * (y : ℂ) + My)‖
-        ≤ y * (1 + h) * (Cs * y * ey) := by
-      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hY0]
-      exact mul_le_mul_of_nonneg_left hEy hY0
-    calc _ ≤ ‖-(((y : ℂ) * Schi χ (y * (1 + h)) - ((y * (1 + h) : ℝ) : ℂ) * Schi χ y)
-              - ((y * (1 + h) - y : ℝ) : ℂ) * psiChi χ y)
-            + (((y * (1 + h) : ℝ) : ℂ) * My - (y : ℂ) * MY + ((y * h : ℝ) : ℂ) * Z)‖
-          + ‖(y : ℂ) * (Schi χ (y * (1 + h)) - negLD χ 1 * ((y * (1 + h) : ℝ) : ℂ) + MY)
-            - ((y * (1 + h) : ℝ) : ℂ) * (Schi χ y - negLD χ 1 * (y : ℂ) + My)‖ := norm_add_le _ _
-      _ ≤ (‖((y : ℂ) * Schi χ (y * (1 + h)) - ((y * (1 + h) : ℝ) : ℂ) * Schi χ y)
-              - ((y * (1 + h) - y : ℝ) : ℂ) * psiChi χ y‖
-            + ‖((y * (1 + h) : ℝ) : ℂ) * My - (y : ℂ) * MY + ((y * h : ℝ) : ℂ) * Z‖)
-          + (‖(y : ℂ) * (Schi χ (y * (1 + h)) - negLD χ 1 * ((y * (1 + h) : ℝ) : ℂ) + MY)‖
-            + ‖((y * (1 + h) : ℝ) : ℂ) * (Schi χ y - negLD χ 1 * (y : ℂ) + My)‖) := by
+    have hbn : dist s (conj ρ) ≤ 0.1 := hs ▸ by
+      rw [dist_eq_re_im, sqrt_le_left <| by norm_num]
+      simp [hγd]
+      nlinarith
+    have hFL : regularizedLFunction χ (conj ρ) = 0 := by
+      have hd := differentiable_LFunction hc1
+      have key := AnalyticOnNhd.eq_of_eventuallyEq (hd.differentiableOn.analyticOnNhd isOpen_univ)
+        ((Differentiable.differentiableOn fun x => differentiableAt_conj_conj_iff.2 (hd _)).analyticOnNhd isOpen_univ) (z₀ := 2) (g := conj ∘ LFunction χ ∘ conj) ?_
+      · simpa [regularizedLFunction, hc1, congr_fun key <| conj ρ] using hρ
+      filter_upwards [continuousAt_const.eventually_lt continuous_re.continuousAt (by norm_num : (1:ℝ) < re 2)] with z hz
+      rw [Function.comp_apply, Function.comp_apply, LFunction_eq_LSeries χ hz, LFunction_eq_LSeries χ <| by simp_all, LSeries, LSeries, conj_tsum]
+      congr 1 with n
+      rcases eq_or_ne n 0 with rfl | hn
+      · simp
+      rcases MulChar.isQuadratic_iff_sq_eq_one.mpr hc2 n with h | h | h <;>
+        simp [term, hn, h, ← conj_cpow _ _ (natCast_arg ▸ pi_ne_zero.symm : (n : ℂ).arg ≠ π)]
+    refine ⟨{ρ, conj ρ}, by simp_all, ?_⟩
+    rw [sum_pair <| fun h => H ⟨hc2, hc1, hγd ▸ conj_eq_iff_im.1 h.symm⟩]
+    have : d / (d ^ 2 + (γ + γ) ^ 2) ≤ 4 * re (s - conj ρ)⁻¹ := hs ▸ by
+      simp [normSq_apply, hγd]
+      rw [mul_div_assoc', div_le_div_iff₀ (by positivity) <| by nlinarith]
+      nlinarith [mul_pos hd0 hu0]
+    grind
+  have LA := fun ψ c (hc : re c = 1 + d) (hi : |im c| ≤ |γ| + |γ|) =>
+    landau_zero_sum_le c (L + L + L) (regularizedLFunction_differentiable ψ)
+      (fun w hw => by
+        simpa using (regularizedLFunction_growth_ratio ψ (D := 2 * rexp L) hd0 (by linarith) hc ((mem_closedBall_iff_norm.1 hw).trans (by norm_num)) (by nlinarith [norm_le_abs_re_add_abs_im c, abs_of_pos (show 0 < re c by linarith)])).trans (by
           gcongr
-          · exact (norm_add_le _ _).trans (by rw [norm_neg])
-          · exact norm_sub_le _ _
-      _ ≤ _ := by linarith
-  have hey := exp_neg_sqrt_log_le_sq (cs := cs) hc0.le hcs (show (1:ℝ) ≤ y by linarith) (le_refl y)
-  have heY := exp_neg_sqrt_log_le_sq (cs := cs) hc0.le hcs (show (1:ℝ) ≤ y by linarith) hyY
-  exact le_of_second_difference_bound hy hc0 hc01 hCs hh (Real.exp_pos _).le (Real.exp_pos _).le hey heY hmain
-
-lemma chebyshev_principal_character_bound {q : ℕ} [NeZero q] {cg Kg c₀ y : ℝ} (hc0 : 0 < c₀) (hc01 : c₀ ≤ 1)
-    (hcg : c₀ ≤ cg) (hKg : 0 ≤ Kg) (hy : 2 ≤ y)
-    (hq : (q : ℝ) ≤ Real.exp (c₀ / 4 * Real.sqrt (Real.log y)))
-    (hG : ∀ z : ℝ, y ≤ z → |Formalism.Gz z| ≤ Kg * z * Real.exp (-cg * Real.sqrt (Real.log z))) :
-    ‖psiChi (1 : DirichletCharacter ℂ q) y - y‖ ≤
-      (128 / c₀ ^ 2 + 2 + 4 * Kg) * y * Real.exp (-(c₀ / 4) * Real.sqrt (Real.log y))
-        + 16 * y * Real.exp (-(c₀ / 4) * Real.sqrt (Real.log y)) := by
-  obtain ⟨hh0, hh1⟩ := exp_neg_sqrt_log_mem_unit_interval (y := y) hc0
-  set h := Real.exp (-(c₀ / 2) * Real.sqrt (Real.log y)) with hh
-  have hypos : 0 < y := by linarith
-  have hyY : y ≤ y * (1 + h) := le_mul_of_one_le_right hypos.le (by linarith)
-  have hY0 : 0 ≤ y * (1 + h) := by positivity
-  set f : ℕ → ℂ := fun n => ((Λ n : ℝ) : ℂ) with hf
-  have hfb : ∀ n, ‖f n‖ ≤ Λ n := by
-    intro n
-    simp only [hf, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg vonMangoldt_nonneg, le_refl]
-  have hS : ∀ x, weightedPartialSumUpTo f x = ((Formalism.Sz x : ℝ) : ℂ) := by
-    intro x; simp only [weightedPartialSumUpTo, Formalism.Sz, hf]; push_cast; rfl
-  set ψ₀ := ∑ n ∈ Icc 1 ⌊y⌋₊, Λ n with hψ₀
-  have hP : partialSumUpTo f y = ((ψ₀ : ℝ) : ℂ) := by
-    simp only [partialSumUpTo, hf, hψ₀]; push_cast; rfl
-  set nc := ∑ n ∈ Icc 1 ⌊y⌋₊, Λ n * (if n.Coprime q then 0 else 1) with hnc
-  have hpsi : psiChi (1 : DirichletCharacter ℂ q) y = ((ψ₀ - nc : ℝ) : ℂ) := by
-    simp only [psiChi, one_apply_natCast, hψ₀, hnc]
-    push_cast
-    rw [← Finset.sum_sub_distrib]
-    apply Finset.sum_congr rfl
-    intro n _
-    split_ifs <;> simp
-
-  have hD := norm_weightedSum_sub_le f hfb (show (1:ℝ) ≤ y by linarith) hyY
-  rw [hS, hS, hP] at hD
-  have hD' : |(y * Formalism.Sz (y * (1 + h)) - (y * (1 + h)) * Formalism.Sz y) - (y * (1 + h) - y) * ψ₀|
-      ≤ (y * (1 + h) - y + 1) * ((y * (1 + h) - y) * Real.log (y * (1 + h))) := by
-    have e : ((y : ℂ) * ((Formalism.Sz (y * (1 + h)) : ℝ) : ℂ) - ((y * (1 + h) : ℝ) : ℂ) * ((Formalism.Sz y : ℝ) : ℂ))
-        - ((y * (1 + h) - y : ℝ) : ℂ) * ((ψ₀ : ℝ) : ℂ)
-        = (((y * Formalism.Sz (y * (1 + h)) - (y * (1 + h)) * Formalism.Sz y) - (y * (1 + h) - y) * ψ₀ : ℝ) : ℂ) := by
-      push_cast; ring
-    rw [e, Complex.norm_real, Real.norm_eq_abs] at hD
-    exact hD
-  have hGY := hG (y * (1 + h)) hyY
-  have hGy := hG y le_rfl
-  set eY := Real.exp (-cg * Real.sqrt (Real.log (y * (1 + h))))
-  set ey := Real.exp (-cg * Real.sqrt (Real.log y))
-  have hid := chebyshev_smoothing_identity_real ψ₀ (Formalism.Sz (y * (1 + h))) (Formalism.Sz y) (Formalism.Gz (y * (1 + h))) (Formalism.Gz y) y h
-    (by simp only [Formalism.Gz]; ring) (by simp only [Formalism.Gz]; ring)
-  have hW := abs_main_term_second_difference_le (γ := Real.eulerMascheroniConstant) hypos hh0
-  have hmain : y * h * |ψ₀ - y| ≤
-      (y * (1 + h) - y + 1) * ((y * (1 + h) - y) * Real.log (y * (1 + h)))
-        + 2 * y ^ 2 * h ^ 2 + y * (Kg * (y * (1 + h)) * eY) + y * (1 + h) * (Kg * y * ey) := by
-    rw [← abs_of_pos (show 0 < y * h by positivity), ← abs_mul, hid]
-    have h1 : |y * Formalism.Gz (y * (1 + h)) - (y * (1 + h)) * Formalism.Gz y|
-        ≤ y * (Kg * (y * (1 + h)) * eY) + y * (1 + h) * (Kg * y * ey) := by
-      refine (abs_sub _ _).trans ?_
-      rw [abs_mul, abs_mul, abs_of_pos hypos, abs_of_nonneg hY0]
-      exact add_le_add (mul_le_mul_of_nonneg_left hGY hypos.le) (mul_le_mul_of_nonneg_left hGy hY0)
-    have hsq : 0 ≤ y ^ 2 * h ^ 2 := by positivity
-    calc _ ≤ |-((y * Formalism.Sz (y * (1 + h)) - (y * (1 + h)) * Formalism.Sz y) - (y * (1 + h) - y) * ψ₀)|
-          + |y * ((y * (1 + h)) * Real.log (y * (1 + h))
-            - (1 + Real.eulerMascheroniConstant) * (y * (1 + h)))
-          - (y * (1 + h)) * (y * Real.log y - (1 + Real.eulerMascheroniConstant) * y) - y * h * y|
-          + |y * Formalism.Gz (y * (1 + h)) - (y * (1 + h)) * Formalism.Gz y| := abs_add_three _ _ _
-      _ ≤ _ := by rw [abs_neg]; linarith
-  have hey := exp_neg_sqrt_log_le_sq (cs := cg) hc0.le hcg (show (1:ℝ) ≤ y by linarith) (le_refl y)
-  have heY := exp_neg_sqrt_log_le_sq (cs := cg) hc0.le hcg (show (1:ℝ) ≤ y by linarith) hyY
-  have hfin := le_of_second_difference_bound hy hc0 hc01 hKg hh (Real.exp_pos _).le (Real.exp_pos _).le hey heY hmain
-
-  have hq0 : q ≠ 0 := NeZero.ne q
-  have hnc1 := sum_vonMangoldt_not_coprime_le q hq0 ⌊y⌋₊
-  rw [← hnc] at hnc1
-  have hK : (Nat.log 2 ⌊y⌋₊ : ℝ) * Real.log 2 ≤ Real.log y := by
-    have hfl : ⌊y⌋₊ ≠ 0 := by
-      have : 1 ≤ ⌊y⌋₊ := Nat.le_floor (by norm_num; linarith)
-      omega
-    have h2 : ((2 ^ Nat.log 2 ⌊y⌋₊ : ℕ) : ℝ) ≤ y := by
-      have := Nat.pow_log_le_self 2 hfl
-      calc ((2 ^ Nat.log 2 ⌊y⌋₊ : ℕ) : ℝ) ≤ (⌊y⌋₊ : ℝ) := by exact_mod_cast this
-        _ ≤ y := Nat.floor_le hypos.le
-    rw [← Real.log_pow]
-    apply Real.log_le_log (by positivity)
-    exact_mod_cast h2
-  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast Nat.one_le_iff_ne_zero.2 hq0
-  have hlq0 : 0 ≤ Real.log q := Real.log_nonneg hq1
-  have hlq : Real.log q ≤ c₀ / 4 * Real.sqrt (Real.log y) := by
-    have := Real.log_le_log (by linarith) hq
-    rwa [Real.log_exp] at this
-  have hncb := mul_le_of_log_bounds hy hc0 hc01 hK (by positivity) hlq0 hlq
-  have hnc0 : 0 ≤ nc := Finset.sum_nonneg fun n _ =>
-    mul_nonneg vonMangoldt_nonneg (by split_ifs <;> norm_num)
-  rw [hpsi]
-  have e : ((ψ₀ - nc : ℝ) : ℂ) - (y : ℂ) = (((ψ₀ - y) - nc : ℝ) : ℂ) := by push_cast; ring
-  rw [e, Complex.norm_real, Real.norm_eq_abs]
-  calc |(ψ₀ - y) - nc| ≤ |ψ₀ - y| + |nc| := abs_sub _ _
-    _ ≤ _ := by rw [abs_of_nonneg hnc0]; linarith
-
-theorem chebyshev_character_bound_of : PsiChiBoundOf := by
-  intro hS hG c₁ hc₁ hc₁'
-  obtain ⟨cs, Cs, hcs, hSm⟩ := hS c₁ hc₁ hc₁'
-  obtain ⟨cg, Kg, hcg, hGz⟩ := hG
-  set c₀ := min (min cs cg) 1 with hc0def
-  have hc0 : 0 < c₀ := lt_min (lt_min hcs hcg) one_pos
-  have hc01 : c₀ ≤ 1 := min_le_right _ _
-  have hc0s : c₀ ≤ cs := (min_le_left _ _).trans (min_le_left _ _)
-  have hc0g : c₀ ≤ cg := (min_le_left _ _).trans (min_le_right _ _)
-  set Cs' := max Cs 0
-  set Kg' := max Kg 0
-  refine ⟨c₀ / 4, 128 / c₀ ^ 2 + 2 + 4 * Cs' + 4 * Kg' + 16, by positivity, ?_⟩
-  intro q _ χ B x hB hx hq
-  have he4 : 0 ≤ x * Real.exp (-(c₀ / 4) * Real.sqrt (Real.log x)) := by positivity
-  have hCs' : 0 ≤ Cs' := le_max_right _ _
-  have hKg' : 0 ≤ Kg' := le_max_right _ _
-  by_cases hχ : χ = 1
-  · have hB0 : B = ∅ := Finset.eq_empty_of_forall_notMem fun β hβ => (hB.2.1 β hβ).1 hχ
-    subst hχ hB0
-    rw [ite_eq_left rfl, Finset.sum_empty, add_zero]
-    have hG' : ∀ z : ℝ, x ≤ z → |Formalism.Gz z| ≤ Kg' * z * Real.exp (-cg * Real.sqrt (Real.log z)) := by
-      intro z hz
-      refine (hGz z (by linarith)).trans ?_
-      have : 0 ≤ z * Real.exp (-cg * Real.sqrt (Real.log z)) := by
-        have : 0 ≤ z := by linarith
-        positivity
-      have hle : Kg ≤ Kg' := le_max_left Kg 0
-      simpa [mul_assoc] using mul_le_mul_of_nonneg_right hle this
-    have := chebyshev_principal_character_bound (q := q) hc0 hc01 hc0g hKg' hx hq hG'
-    linarith [this, mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * Cs') he4]
-  · rw [ite_eq_right hχ, sub_zero]
-    have hE : ∀ z : ℝ, x ≤ z →
-        ‖Schi χ z - negLD χ 1 * z + ∑ β ∈ B, (z : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))‖ ≤
-          Cs' * z * Real.exp (-cs * Real.sqrt (Real.log z)) := by
-      intro z hz
-      have hqz : (q : ℝ) ≤ Real.exp (cs * Real.sqrt (Real.log z)) := by
-        refine hq.trans (Real.exp_le_exp.2 ?_)
-        have h1 : Real.sqrt (Real.log x) ≤ Real.sqrt (Real.log z) :=
-          Real.sqrt_le_sqrt (Real.log_le_log (by linarith) hz)
-        have h0 : 0 ≤ Real.sqrt (Real.log x) := Real.sqrt_nonneg _
-        have h0' : 0 ≤ Real.sqrt (Real.log z) := Real.sqrt_nonneg _
-        have hle : c₀ / 4 ≤ cs := by linarith
-        exact mul_le_mul hle h1 h0 (by linarith)
-      refine (hSm q χ B z hχ hB (by linarith) hqz).trans ?_
-      have : 0 ≤ z * Real.exp (-cs * Real.sqrt (Real.log z)) := by
-        have : 0 ≤ z := by linarith
-        positivity
-      have hle : Cs ≤ Cs' := le_max_left Cs 0
-      simpa [mul_assoc] using mul_le_mul_of_nonneg_right hle this
-    have := chebyshev_character_nonprincipal_bound χ hχ hc₁ hc₁' B hB hc0 hc01 hc0s hCs' hx hE
-    linarith [this, mul_nonneg (by linarith : (0 : ℝ) ≤ 4 * Kg' + 16) he4]
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PsiChiBoundOf =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SiegelWalfiszOf =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SiegelWalfiszOf", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Lemma\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open Complex Finset ArithmeticFunction
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-lemma zero_free_region_mono {c c' : ℝ} (h : c ≤ c') {q : ℕ} [NeZero q] {s : ℂ} (hs : InRegion c q s) :
-    InRegion c' q s := by
-  unfold InRegion at hs ⊢
-  have hL := Formalism.ZeroFreeDirichlet.log_conductor_pos_real q s.im
-  have h2 : c / Real.log (↑q * (|s.im| + 2)) ≤ c' / Real.log (↑q * (|s.im| + 2)) := by
-    first
-      | exact div_le_div_of_nonneg_right h hL.le
-  linarith
-
-lemma half_le_of_real_in_region {c₁ : ℝ} (h : c₁ ≤ 1 / 20) {q : ℕ} [NeZero q] {β : ℝ} (hs : InRegion c₁ q (β : ℂ)) :
-    1 / 2 ≤ β := by
-  unfold InRegion at hs
-  have hL := Formalism.ZeroFreeDirichlet.log_conductor_pos_real q (β:ℂ).im
-  have h2 : (2:ℝ) ≤ (q:ℝ) * (|(β:ℂ).im| + 2) := by
-    have hq : (1:ℝ) ≤ q := by
-      have h1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-      exact_mod_cast h1
-    have ht := abs_nonneg (β:ℂ).im
-    calc (2 : ℝ) ≤ |(β:ℂ).im| + 2 := by linarith
-      _ ≤ (q:ℝ) * (|(β:ℂ).im| + 2) := le_mul_of_one_le_left (by linarith) hq
-  have hl2 : Real.log 2 ≤ Real.log ((q:ℝ) * (|(β:ℂ).im| + 2)) := Real.log_le_log (by norm_num) h2
-  have hlt := Real.log_two_gt_d9
-  have hc : c₁ / Real.log ((q:ℝ) * (|(β:ℂ).im| + 2)) ≤ 1 / 2 := by
-    rw [div_le_iff₀ hL]
-    linarith
-  have hre : (β:ℂ).re = β := Complex.ofReal_re β
-  linarith
-
-lemma exists_exceptional_zero_set (cZ c₁ : ℝ) (hle : c₁ ≤ cZ)
-    (hZ : ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (s : ℂ),
-      InRegion cZ q s → IsLZero χ s →
-        χ ^ 2 = 1 ∧ χ ≠ 1 ∧ s.im = 0 ∧ deriv (DirichletCharacter.LFunction χ) s ≠ 0 ∧
-        ∀ (χ' : DirichletCharacter ℂ q) (s' : ℂ), InRegion cZ q s' → IsLZero χ' s' → χ' = χ ∧ s' = s)
-    (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) : ∃ B : Finset ℝ, ExcZeros c₁ χ B := by
-  by_cases h : ∃ s : ℂ, InRegion c₁ q s ∧ IsLZero χ s
-  · obtain ⟨s, hs, hL⟩ := h
-    obtain ⟨-, hχ1, him, hder, huniq⟩ := hZ q χ s (zero_free_region_mono hle hs) hL
-    refine ⟨{s.re}, by simp, ?_, ?_⟩
-    · intro β hβ
-      rw [Finset.mem_singleton] at hβ
-      subst hβ
-      have hs' : s = ((s.re : ℝ) : ℂ) := Complex.ext (by simp) (by simp [him])
-      rw [← hs']
-      exact ⟨hχ1, hs, hL.2, hder⟩
-    · intro s' hs' hL'
-      obtain ⟨-, hss⟩ := huniq χ s' (zero_free_region_mono hle hs') hL'
-      refine ⟨s.re, Finset.mem_singleton_self _, ?_⟩
-      rw [hss]
-      exact Complex.ext (by simp) (by simp [him])
-  · push Not at h
-    refine ⟨∅, by simp, by simp, ?_⟩
-    intro s hs hL
-    exact absurd hL (h s hs)
-
-lemma chebyshev_character_trivial_bound {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (x : ℝ) (hx : 1 ≤ x) :
-    ‖psiChi χ x - (if χ = 1 then (x : ℂ) else 0)‖ ≤ x * (Real.log x + 1) := by
-  have hx0 : (0:ℝ) ≤ x := by linarith
-  have hlx : 0 ≤ Real.log x := Real.log_nonneg hx
-  have h1 : ‖psiChi χ x‖ ≤ x * Real.log x := by
-    unfold psiChi
-    refine (norm_sum_le _ _).trans ?_
-    calc _ ≤ ∑ n ∈ Finset.Icc 1 ⌊x⌋₊, Real.log x := by
-          apply Finset.sum_le_sum
-          intro n hn
-          rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
-          have hχ : ‖χ (n : ZMod q)‖ ≤ 1 := DirichletCharacter.norm_le_one χ _
-          have hn1 : 1 ≤ n := (Finset.mem_Icc.mp hn).1
-          have hnx : (n:ℝ) ≤ x :=
-            le_trans (Nat.cast_le.mpr (Finset.mem_Icc.mp hn).2) (Nat.floor_le hx0)
-          have hΛ : ArithmeticFunction.vonMangoldt n ≤ Real.log n := ArithmeticFunction.vonMangoldt_le_log
-          have hlog : Real.log n ≤ Real.log x := Real.log_le_log (Nat.cast_pos.mpr (by omega)) hnx
-          have hΛ0 : 0 ≤ ArithmeticFunction.vonMangoldt n := ArithmeticFunction.vonMangoldt_nonneg
-          calc ArithmeticFunction.vonMangoldt n * ‖χ (n : ZMod q)‖
-              ≤ ArithmeticFunction.vonMangoldt n * 1 := mul_le_mul_of_nonneg_left hχ hΛ0
-            _ ≤ Real.log x := by linarith
-      _ = ((Finset.Icc 1 ⌊x⌋₊).card : ℝ) * Real.log x := by rw [Finset.sum_const, nsmul_eq_mul]
-      _ ≤ x * Real.log x := by
-          apply mul_le_mul_of_nonneg_right _ hlx
-          rw [Nat.card_Icc, Nat.add_sub_cancel]
-          exact Nat.floor_le hx0
-  have h2 : ‖(if χ = 1 then (x : ℂ) else 0)‖ ≤ x := by
-    split_ifs
-    · rw [Complex.norm_real, Real.norm_of_nonneg hx0]
-    · rw [norm_zero]
-      exact hx0
-  calc ‖psiChi χ x - (if χ = 1 then (x : ℂ) else 0)‖
-      ≤ ‖psiChi χ x‖ + ‖(if χ = 1 then (x : ℂ) else 0)‖ := norm_sub_le _ _
-    _ ≤ x * Real.log x + x := add_le_add h1 h2
-    _ = x * (Real.log x + 1) := by ring
-
-lemma exceptional_zero_term_bound (x A q cE β : ℝ) (hx : 2 ≤ x) (hA : 0 < A) (hq : 1 ≤ q)
-    (hqL : q ≤ Real.log x ^ A) (hcE : 0 < cE) (hβ1 : 1 / 2 ≤ β)
-    (hβ2 : β ≤ 1 - cE * q ^ (-(1 / (2 * A)))) :
-    ‖(x : ℂ) ^ (β : ℂ) / (β : ℂ)‖ ≤ 2 * x * Real.exp (-cE * Real.sqrt (Real.log x)) := by
-  have hx0 : (0:ℝ) < x := by linarith
-  have hβ0 : (0:ℝ) < β := by linarith
-  have hlog : 0 < Real.log x := Real.log_pos (by linarith)
-  have hn : ‖(x : ℂ) ^ (β : ℂ) / (β : ℂ)‖ = x ^ β / β := by
-    rw [norm_div, Complex.norm_cpow_eq_rpow_re_of_pos hx0, Complex.ofReal_re, Complex.norm_real,
-      Real.norm_of_nonneg hβ0.le]
-  rw [hn]
-  have hq0 : (0:ℝ) < q := by linarith
-  have hA0 : A ≠ 0 := hA.ne'
-  have h1 : q ^ (1 / (2 * A)) ≤ Real.sqrt (Real.log x) := by
-    rw [Real.sqrt_eq_rpow]
-    calc q ^ (1 / (2 * A)) ≤ (Real.log x ^ A) ^ (1 / (2 * A)) :=
-          Real.rpow_le_rpow hq0.le hqL (by positivity)
-      _ = Real.log x ^ (1 / 2 : ℝ) := by
-          rw [← Real.rpow_mul hlog.le]
-          congr 1
+          rw [Real.exp_add, Real.exp_add, ← hd]
           field_simp
-  have h2 : q ^ (-(1 / (2 * A))) = (q ^ (1 / (2 * A)))⁻¹ := Real.rpow_neg hq0.le _
-  have hs : 0 < Real.sqrt (Real.log x) := Real.sqrt_pos.mpr hlog
-  have hqa : 0 < q ^ (1 / (2 * A)) := Real.rpow_pos_of_pos hq0 _
-  have h3 : cE / Real.sqrt (Real.log x) ≤ 1 - β := by
-    have h3a : cE * q ^ (-(1 / (2 * A))) ≤ 1 - β := by linarith
-    rw [h2] at h3a
-    calc cE / Real.sqrt (Real.log x) ≤ cE / q ^ (1 / (2 * A)) :=
-          div_le_div_of_nonneg_left hcE.le hqa h1
-      _ = cE * (q ^ (1 / (2 * A)))⁻¹ := by rw [div_eq_mul_inv]
-      _ ≤ 1 - β := h3a
-  have h4 : (β - 1) * Real.log x ≤ -cE * Real.sqrt (Real.log x) := by
-    have hsq : Real.sqrt (Real.log x) * Real.sqrt (Real.log x) = Real.log x := Real.mul_self_sqrt hlog.le
-    have h4a := (div_le_iff₀ hs).mp h3
-    have h4b := mul_le_mul_of_nonneg_right h4a hs.le
-    rw [mul_assoc, hsq] at h4b; linarith
-  have h5 : x ^ β ≤ x * Real.exp (-cE * Real.sqrt (Real.log x)) := by
-    have e1 : x * Real.exp (-cE * Real.sqrt (Real.log x)) =
-        Real.exp (Real.log x + -cE * Real.sqrt (Real.log x)) := by
-      rw [Real.exp_add, Real.exp_log hx0]
-    rw [e1, Real.rpow_def_of_pos hx0]
-    apply Real.exp_le_exp.mpr
-    linarith only [h4]
-  have h6 : x ^ β / β ≤ 2 * x ^ β := by
-    rw [div_le_iff₀ hβ0]
-    have h6a := Real.rpow_pos_of_pos hx0 β
-    have := mul_le_mul_of_nonneg_left hβ1 h6a.le; linarith
-  linarith [h5, h6]
+          nlinarith [(le_div_iff₀ <| by positivity).1 <| hL₀ L hL0]))
+      fun p hp => regularizedLFunction_ne_zero ψ <| by linarith
+  have hs1 : 1 < re s := by aesop
+  have hs2 : 1 < re (s + γ * I) := by simp_all
+  have h2 := LA χ s (hs ▸ by simp) (hs ▸ by simp) S hS
+  have h3 := LA (χ ^ 2) (s + γ * I) (hs ▸ by simp) (by simpa [← hs] using abs_add_le γ γ) ∅ (by simp)
+  have h1 := hv 1 (1 + d) (by simp) (by simp_all) <| by simp
+                                                        linarith [inv_le_of_inv_le₀ hδ₀ hLδ]
+  subst hs
+  have h341 := (hasSum_re ((((LSeriesSummable_vonMangoldt (s := 1 + d) (by simp_all)).LSeriesHasSum.mul_left 3).add
+      ((LSeriesSummable_twist_vonMangoldt χ hs1).LSeriesHasSum.mul_left 4)).add
+      (LSeriesSummable_twist_vonMangoldt (χ ^ 2) hs2).LSeriesHasSum)).nonneg fun n => by
+    rcases eq_or_ne n 0 with rfl | hn
+    · simp
+    convert (re_ofReal_mul (Λ n / (n * n ^ d)) _).ge.trans' (mul_nonneg (by positivity) (trigonometric_polynomial_nonneg (χ n / n ^ (γ * I)) (by simpa [norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hn)] using norm_le_one χ n))) using 2
+    simp [hn, MulChar.pow_apply' χ two_ne_zero, cpow_add _ _ (Nat.cast_ne_zero.2 hn), ofReal_cpow (Nat.cast_nonneg n)]
+    field_simp
+  rw [regularizedLFunction_log_deriv χ hs1, regularizedLFunction_log_deriv (χ ^ 2) hs2] at h341
+  split_ifs at h341 hX <;> simp [inv_re, normSq_apply, ← sq] at h341 h3 h1 <;> linarith [(re_le_norm _).trans h1, show d⁻¹ = 10000 * L from hd ▸ by field_simp]
 
-lemma bounded_of_exp_sqrt_lt_pow (A c : ℝ) (hA : 0 < A) (hc : 0 < c) :
-    ∃ U : ℝ, 0 ≤ U ∧ ∀ L : ℝ, 0 < L → Real.exp (c * Real.sqrt L) < L ^ A → L ≤ U := by
-  have ho := (isLittleO_rpow_exp_pos_mul_atTop (2 * A) hc).comp_tendsto Real.tendsto_sqrt_atTop
-  have hb := ho.bound (show (0:ℝ) < 1 / 2 by norm_num)
-  obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hb
-  refine ⟨max N 0, le_max_right _ _, fun L hL hlt => ?_⟩
-  by_contra! hcon
-  have hLN : N ≤ L := le_trans (le_max_left _ _) hcon.le
-  have h2 : ‖Real.sqrt L ^ (2 * A)‖ ≤ 1 / 2 * ‖Real.exp (c * Real.sqrt L)‖ := hN L hLN
-  have hs : Real.sqrt L ^ (2 * A) = L ^ A := by
-    rw [Real.sqrt_eq_rpow, ← Real.rpow_mul hL.le]
+private noncomputable def mellinKernel (x σ t : ℝ) : ℂ := let s := (σ + t * I : ℂ); x ^ s * (s * (s + 1))⁻¹
+
+private lemma norm_mellin_denominator_le {σ t m : ℝ} (hm : 0 < m) (hm1 : m ≤ 1) (h : m ≤ σ) : ‖((σ + t * I) * (σ + t * I + 1))⁻¹‖ ≤ m⁻¹ * (1 + t ^ 2)⁻¹ := by
+  rw [norm_inv, ← mul_inv]
+  refine inv_anti₀ (by positivity) <| le_of_pow_le_pow_left₀ two_ne_zero (norm_nonneg _) ?_
+  rw [Complex.sq_norm, normSq_mul, normSq_apply, normSq_apply]
+  simp
+  nlinarith [mul_le_mul h h hm.le <| hm.le.trans h, mul_le_mul hm1 hm1 hm.le zero_le_one, sq_nonneg <| t * t]
+
+private lemma hasMellin_linear_weight {s : ℂ} (hs : 0 < re s) : HasMellin (fun t : ℝ => ((max (1 - t) 0 : ℝ) : ℂ)) s (s * (s + 1))⁻¹ := by
+  have h1 := hasMellin_cpow_Ioc 0 <| by simpa
+  have h2 := hasMellin_cpow_Ioc 1 (s := s) (by simp
+                                               linarith)
+  have := hasMellin_sub h1.1 h2.1
+  rw [h1.2, h2.2, add_zero, one_div, one_div, inv_sub_inv (ne_zero_of_re_pos hs) (ne_zero_of_re_pos (s := s + 1) (by simp
+                                                                                                                     linarith)),
+    add_sub_cancel_left, one_div] at this
+  refine ⟨(integrableOn_congr_fun (s := Ioi (0 : ℝ)) (fun t (ht : 0 < t) => ?_) measurableSet_Ioi).1 this.1,
+    (setIntegral_congr_fun measurableSet_Ioi fun t (ht : 0 < t) => ?_).symm.trans this.2⟩ <;>
+  by_cases h : t ≤ 1 <;> simp [indicator, ht, h, (not_le.1 _).le]
+
+private lemma mellin_kernel_integral {σ x : ℝ} (hσ : 0 < σ) (hx : 0 < x) :
+    Integrable (mellinKernel x σ) ∧ (1 / (2 * π)) • ∫ t, mellinKernel x σ t = ((max (1 - x⁻¹) 0 : ℝ) : ℂ) := by
+  have hm (t : ℝ) := hasMellin_linear_weight (s := σ + t * I) (by simpa)
+  have hK := (integrable_inv_one_add_sq.const_mul _).mono' (Measurable.aestronglyMeasurable <| by fun_prop) <| of_forall fun t =>
+      norm_mellin_denominator_le (lt_min hσ one_pos) (min_le_right _ _) <| min_le_left _ _
+  refine ⟨hK.bdd_mul (c := x ^ σ) (Measurable.aestronglyMeasurable (by fun_prop)) (of_forall fun t => by simp [norm_cpow_eq_rpow_re_of_pos hx]), ?_⟩
+  rw [← mellinInv_mellin_eq σ _ (inv_pos.2 hx) (hasMellin_linear_weight (by simpa)).1 (hK.congr (of_forall fun t => (hm t).2.symm)) (by fun_prop), mellinInv]
+  simp only [(hm _).2, ofReal_inv, inv_cpow_ofReal_nonneg hx.le, cpow_neg, inv_inv, smul_eq_mul, mellinKernel]
+
+private lemma smoothed_perron_formula {a : ℕ → ℂ} {σ x : ℝ} (hσ : 0 < σ) (ha : LSeriesSummable a σ) (hx : 0 < x) :
+    ∑ n ∈ Icc 1 ⌊x⌋₊, a n * (1 - n / x) = (1 / (2 * π)) • ∫ t : ℝ, LSeries a (σ + t * I) * mellinKernel x σ t := by
+  have hi := (mellin_kernel_integral hσ hx).1
+  have hk n (hn : n ≠ 0) : (1 / (2 * π)) • ∫ t : ℝ, term a (σ + t * I) n * mellinKernel x σ t = a n * ((max (1 - n / x) 0 : ℝ) : ℂ) := by
+    rw [← inv_div x, ← (mellin_kernel_integral hσ <| by positivity).2, mul_smul_comm, ← integral_const_mul]
+    congr 2 with t
+    simp only [mellinKernel, term_of_ne_zero hn]
+    rw [ofReal_div, div_cpow_ofReal_nonneg hx.le n.cast_nonneg, ofReal_natCast]
+    ring
+  simp_rw [LSeries, ← tsum_mul_right]
+  rw [← (integral_tsum_of_summable_integral_norm (F := fun n (t : ℝ) => term a (σ + t * I) n * mellinKernel x σ t)
+    (fun n => hi.bdd_mul (c := ‖term a σ n‖) (Measurable.aestronglyMeasurable (by unfold term
+                                                                                  split_ifs <;> fun_prop)) (of_forall fun t => by simp [norm_term_eq]))
+    ((ha.norm.mul_right (∫ t, ‖mellinKernel x σ t‖)).congr fun n => by rw [← integral_const_mul]
+                                                                       simp [norm_term_eq])), ← tsum_const_smul'', tsum_eq_sum fun n hn => ?_]
+  · refine sum_congr rfl fun n hn => ?_
+    simp at hn
+    rw [hk n (by lia), max_eq_left (sub_nonneg.2 ((div_le_one hx).2 ((Nat.le_floor_iff hx.le).1 hn.2)))]
+    simp
+  · rcases eq_or_ne n 0 with rfl | h0
+    · simp
+    simp at hn
+    rw [hk n h0, max_eq_right (sub_nonpos.2 ((one_le_div hx).2 (Nat.lt_of_floor_lt (hn (by lia))).le))]
+    simp
+
+private theorem smoothed_character_sum_bound : ∃ δ₀ > 0, ∀ (q : ℕ) [NeZero q] (χ : DirichletCharacter ℂ q) (x η T : ℝ), 1 ≤ x → 0 < η → η < δ₀ →
+    η ≤ 1 / 8 → 1 ≤ T → (∀ w, 1 - 3 * η < re w → |im w| < T + 1 → regularizedLFunction χ w ≠ 0) →
+    ‖∑ n ∈ Icc 1 ⌊x⌋₊, (χ n * Λ n : ℂ) * (1 - n / x) - (if χ = 1 then (((x - 2 + 1 / x) / 2 : ℝ) : ℂ) else 0)‖ ≤
+      6 * Real.log (9 * (q * (T + 5)) ^ 2 / η ^ 2) / η * (x ^ (1 - η) + x ^ (1 + η) / T) + 3 / η * x ^ (1 + η) / T := by
+  obtain ⟨δ₀, hδ₀, hv⟩ := norm_von_mangoldt_lseries_near_one_le
+  refine ⟨δ₀, hδ₀, fun q _ χ x η T hx hη hηδ hη1 hT hz => ?_⟩
+  set b := 1 + η
+  set a := 1 - η
+  have hx0 : 0 < x := by linarith
+  have hT0 : 0 < T := by linarith
+  have hTT : -T ≤ T := by linarith
+  have hab : a ≤ b := by linarith
+  have hq : (1 : ℝ) ≤ q := by exact_mod_cast NeZero.pos q
+  set B := 6 * Real.log (9 * (q * (T + 5)) ^ 2 / η ^ 2) / η
+  have hre (t : ℝ) : 1 < re (b + t * I) := by aesop
+  have hFb (t : ℝ) : ‖logDeriv (regularizedLFunction χ) (b + t * I)‖ ≤ 3 / η := by
+    have h1 := hv _ _ (fun n => norm_le_one χ n) (hre t) <| by simp
+                                                               linarith
+    rw [show re (b + t * I) - 1 = η by aesop] at h1
+    rw [← norm_neg, eq_sub_of_add_eq (regularizedLFunction_log_deriv χ <| hre t).symm]
+    grw [norm_sub_le, h1]
+    split_ifs
+    · grw [norm_inv, inv_anti₀ hη <| by simpa [b] using re_le_norm <| b + t * I - 1]
+      field_simp
+      linarith
+    · rw [norm_zero]
+      field_simp
+      linarith
+  have hF (s : ℂ) (h1 : a ≤ re s) (h2 : re s ≤ b) (h3 : |im s| ≤ T) :
+      DifferentiableAt ℂ (logDeriv <| regularizedLFunction χ) s ∧ ‖logDeriv (regularizedLFunction χ) s‖ ≤ B :=
+    ⟨((regularizedLFunction_differentiable χ).analyticAt s).deriv.differentiableAt.div (regularizedLFunction_differentiable χ s) (hz s (by linarith) (by linarith)), by
+      set c := s + ((1 + η - re s : ℝ) : ℂ)
+      have hr : re c = 1 + η := by aesop
+      rw [show im s = im c by aesop] at h3
+      have H (w : ℂ) (hw : w ∈ ball c (4 * η)) : 1 - 3 * η < re w ∧ |im w| < T + 1 ∧ ‖w - c‖ ≤ 1 / 2 := by
+        have h0 := mem_ball_iff_norm.1 hw
+        have h1 := abs_le.1 <| abs_re_le_norm <| w - c
+        have h2 := abs_im_le_norm <| w - c
+        simp [sub_re, hr, sub_im] at h1 h2
+        grind
+      refine (norm_log_deriv_le (by positivity) (Real.log_pos ?_) (regularizedLFunction_differentiable χ).differentiableOn (fun w hw => hz w (H w hw).1 (H w hw).2.1) (fun w hw => ?_) ?_).trans_eq (by ring)
+      · rw [one_lt_div <| by positivity]
+        nlinarith [show 5 ≤ q * (T + 5) by nlinarith]
+      · rw [Real.exp_log]
+        · simpa using regularizedLFunction_growth_ratio χ hη (by linarith) hr (H w hw).2.2
+            (by nlinarith [norm_le_abs_re_add_abs_im c, abs_of_pos <| show 0 < re c by linarith])
+        positivity
+      · simp only [c, sub_add_cancel_left, norm_neg, norm_real, Real.norm_eq_abs, abs_le]
+        grind⟩
+  have hm : Measurable (logDeriv <| regularizedLFunction χ) := (measurable_deriv _).div (regularizedLFunction_differentiable χ).continuous.measurable
+  set G : ℂ → ℂ := fun s => -logDeriv (regularizedLFunction χ) s * ((x : ℂ) ^ s * (s * (s + 1))⁻¹)
+  have hB0 := (norm_nonneg _).trans (hF b (by simp_all) (by simp) <| by simp_all).2
+  have hGb (σ t C : ℝ) (hσ : a ≤ σ) (hC : ‖logDeriv (regularizedLFunction χ) (σ + t * I)‖ ≤ C) : ‖G (σ + t * I)‖ ≤ C * x ^ σ * 2 * (1 + t ^ 2)⁻¹ := by
+    have := norm_mellin_denominator_le (σ := σ) (t := t) (m := 1 / 2) (by norm_num) (by norm_num) (by linarith)
+    simp [G, norm_cpow_eq_rpow_re_of_pos hx0]
+    norm_num at this hC ⊢
+    nlinarith [mul_le_mul hC this (by positivity) <| (norm_nonneg _).trans hC, rpow_pos_of_pos hx0 σ]
+  have hb' (t : ℝ) := hGb _ t _ hab <| hFb t
+  have hi := (integrable_inv_one_add_sq.const_mul _).mono'
+    (Measurable.aestronglyMeasurable <| by fun_prop) <| of_forall hb'
+  have P := smoothed_perron_formula (σ := b) (by linarith)
+    (LSeriesSummable_twist_vonMangoldt χ (by simp_all)) hx0
+  simp only [regularizedLFunction_log_deriv χ <| hre _, Pi.mul_apply] at P
+  obtain ⟨i1, e1⟩ := mellin_kernel_integral hη hx0
+  obtain ⟨i2, e2⟩ := mellin_kernel_integral (by linarith : 0 < b) hx0
+  have e (t : ℝ) : (b + t * I - 1)⁻¹ * mellinKernel x b t = (x * mellinKernel x η t - mellinKernel x b t) / 2 := by
+    have := ne_zero_of_re_pos (s := b + t * I - 1) (by simp_all)
+    have := ne_zero_of_re_pos (s := b + t * I + 1) (by simp
+                                                       linarith)
+    simp only [mellinKernel]
+    rw [show (η : ℂ) + t * I = b + t * I - 1 by simp [b]
+                                                ring, sub_add_cancel, cpow_sub _ _ (by positivity), cpow_one]
+    field_simp
+    ring
+  calc _ = ‖(1 / (2 * π)) • ∫ t : ℝ, G (b + t * I)‖ := ?_
+    _ ≤ _ := ?_
+  · congr 1
+    split_ifs at P ⊢
+    · rw [P]
+      simp only [add_mul, e]
+      erw [integral_add hi (((i1.const_mul _).sub i2).div_const _)]
+      simp only [Pi.sub_apply]
+      rw [smul_add, integral_div, integral_sub (i1.const_mul _) i2, integral_const_mul, ← smul_div_assoc, smul_sub, ← mul_smul_comm, e1, e2,
+        max_eq_left <| sub_nonneg.2 <| inv_le_one_of_one_le₀ hx]
+      push_cast
+      field_simp
+      ring_nf
+    · simp [P, G, mellinKernel]
+  have hrect := integral_boundary_rect_eq_zero_of_differentiableOn G (a - T * I) (b + T * I) ?_
+  · simp at hrect
+    have hA : ‖∫ y in -T..T, G (a + y * I)‖ ≤ 2 * π * (B * x ^ a) := by
+      refine (intervalIntegral.norm_integral_le_of_norm_le hTT (of_forall fun y hy => hGb a y B le_rfl
+        (hF _ (by simp) (by simp_all) (by simpa using abs_le.2 ⟨hy.1.le, hy.2⟩)).2)
+        ((integrable_inv_one_add_sq.const_mul _).intervalIntegrable)).trans ?_
+      simp
+      nlinarith [arctan_lt_pi_div_two T, mul_nonneg hB0 (rpow_pos_of_pos hx0 a).le]
+    have hH (y : ℝ) (hy : |y| = T) : ‖∫ t in a..b, G (t + y * I)‖ ≤ B * x ^ b * 2 * T⁻¹ := by
+      refine (intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => ?_).trans <| mul_le_of_le_one_right (by positivity) <| abs_le.2 ⟨by linarith, by linarith⟩
+      obtain ⟨h1, h2⟩ := uIoc_of_le hab ▸ ht
+      refine (hGb t y B h1.le (hF _ (by simp
+                                        linarith) (by simp_all) <| by simp_all).2).trans ?_
+      rw [← sq_abs y, hy]
+      gcongr
+      nlinarith
+    have hR : ‖∫ t in (Ioc (-T) T)ᶜ, G (b + t * I)‖ ≤ 4 * (3 / η * x ^ b) * T⁻¹ := by
+      refine (norm_integral_le_of_norm_le (integrable_inv_one_add_sq.const_mul _).integrableOn
+        (of_forall hb')).trans ?_
+      rw [integral_const_mul, eq_sub_of_add_eq' <| integral_add_compl measurableSet_Ioc integrable_inv_one_add_sq, ← intervalIntegral.integral_of_le hTT]
+      simp
+      nlinarith [(by positivity : (0:ℝ) ≤ 3 / η * x ^ b), arctan_inv_of_pos hT0, arctan_lt_self <| inv_pos.2 hT0]
+    have e := congr_arg norm <| eq_sub_of_add_eq' <| sub_eq_zero.1 hrect
+    have h1 := hH (-T) <| by simp_all
+    simp [norm_I, one_mul, ofReal_neg, neg_mul] at e h1
+    rw [norm_smul_of_nonneg <| by positivity, ← integral_add_compl measurableSet_Ioc hi, ← intervalIntegral.integral_of_le hTT,
+      one_div, inv_mul_le_iff₀ <| by positivity]
+    grw [norm_add_le, e, norm_sub_le, norm_mul, norm_I, one_mul, norm_sub_le, hA, h1, hH T <| by simp_all, hR]
+    linear_combination 2 * mul_le_mul_of_nonneg_right two_le_pi (by positivity : (0:ℝ) ≤ (B + 3 / η) * x ^ b / T)
+  · intro s hs
+    simp [mem_reProdIm, uIcc_of_le hab, uIcc_of_le hTT] at hs
+    have hd := (hF s hs.1.1 hs.1.2 <| abs_le.2 hs.2).1
+    have := ne_zero_of_re_pos (s := s) (by linarith)
+    have := ne_zero_of_re_pos (s := s + 1) (by simp
+                                               linarith)
+    exact (by fun_prop (disch := simp [*]) : DifferentiableAt ℂ G s).differentiableWithinAt
+
+private lemma product_lfunction_lower_bound {χ₁ χ₂ : DirichletCharacter ℂ q} (h1 : χ₁ ^ 2 = 1) (h2 : χ₂ ^ 2 = 1) (h1' : χ₁ ≠ 1) (h2' : χ₂ ≠ 1)
+    (hψ : χ₁ * χ₂ ≠ 1) {σ : ℝ} (hσ : 7 / 8 ≤ σ) (hσ1 : σ < 1) (hz : regularizedLFunction χ₁ σ = 0) (M : ℕ) :
+    1 / 81 ≤ ‖regularizedLFunction χ₁ 1‖ * ‖regularizedLFunction χ₂ 1‖ * ‖regularizedLFunction (χ₁ * χ₂) 1‖ * ((2 - σ) ^ (M + 1) / (1 - σ)) + 18 * 10 ^ 7 * q ^ 3 * (3 / 4) ^ M := by
+  set N := regularizedLFunction (1 : DirichletCharacter ℂ 1) * (regularizedLFunction χ₁ * regularizedLFunction χ₂ * regularizedLFunction (χ₁ * χ₂)) with hN
+  have hNd : Differentiable ℂ N := (regularizedLFunction_differentiable _).mul <| ((regularizedLFunction_differentiable _).mul <| regularizedLFunction_differentiable _).mul <| regularizedLFunction_differentiable _
+  have hN2 : 1 / 81 ≤ ‖N 2‖ := by
+    rw [hN]
+    simp only [Pi.mul_apply, norm_mul]
+    calc (1:ℝ) / 81 = 1 / 3 * (1 / 3 * (1 / 3) * (1 / 3)) := by norm_num
+      _ ≤ _ := by gcongr <;> convert regularizedLFunction_lower_bound _ (s := 2) (by norm_num) (by norm_num) <;> norm_num
+  have hN0 : N 2 ≠ 0 := norm_pos_iff.1 <| by linarith
+  set H := dslope N 1 with hH
+  have hHd : Differentiable ℂ H := differentiableOn_univ.1 <| (differentiableOn_dslope univ_mem).2 hNd.differentiableOn
+  set F : ℂ → ℂ := fun s => N s / (s - 1) / N 2 with hF
+  have hq (χ : DirichletCharacter ℂ q) (h : χ ^ 2 = 1) (n : ℕ) : 0 ≤ 1 + χ n := by
+    rcases MulChar.isQuadratic_iff_sq_eq_one.mpr h n with e | e | e <;> norm_num [e]
+  set a : ℕ → ℂ := fun n => Λ n * (1 + χ₁ n) * (1 + χ₂ n) with ha
+  have ha0 : 0 ≤ a := fun n => mul_nonneg (mul_nonneg (zero_le_real.2 vonMangoldt_nonneg) <| hq χ₁ h1 n) <| hq χ₂ h2 n
+  have hA (s : ℂ) (hs : 1 < re s) : LSeriesHasSum a s
+      (LSeries ((fun n : ℕ => (1 : DirichletCharacter ℂ 1) n) * fun n => (Λ n : ℂ)) s +
+        LSeries ((fun n : ℕ => χ₁ n) * fun n => (Λ n : ℂ)) s +
+        LSeries ((fun n : ℕ => χ₂ n) * fun n => (Λ n : ℂ)) s +
+        LSeries ((fun n : ℕ => (χ₁ * χ₂) n) * fun n => (Λ n : ℂ)) s) := by
+    unfold LSeriesHasSum
+    convert ((((LSeriesSummable_twist_vonMangoldt (1 : DirichletCharacter ℂ 1) hs).LSeriesHasSum.add
+      (LSeriesSummable_twist_vonMangoldt χ₁ hs).LSeriesHasSum).add
+      (LSeriesSummable_twist_vonMangoldt χ₂ hs).LSeriesHasSum).add
+      (LSeriesSummable_twist_vonMangoldt (χ₁ * χ₂) hs).LSeriesHasSum) using 1
+    ext n
+    simp [term, ha, MulChar.one_apply (isUnit_of_subsingleton _)]
+    split_ifs <;> ring
+  have hab : LSeries.abscissaOfAbsConv a < (2 : ℝ) := (LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable
+    fun y hy => (hA y <| by simpa).LSeriesSummable).trans_lt <| by exact_mod_cast (by norm_num : (1:ℝ) < 2)
+  have hE (s : ℂ) (hs : 1 < re s) : HasDerivAt F (-LSeries a s * F s) s := by
+    have hl (r : ℕ) [NeZero r] (χ : DirichletCharacter ℂ r) : HasDerivAt (regularizedLFunction χ) (logDeriv (regularizedLFunction χ) s * regularizedLFunction χ s) s := by
+      rw [logDeriv_apply, div_mul_cancel₀ _ <| regularizedLFunction_ne_zero χ hs.le]
+      exact (regularizedLFunction_differentiable χ s).hasDerivAt
+    have hn1 : s - 1 ≠ 0 := sub_ne_zero.2 <| by aesop
+    refine ((((hl 1 1).mul <| ((hl q χ₁).mul <| hl q χ₂).mul <| hl q <| χ₁ * χ₂).div ((hasDerivAt_id s).sub_const 1) hn1).div_const _).congr_deriv ?_
+    rw [(hA s hs).LSeries_eq, regularizedLFunction_log_deriv _ hs, regularizedLFunction_log_deriv _ hs, regularizedLFunction_log_deriv _ hs, regularizedLFunction_log_deriv _ hs]
+    simp [hF, hN, h1', hψ]
+    grind
+  have hFa := (show DifferentiableOn ℂ F {s | 1 < re s} from fun s hs => (hE s hs).differentiableAt.differentiableWithinAt).analyticOnNhd
+    (isOpen_lt continuous_const continuous_re) 2 <| by norm_num
+  have hpos (m : ℕ) : 0 ≤ (-1) ^ m * iteratedDeriv m F 2 := by
+    induction m using Nat.strong_induction_on with
+    | _ m ih =>
+      rcases m with _ | m
+      · norm_num [hF, hN0]
+      rw [iteratedDeriv_succ', EqOn.iteratedDeriv_of_isOpen (g := -LSeries a * F) (fun s hs => (hE s hs).deriv) (isOpen_lt continuous_const continuous_re) m (show (1:ℝ) < re 2 by norm_num), neg_mul, iteratedDeriv_neg,
+        iteratedDeriv_mul ((LSeries_analyticOnNhd a 2 <| by simp_all).contDiffAt) <| hFa.contDiffAt, mul_neg, ← neg_mul, mul_sum]
+      exact sum_nonneg fun i hi => by
+        rw [show m + 1 = i + (m - i) + 1 by simp_all]
+        exact (mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (LSeries.iteratedDeriv_alternating ha0 hab i)) (ih (m - i) (by lia))).trans_eq (by push_cast; ring)
+  have e : H =ᶠ[𝓝 2] fun s => N 2 * F s - N 1 * (1 * s - 1)⁻¹ := by
+    filter_upwards [eventually_ne_nhds (by norm_num : (2:ℂ) ≠ 1)] with s hs
+    rw [hH, hF, dslope_of_ne _ hs, slope_def_field]
+    field_simp
+  have hNb (w : ℂ) (hw : ‖w - 2‖ ≤ 3 / 2) : ‖N w‖ ≤ 3 * (1:ℕ) * (9 / 2) ^ 2 * (3 * q * (9 / 2) ^ 2 * (3 * q * (9 / 2) ^ 2) * (3 * q * (9 / 2) ^ 2)) := by
+    have h₁ := (abs_le.1 <| (abs_re_le_norm <| w - 2).trans hw).1
+    have h₂ := norm_le_norm_sub_add w 2
+    simp at h₁ h₂
+    rw [hN, Pi.mul_apply, Pi.mul_apply, Pi.mul_apply, norm_mul, norm_mul, norm_mul]
+    gcongr <;> refine (regularizedLFunction_growth _ <| by linarith).trans ?_ <;> gcongr <;> linarith
+  have hHb (s : ℂ) (hs : s ∈ sphere (2:ℂ) (3/2)) : ‖H s‖ ≤ 6 * 10 ^ 7 * q ^ 3 := by
+    rw [mem_sphere_iff_norm] at hs
+    have h1 : 1 / 2 ≤ ‖s - 1‖ := by linarith [norm_sub_le_norm_sub_add_norm_sub s 1 2, show ‖(1:ℂ) - 2‖ = 1 by norm_num]
+    rw [hH, dslope_of_ne _ <| by rintro rfl
+                                 norm_num at hs, slope_def_field, norm_div, div_le_iff₀ <| by linarith]
+    nlinarith [norm_sub_le (N s) <| N 1, hNb s hs.le, hNb 1 <| by norm_num, (by positivity : (0:ℝ) ≤ q ^ 3)]
+  set T : ℕ → ℂ := fun n => (n.factorial : ℂ)⁻¹ • ((σ:ℂ) - 2) ^ n • iteratedDeriv n H 2 with hTd
+  have hT : HasSum T (H σ) := hasSum_taylorSeries_of_entire hHd 2 σ
+  have hTn (n : ℕ) : ‖T n‖ ≤ 6 * 10 ^ 7 * q ^ 3 * (3 / 4) ^ n := by
+    simp [hTd, norm_pow]
+    refine (mul_le_mul_of_nonneg_left (mul_le_mul (pow_le_pow_left₀ (b := 9 / 8) (norm_nonneg _) ?_ n)
+      (norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le n (by norm_num) hHd.diffContOnCl hHb) (norm_nonneg _) <| by positivity) <| by positivity).trans_eq ?_
+    · rw [← ofReal_ofNat, ← ofReal_sub, norm_real, norm_of_nonpos <| by linarith]
+      linarith
+    rw [show (9 / 8 : ℝ) = 3 / 4 * (3 / 2) by norm_num, mul_pow]
+    field_simp
+  have htail : ‖∑' i, T (i + (M + 1))‖ ≤ 18 * 10 ^ 7 * q ^ 3 * (3 / 4) ^ M :=
+    (tsum_of_norm_bounded ((hasSum_geometric_of_lt_one (by norm_num) (by norm_num : (3 / 4 : ℝ) < 1)).mul_left
+      (6 * 10 ^ 7 * q ^ 3 * (3 / 4) ^ (M + 1) : ℝ)) fun i => (hTn _).trans_eq <| by ring).trans_eq <| by ring
+  have ht (n : ℕ) : T n = N 2 * ((n.factorial : ℂ)⁻¹ * (2 - σ) ^ n * ((-1) ^ n * iteratedDeriv n F 2)) - N 1 * (2 - σ) ^ n := by
+    simp [hTd]
+    rw [e.iteratedDeriv_eq, iteratedDeriv_fun_sub (contDiffAt_const.mul hFa.contDiffAt)
+      (by fun_prop (disch := norm_num) : ContDiffAt ℂ n (fun s : ℂ => N 1 * (1 * s - 1)⁻¹) 2),
+      iteratedDeriv_const_mul_field, iteratedDeriv_const_mul_field, iteratedDeriv_eq_iterate (f := fun s : ℂ => (1 * s - 1)⁻¹),
+      iter_deriv_inv_linear_sub, show (σ:ℂ) - 2 = (2 - σ) * (-1) by ring, mul_pow]
+    field_simp
+    ring_nf
+    simp
+  have e' := hT.summable.sum_add_tsum_nat_add <| M + 1
+  rw [hT.tsum_eq, hH, dslope_of_ne _ <| by exact_mod_cast hσ1.ne, slope_def_field, show N σ = 0 by simp_all, zero_sub, neg_div,
+    ← div_neg, neg_sub, sum_congr rfl fun i _ => ht i, sum_sub_distrib, ← mul_sum, ← mul_sum, geom_sum_eq <| by norm_cast
+                                                                                                                linarith] at e'
+  rw [show ‖regularizedLFunction χ₁ 1‖ * ‖regularizedLFunction χ₂ 1‖ * ‖regularizedLFunction (χ₁ * χ₂) 1‖ = ‖N 1‖ by simp [hN, show regularizedLFunction (1 : DirichletCharacter ℂ 1) 1 = 1 by simp [regularizedLFunction]]]
+  calc (1:ℝ) / 81 ≤ ‖N 2‖ * ‖∑ i ∈ range (M + 1), (i.factorial : ℂ)⁻¹ * (2 - σ) ^ i * ((-1) ^ i * iteratedDeriv i F 2)‖ :=
+        hN2.trans (le_mul_of_one_le_right (norm_nonneg _) ((Complex.le_def.1 (le_trans (by norm_num [hF, hN0] : (1:ℂ) ≤ _) (single_le_sum (fun i _ => mul_nonneg
+          (mul_nonneg (by positivity) (pow_nonneg (by norm_cast
+                                                      linarith) i)) (hpos i)) (mem_range.2 (Nat.succ_pos M))))).1.trans (re_le_norm _)))
+    _ = ‖N 1 * ((2 - σ) ^ (M + 1) / (1 - σ) : ℝ) - ∑' i, T (i + (M + 1))‖ := by rw [← norm_mul]
+                                                                                push_cast
+                                                                                grind
+    _ ≤ _ := by
+      grw [norm_sub_le, norm_mul, norm_real, norm_of_nonneg <| div_nonneg (pow_nonneg (by linarith) _) <| by linarith, htail]
+
+private lemma lfunction_bound_near_one {χ : DirichletCharacter ℂ q} (hχ : χ ≠ 1) {r ℓ : ℝ} (hr : 0 < r) (hr1 : r ≤ 1 / 8) (hℓ : (q : ℝ) ≤ rexp ℓ) {z : ℂ}
+    (hz : 1 - r ≤ re z) (hz2 : ‖z‖ ≤ 2) : ‖regularizedLFunction χ z‖ ≤ (7 + 1 / r) * rexp (r * ℓ) ^ 2 := by
+  rw [show regularizedLFunction χ = LFunction χ from ite_eq_right hχ]
+  have hq : (1 : ℝ) ≤ q := by exact_mod_cast NeZero.pos q
+  have hE := (rpow_le_rpow (by positivity) hℓ hr.le).trans_eq <| by rw [← exp_mul, mul_comm]
+  have h2 : ‖∑ n ∈ range <| q + 1, term (χ ·) z n‖ ≤ q ^ r * harmonic q := by
+    refine (norm_sum_le _ _).trans ((sum_le_sum (g := fun n : ℕ => (q : ℝ) ^ r * (n : ℝ)⁻¹) fun n hn => ?_).trans_eq
+      (by simp [mul_sum, sum_range_succ', harmonic]))
+    rcases eq_or_ne n 0 with rfl | hn0
+    · simp
+    have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast Nat.one_le_iff_ne_zero.2 hn0
+    rw [norm_term_eq, ite_eq_right hn0]
+    calc ‖χ n‖ / (n : ℝ) ^ re z ≤ 1 / (n : ℝ) ^ (1 - r) :=
+          div_le_div₀ zero_le_one (norm_le_one χ _) (by positivity) <| rpow_le_rpow_of_exponent_le hn1 hz
+      _ ≤ (q : ℝ) ^ r * (n : ℝ)⁻¹ := by
+          rw [rpow_sub <| by linarith, rpow_one, one_div_div, div_eq_mul_inv]
+          gcongr
+          simp_all
+  have h6 : rexp (r * ℓ) * ℓ ≤ 1 / r * rexp (r * ℓ) ^ 2 := by
+    rw [div_mul_eq_mul_div, one_mul, le_div_iff₀ hr]
+    nlinarith [add_one_le_exp <| r * ℓ, exp_pos <| r * ℓ]
+  have hl := (log_le_iff_le_exp <| by linarith).2 hℓ
+  have h7 := mul_le_mul_of_nonneg hE ((harmonic_le_one_add_log q).trans (by linarith : 1 + Real.log q ≤ 1 + ℓ))
+    (by positivity) <| by linarith [log_nonneg hq]
+  have h8 := mul_le_mul_of_nonneg_left ((one_le_rpow hq hr.le).trans hE) (exp_pos <| r * ℓ).le
+  nlinarith [norm_le_norm_sub_add (LFunction χ z) (∑ n ∈ range <| q + 1, term (χ ·) z n), norm_lfunction_sub_partial_sum_le hχ (by linarith) <| NeZero.pos q,
+    mul_le_mul (show ‖z‖ / re z ≤ 8 / 3 by rw [div_le_iff₀ (by linarith)]
+                                           linarith) ((by rw [rpow_add <| by linarith, rpow_one] : (q : ℝ) * q ^ (-re z) = q ^ (1 + -re z)).trans_le
+    (rpow_le_rpow_of_exponent_le hq (by linarith : 1 + -re z ≤ r))) (by positivity) (by positivity)]
+
+private lemma lfunction_one_le_deriv_bound_mul {χ : DirichletCharacter ℂ q} (hχ : χ ≠ 1) {r ℓ β : ℝ} (hr : 0 < r) (hr1 : r ≤ 1 / 8) (hℓ : (q : ℝ) ≤ rexp ℓ)
+    (hβ : 1 - r / 2 ≤ β) (h0 : regularizedLFunction χ β = 0) : ‖regularizedLFunction χ 1‖ ≤ 2 / r * ((7 + 1 / r) * rexp (r * ℓ) ^ 2) * (1 - β) := by
+  have hβ1 := lt_of_not_ge fun h => regularizedLFunction_ne_zero χ (by simpa) h0
+  have e : ‖(1:ℂ) - β‖ = 1 - β := by rw [← ofReal_one, ← ofReal_sub, norm_real, norm_of_nonneg <| by linarith]
+  have := Convex.norm_image_sub_le_of_norm_deriv_le (C := 2 / r * ((7 + 1 / r) * rexp (r * ℓ) ^ 2)) (fun w _ => regularizedLFunction_differentiable χ w)
+    (fun w hw => ?_) (convex_closedBall (1 : ℂ) (r / 2)) (x := (β : ℂ)) (y := 1) (by rw [mem_closedBall, Complex.dist_eq, norm_sub_rev, e]
+                                                                                     linarith)
+    (mem_closedBall_self (by positivity))
+  · simp_all
+  refine (norm_deriv_le_of_forall_mem_sphere_norm_le (by positivity : 0 < r / 2) (regularizedLFunction_differentiable χ).diffContOnCl
+    fun z hz => lfunction_bound_near_one hχ hr hr1 hℓ ?_ ?_).trans <| le_of_eq <| by field_simp
+  all_goals
+    rw [mem_closedBall, Complex.dist_eq] at hw
+    rw [mem_sphere_iff_norm] at hz
+    have h := norm_sub_le_norm_sub_add_norm_sub z w 1
+    have h' := (abs_le.1 <| (abs_re_le_norm <| z - 1).trans h).1
+    simp at h'
+    linarith [norm_le_norm_sub_add z 1, norm_one (α := ℂ)]
+
+private lemma real_zero_changeLevel {q₀ : ℕ} [NeZero q₀] (h : q₀ ∣ q) {χ : DirichletCharacter ℂ q₀} {β : ℝ} (h1 : χ ^ 2 = 1) (h1' : χ ≠ 1)
+    (hz : LFunction χ β = 0) : changeLevel h χ ^ 2 = 1 ∧ changeLevel h χ ≠ 1 ∧ regularizedLFunction (changeLevel h χ) β = 0 := by
+  have := (changeLevel_eq_one_iff h).not.2 h1'
+  exact ⟨by rw [← map_pow, h1, map_one], this, by simp [regularizedLFunction, this, LFunction_changeLevel h χ (.inl h1'), hz]⟩
+
+theorem excBound : ExcBound := by
+  intro ε hε
+  obtain ⟨r, hr0, hr1, hrε⟩ : ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 8 ∧ 12 * r ≤ ε :=
+    ⟨min ε 1 / 12, by positivity, by grind, by grind⟩
+  have hq (q : ℕ) [NeZero q] : (q : ℝ) ^ (-ε) ≤ 1 := rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast NeZero.pos q) <| by linarith
+  by_cases hA : ∃ (q₁ : ℕ) (_ : NeZero q₁) (χ₁ : DirichletCharacter ℂ q₁) (β₁ : ℝ), χ₁ ^ 2 = 1 ∧ χ₁ ≠ 1 ∧
+    LFunction χ₁ β₁ = 0 ∧ 1 - r / 2 ≤ β₁
+  swap
+  · push Not at hA
+    exact ⟨r / 2, by positivity, fun q _ χ β h h' hz => by nlinarith [hA q _ χ β h h' hz, hq q]⟩
+  obtain ⟨q₁, _, χ₁, β₁, h1, h1', hz1, hβ₁⟩ := hA
+  obtain ⟨r₁, hr₁, hnz⟩ := Metric.eventually_nhds_iff.1 <| ((differentiable_LFunction h1').continuous.comp continuous_ofReal).continuousAt.eventually_ne
+    (x := 1) (by simpa using LFunction_apply_one_ne_zero h1')
+  obtain ⟨c, hc0, hc1, hc2, hc3⟩ : ∃ c > 0, c ≤ r / 2 ∧ c ≤ r₁ ∧
+      c ≤ (q₁ : ℝ) ^ (-ε) / (162 * (2 / r * (7 + 1 / r)) ^ 2 * (7 + 1 / r) * rexp (51 * r)) :=
+    ⟨_, lt_min (by positivity) (lt_min hr₁ (by have := NeZero.pos q₁
+                                               positivity)), min_le_left _ _,
+      (min_le_right _ _).trans <| min_le_left _ _, (min_le_right _ _).trans <| min_le_right _ _⟩
+  refine ⟨c, hc0, fun q₂ _ χ₂ β₂ h2 h2' hz2 => ?_⟩
+  rw [le_sub_comm]
+  have hc' := mul_le_of_le_one_right hc0.le <| hq q₂
+  have hβ₂1 := lt_of_not_ge fun h => LFunction_ne_zero_of_one_le_re χ₂ (.inl h2') (by simpa) hz2
+  rcases le_or_gt β₂ (1 - r / 2) with hb | hb
+  · linarith
+  obtain ⟨a1, b1, c1⟩ := real_zero_changeLevel (dvd_mul_right q₁ q₂) h1 h1' hz1
+  obtain ⟨a2, b2, c2⟩ := real_zero_changeLevel (dvd_mul_left q₂ q₁) h2 h2' hz2
+  by_cases hψ : changeLevel (dvd_mul_right q₁ q₂) χ₁ * changeLevel (dvd_mul_left q₂ q₁) χ₂ = 1
+  · rw [← (eq_inv_of_mul_eq_one_left hψ).trans <| inv_eq_of_mul_eq_one_right <| (sq _).symm.trans a2, show regularizedLFunction _ = _ from ite_eq_right b1,
+      LFunction_changeLevel _ χ₁ <| .inl h1'] at c2
+    have : β₂ ≤ 1 - r₁ := not_lt.1 fun h => hnz (by rw [Real.dist_eq, abs_sub_lt_iff]
+                                                    grind)
+      ((mul_eq_zero.1 c2).resolve_right (prod_ne_zero_iff.2 fun p hp => sub_ne_zero.2 fun h => ?_))
+    · linarith
+    have := congr_arg norm h
+    rw [norm_one, norm_mul, norm_natCast_cpow_of_pos (Nat.pos_of_mem_primeFactors hp)] at this
+    simp at this
+    nlinarith [norm_le_one χ₁ p, rpow_nonneg (Nat.cast_nonneg p) (-β₂), rpow_lt_one_of_one_lt_of_neg
+      (x := (p : ℝ)) (z := -β₂) (by exact_mod_cast (Nat.prime_of_mem_primeFactors hp).one_lt) (by linarith)]
+  refine (mul_le_mul_of_nonneg_right hc3 <| by positivity).trans ?_
+  obtain ⟨ℓ, hℓ⟩ : ∃ ℓ, rexp ℓ = (q₁ * q₂ : ℕ) := ⟨_, exp_log <| by exact_mod_cast NeZero.pos <| q₁ * q₂⟩
+  have hℓ0 : 0 ≤ ℓ := by rw [← Real.exp_le_exp, hℓ, Real.exp_zero]
+                         exact_mod_cast NeZero.pos (q₁ * q₂)
+  obtain ⟨M, hM1, hM2⟩ : ∃ M : ℕ, 12 * ℓ ≤ M ∧ (M : ℝ) ≤ 12 * ℓ + 1 :=
+    ⟨⌈12 * ℓ⌉₊, Nat.le_ceil _, (Nat.ceil_lt_add_one (by positivity)).le⟩
+  have hβ₁1 := lt_of_not_ge fun h => regularizedLFunction_ne_zero _ (by simpa) c1
+  have g := product_lfunction_lower_bound a1 a2 b1 b2 hψ (by linarith) hβ₁1 c1 <| M + 100
+  have u1 := lfunction_one_le_deriv_bound_mul b1 hr0 hr1 hℓ.ge hβ₁ c1
+  have u2 := lfunction_one_le_deriv_bound_mul b2 hr0 hr1 hℓ.ge hb.le c2
+  have u3 := lfunction_bound_near_one hψ hr0 hr1 hℓ.ge (z := 1) (by simp
+                                                                    linarith) (by simp)
+  have t1 : ((3:ℝ) / 4) ^ M * ((q₁ * q₂ : ℕ) : ℝ) ^ 3 ≤ 1 := by
+    rw [← hℓ]
+    calc _ ≤ rexp (-1 / 4) ^ M * rexp ℓ ^ 3 := by gcongr
+                                                  linarith [add_one_le_exp (-1 / 4 : ℝ)]
+      _ ≤ 1 := by rw [← Real.exp_natCast_mul, ← Real.exp_natCast_mul, ← Real.exp_add]
+                  exact exp_le_one_iff.2 (by linarith)
+  have t2 : (2 - β₁) ^ (M + 100 + 1) ≤ rexp (r * ℓ) ^ 6 * rexp (51 * r) := by
+    rw [← Real.exp_natCast_mul, ← Real.exp_add]
+    refine (pow_le_pow_left₀ (b := rexp (r / 2)) (by linarith) (by linarith [add_one_le_exp (r / 2)]) _).trans ?_
+    rw [← Real.exp_natCast_mul]
+    exact exp_le_exp.2 <| by push_cast
+                             nlinarith
+  have hX : 0 ≤ 2 / r * ((7 + 1 / r) * rexp (r * ℓ) ^ 2) := by positivity
+  have k := mul_le_mul (mul_le_mul (mul_le_mul u1 u2 (norm_nonneg _) (mul_nonneg hX (by linarith))) u3 (norm_nonneg _)
+    (mul_nonneg (mul_nonneg hX (by linarith)) (mul_nonneg hX (by linarith)))) t2 (pow_nonneg (by linarith) _)
+    (mul_nonneg (mul_nonneg (mul_nonneg hX <| by linarith) <| mul_nonneg hX <| by linarith) <| by positivity)
+  rw [mul_div_assoc', div_add' _ _ _ <| by linarith, le_div_iff₀ <| by linarith] at g
+  have key : 1 ≤ (1 - β₂) * (162 * (2 / r * (7 + 1 / r)) ^ 2 * (7 + 1 / r) * rexp (51 * r)) * rexp (r * ℓ) ^ 12 := by
+    refine le_of_mul_le_mul_left ?_ (by linarith : 0 < 1 - β₁)
+    nlinarith [g, k, mul_le_mul_of_nonneg_left (show 18 * 10 ^ 7 * ((q₁ * q₂ : ℕ) : ℝ) ^ 3 * (3 / 4) ^ (M + 100) ≤ 1 / 1000 by
+      rw [pow_add]
+      linarith) (by linarith : (0:ℝ) ≤ 1 - β₁)]
+  have hV6 : rexp (ℓ * -ε) * rexp (r * ℓ) ^ 12 ≤ 1 := by
+    rw [← Real.exp_natCast_mul, ← Real.exp_add]
+    exact exp_le_one_iff.2 (by push_cast
+                               nlinarith)
+  rw [div_mul_eq_mul_div, ← mul_rpow (by positivity) (by positivity), ← Nat.cast_mul, ← hℓ, ← Real.exp_mul, div_le_iff₀ (by positivity)]
+  exact le_of_mul_le_mul_right (hV6.trans key) <| by positivity
+
+private lemma unsmoothed_sum_bound {a : ℕ → ℂ} {b : Prop} [Decidable b] {x h E L : ℝ} (h1 : 1 ≤ h) (hhx : h ≤ x)
+    (hL : ∀ n : ℕ, n ≤ 2 * x → ‖a n‖ ≤ L)
+    (hE : ∀ y, x ≤ y → y ≤ 2 * x → ‖∑ n ∈ Icc 1 ⌊y⌋₊, a n * (1 - n / y) - if b then (((y - 2 + 1 / y) / 2 : ℝ) : ℂ) else 0‖ ≤ E) :
+    ‖∑ n ∈ Icc 1 ⌊x⌋₊, a n - if b then (x : ℂ) else 0‖ ≤ 3 * x * E / h + 2 * h * (L + 1) := by
+  obtain ⟨δ, hδ1, hδ⟩ : ∃ δ : ℂ, ‖δ‖ ≤ 1 ∧ ∀ z : ℂ, (if b then z else 0) = δ * z :=
+    ⟨if b then 1 else 0, by aesop, fun z => by simp⟩
+  simp [hδ] at hE ⊢
+  have key (y : ℝ) (hy : x ≤ y) (hy2 : y ≤ 2 * x) :
+      ∃ D : ℂ, ‖D‖ ≤ E ∧ (y : ℂ) * D = ∑ n ∈ Icc 1 ⌊y⌋₊, a n * (y - n) - δ * ((y - 1) ^ 2 / 2) := by
+    refine ⟨_, hE y hy hy2, ?_⟩
+    have := ofReal_ne_zero.2 <| by linarith
+    rw [mul_sub, mul_sum]
+    grind
+  obtain ⟨D₀, hD₀, e0⟩ := key x le_rfl <| by linarith
+  obtain ⟨D₁, hD₁, e1⟩ := key (x + h) (by linarith) <| by linarith
+  have hL0 := (norm_nonneg _).trans (hL 0 (by grind))
+  obtain ⟨R, hR, hs⟩ : ∃ R : ℂ, ‖R‖ ≤ (h + 1) * (L * h) ∧ ∑ n ∈ Icc 1 ⌊x + h⌋₊, a n * ((x + h : ℝ) - n) =
+      ∑ n ∈ Icc 1 ⌊x⌋₊, a n * (x - n) + h * ∑ n ∈ Icc 1 ⌊x⌋₊, a n + R := by
+    refine ⟨∑ n ∈ Ioc ⌊x⌋₊ ⌊x + h⌋₊, a n * ((x + h : ℝ) - n), (norm_sum_le _ _).trans
+      ((sum_le_card_nsmul _ _ (L * h) fun n hn => ?_).trans ?_), ?_⟩
+    · obtain ⟨h2, h3⟩ := mem_Ioc.1 hn
+      have h3 := (Nat.cast_le.2 h3).trans (Nat.floor_le (by linarith))
+      have h4 : x < n := (Nat.lt_floor_add_one x).trans_le (by exact_mod_cast h2)
+      rw [norm_mul, ← ofReal_natCast, ← ofReal_sub, norm_real, norm_of_nonneg <| by linarith]
+      bound
+    · rw [nsmul_eq_mul, Nat.card_Ioc, Nat.cast_sub (Nat.floor_mono (by linarith))]
+      have := mul_nonneg hL0 (by linarith : 0 ≤ h)
+      nlinarith [Nat.floor_le (by linarith : 0 ≤ x + h), Nat.lt_floor_add_one x]
+    erw [← sum_Ioc_consecutive _ (Nat.zero_le _) (Nat.floor_mono (by linarith : x ≤ x + h)), mul_sum, ← sum_add_distrib]
     congr 1
+    refine sum_congr rfl fun n _ => ?_
+    push_cast
     ring
-  rw [Real.norm_of_nonneg (by positivity), Real.norm_of_nonneg (Real.exp_pos _).le, hs] at h2
-  linarith [Real.exp_pos (c * Real.sqrt L)]
+  have I : (h : ℂ) * (∑ n ∈ Icc 1 ⌊x⌋₊, a n - δ * x) = (x + h : ℝ) * D₁ - x * D₀ - R + δ * ((h * (h / 2 - 1) : ℝ) : ℂ) := by
+    push_cast at e1 hs ⊢
+    grind
+  have := congr_arg norm I
+  rw [norm_mul, norm_real, norm_of_nonneg <| by linarith] at this
+  have h6 : |h * (h / 2 - 1)| ≤ h * h := abs_le.2 ⟨by nlinarith, by nlinarith⟩
+  refine le_of_mul_le_mul_left ?_ (by linarith : 0 < h)
+  rw [this]
+  grw [norm_add_le, norm_sub_le, norm_sub_le, norm_mul, norm_mul, norm_mul, hD₁, hD₀, hR, hδ1, norm_real, norm_real, norm_real,
+    norm_of_nonneg <| by linarith, norm_of_nonneg <| by linarith, norm_eq_abs]
+  have : h * (3 * x * E / h) = 3 * x * E := by field_simp
+  nlinarith [mul_nonneg (sub_nonneg.2 hhx) ((norm_nonneg _).trans hD₀), mul_nonneg (mul_nonneg hL0 (by linarith : (0:ℝ) ≤ h)) (sub_nonneg.2 h1)]
 
-theorem siegel_walfisz_character_of : SiegelWalfiszOf := by
-  intro hP hZ hE A hA
-  obtain ⟨cZ, hcZ, hZ'⟩ := hZ
-  set c₁ : ℝ := min cZ (1 / 20) with hc₁
-  have hc₁0 : 0 < c₁ := lt_min hcZ (by norm_num)
-  have hc₁20 : c₁ ≤ 1 / 20 := min_le_right _ _
-  have hc₁Z : c₁ ≤ cZ := min_le_left _ _
-  obtain ⟨c, C, hc, hPC⟩ := hP c₁ hc₁0 hc₁20
-  obtain ⟨cE, hcE, hEB⟩ := hE (1 / (2 * A)) (by positivity)
-  obtain ⟨U, hU0, hU⟩ := bounded_of_exp_sqrt_lt_pow A c hA hc
-  set cf : ℝ := min c cE with hcf
-  have hcf0 : 0 < cf := lt_min hc hcE
-  have hK0 : 0 ≤ (U + 1) * Real.exp (cf * Real.sqrt U) :=
-    mul_nonneg (by linarith) (Real.exp_pos _).le
-  refine ⟨cf, (max C 0 + 2) + (U + 1) * Real.exp (cf * Real.sqrt U), hcf0, ?_⟩
-  intro q _ χ x hx hqL
-  have hx0 : (0:ℝ) ≤ x := by linarith
-  have hx1 : (1:ℝ) ≤ x := by linarith
-  have hlx : 0 < Real.log x := Real.log_pos (by linarith)
-  have hq1 : (1:ℝ) ≤ q := by
-    have h1 : 1 ≤ q := Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-    exact_mod_cast h1
-  have hM0 : 0 ≤ (max C 0 + 2) * x * Real.exp (-cf * Real.sqrt (Real.log x)) :=
-    mul_nonneg (mul_nonneg (by linarith [le_max_right C 0]) hx0) (Real.exp_pos _).le
-  have hK : 0 ≤ (U + 1) * Real.exp (cf * Real.sqrt U) * x * Real.exp (-cf * Real.sqrt (Real.log x)) :=
-    mul_nonneg (mul_nonneg hK0 hx0) (Real.exp_pos _).le
-  have hfin : ((max C 0 + 2) + (U + 1) * Real.exp (cf * Real.sqrt U)) * x *
-      Real.exp (-cf * Real.sqrt (Real.log x)) =
-      (max C 0 + 2) * x * Real.exp (-cf * Real.sqrt (Real.log x)) +
-      (U + 1) * Real.exp (cf * Real.sqrt U) * x * Real.exp (-cf * Real.sqrt (Real.log x)) := by ring
-  rw [hfin]
-  by_cases hsmall : Real.exp (c * Real.sqrt (Real.log x)) < Real.log x ^ A
-  · have hLU : Real.log x ≤ U := hU (Real.log x) hlx hsmall
-    have htriv := chebyshev_character_trivial_bound χ x hx1
-    have hsqU : Real.sqrt (Real.log x) ≤ Real.sqrt U := Real.sqrt_le_sqrt hLU
-    have he : 1 ≤ Real.exp (cf * Real.sqrt U) * Real.exp (-cf * Real.sqrt (Real.log x)) := by
-      rw [← Real.exp_add]
-      apply Real.one_le_exp
-      have := mul_le_mul_of_nonneg_left hsqU (le_min hc.le hcE.le); linarith
-    have hxU : 0 ≤ x * (U + 1) := mul_nonneg hx0 (by linarith)
-    have s1 : x * (Real.log x + 1) ≤ x * (U + 1) := mul_le_mul_of_nonneg_left (by linarith) hx0
-    have s2 : x * (U + 1) ≤ x * (U + 1) * (Real.exp (cf * Real.sqrt U) * Real.exp (-cf * Real.sqrt (Real.log x))) :=
-      le_mul_of_one_le_right hxU he
-    have s3 : x * (U + 1) * (Real.exp (cf * Real.sqrt U) * Real.exp (-cf * Real.sqrt (Real.log x))) =
-        (U + 1) * Real.exp (cf * Real.sqrt U) * x * Real.exp (-cf * Real.sqrt (Real.log x)) := by ring
+private lemma eventually_rpow_le_exp (s b K : ℝ) (hb : 0 < b) : ∀ᶠ u in atTop, K * u ^ s ≤ rexp (b * u) := by
+  filter_upwards [(tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero s b hb).eventually <| gt_mem_nhds (by positivity : (0:ℝ) < 1 / (|K| + 1)),
+    eventually_gt_atTop 0] with u h1 h2
+  rw [lt_div_iff₀ (by positivity), neg_mul, Real.exp_neg, mul_right_comm, ← div_eq_mul_inv, div_lt_one (exp_pos _)] at h1
+  have := rpow_nonneg h2.le s
+  nlinarith [le_abs_self K]
+
+theorem siegelWalfisz : SiegelWalfisz := by
+  unfold SiegelWalfisz psiChi
+  intro A hA
+  obtain ⟨c₁, hc₁, L₀, hZ⟩ := regularizedLFunction_zero_free
+  obtain ⟨δ₀, hδ₀, hM⟩ := smoothed_character_sum_bound
+  obtain ⟨cS, hcS, hS⟩ := excBound (2 * A)⁻¹ <| by positivity
+  obtain ⟨c, hc, hc1, hc2, hc3⟩ : ∃ c > 0, c ≤ c₁ ∧ c ≤ cS ∧ c ≤ 1 :=
+    ⟨min c₁ <| min cS 1, by positivity, by simp, by simp, by simp⟩
+  obtain ⟨u₀, hu₀⟩ := eventually_atTop.1 <| (eventually_ge_atTop 1).and <| (eventually_ge_atTop L₀).and <| (eventually_rpow_le_exp (2 * A) 1 5 one_pos).and
+    ((eventually_gt_atTop <| c / (8 * δ₀)).and <| (eventually_rpow_le_exp 2 2 (576 / c ^ 2) two_pos).and
+    (eventually_rpow_le_exp 2 (c / 32) (3600 / c + 6) <| by positivity))
+  obtain ⟨C, hC1, hC⟩ : ∃ C, 1 ≤ C ∧ 8 * rexp (c / 32 * u₀) ≤ C := ⟨_, le_max_left _ _, le_max_right _ _⟩
+  refine ⟨c / 32, C, by positivity, fun q _ χ x hx hq => ?_⟩
+  have hx0 : 0 < x := by linarith
+  obtain ⟨u, hu0, hux⟩ : ∃ u > 0, log x = u ^ 2 :=
+    ⟨_, sqrt_pos.2 <| log_pos <| by linarith, (sq_sqrt <| log_nonneg <| by linarith).symm⟩
+  rw [hux] at hq ⊢
+  rw [sqrt_sq hu0.le]
+  simp only [mul_comm ((Λ _ : ℝ) : ℂ)]
+  obtain ⟨v, hv⟩ : ∃ v, v = rexp (-(c / 32) * u) := by simp
+  rw [← hv]
+  have hv0 := hv ▸ exp_pos _
+  have hΛ (n : ℕ) : ‖χ n * (Λ n : ℂ)‖ ≤ Λ n := by
+    rw [norm_mul, norm_real, norm_of_nonneg vonMangoldt_nonneg]
+    exact mul_le_of_le_one_left vonMangoldt_nonneg <| norm_le_one χ _
+  have hL (n : ℕ) (hn : (n : ℝ) ≤ 2 * x) : ‖χ n * (Λ n : ℂ)‖ ≤ 2 * u ^ 2 := by
+    refine (hΛ n).trans <| vonMangoldt_le_log.trans ?_
+    rcases eq_or_ne n 0 with rfl | hn0
+    · simp
+      positivity
+    rw [← hux, ← log_rpow hx0]
+    exact log_le_log (by positivity) <| by rw [rpow_two]
+                                           nlinarith
+  by_cases hbig : u₀ ≤ u
+  swap
+  · have := log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 4)
+    have e2 : 1 ≤ rexp (c / 32 * u₀) * v := by rw [hv, ← Real.exp_add]
+                                               exact one_le_exp <| by nlinarith
+    calc _ ≤ 8 * x := by
+          grw [norm_sub_le, (norm_sum_le_of_le (Icc 1 ⌊x⌋₊) fun n _ => hΛ n).trans <| Chebyshev.psi_le_const_mul_self hx0.le]
+          split_ifs <;> simp [abs_of_pos hx0] <;> nlinarith
+      _ ≤ 8 * rexp (c / 32 * u₀) * x * v := by nlinarith
+      _ ≤ _ := by gcongr
+  obtain ⟨hu1, h1, h2, h3, h4, h5⟩ := hu₀ u hbig
+  rw [one_mul] at h2
+  rw [rpow_two] at h4 h5
+  have hq' : (q : ℝ) ≤ u ^ (2 * A) := by rwa [← rpow_natCast, ← rpow_mul hu0.le, Nat.cast_ofNat] at hq
+  have hq1 : (1 : ℝ) ≤ q := Nat.one_le_cast.2 NeZero.one_le
+  have hη : 0 < c / (8 * u) := by positivity
+  have hvu : (3600 / c + 6) * u ^ 2 * v ≤ 1 := by
+    rwa [← le_div_iff₀ hv0, hv, one_div, ← Real.exp_neg, neg_mul, neg_neg]
+  have hv1 : v ≤ 1 := by rw [hv]
+                         exact exp_le_one_iff.2 <| by nlinarith
+  have e8 : rexp (-(c / 8 * u)) = v ^ 4 := by rw [hv, ← Real.exp_natCast_mul]
+                                              ring
+  have hh1 : 1 ≤ x * v ^ 2 := by
+    rw [hv, ← Real.exp_natCast_mul, ← exp_log hx0, hux, ← Real.exp_add]
+    exact one_le_exp <| by push_cast
+                           nlinarith
+  have hqe : q * (rexp u + 5) ≤ rexp (2 * u) := by rw [two_mul, Real.exp_add]
+                                                   nlinarith [one_le_exp hu0.le]
+  refine (unsmoothed_sum_bound hh1 (mul_le_of_le_one_right hx0.le <| pow_le_one₀ hv0.le hv1) hL (E := 1200 / c * u ^ 2 * x * v ^ 4)
+    fun y hy1 hy2 => (hM q χ y (c / (8 * u)) (rexp u) (by linarith) hη ?_ ?_ (one_le_exp hu0.le) ?_).trans ?_).trans ?_
+  · rw [div_lt_iff₀ <| by positivity] at h3 ⊢
     linarith
-  · push Not at hsmall
-    have hqexp : (q:ℝ) ≤ Real.exp (c * Real.sqrt (Real.log x)) := le_trans hqL hsmall
-    obtain ⟨B, hB⟩ := exists_exceptional_zero_set cZ c₁ hc₁Z hZ' q χ
-    have hmain := hPC q χ B x hB hx hqexp
-    have hsumB : ‖∑ β ∈ B, (x : ℂ) ^ (β : ℂ) / (β : ℂ)‖ ≤
-        2 * x * Real.exp (-cE * Real.sqrt (Real.log x)) := by
-      obtain ⟨hcard, hmem, -⟩ := hB
-      rcases B.eq_empty_or_nonempty with hBe | ⟨β, hβ⟩
-      · rw [hBe, Finset.sum_empty, norm_zero]
-        exact mul_nonneg (by linarith) (Real.exp_pos _).le
-      · have hBs : B = {β} := Finset.eq_singleton_iff_unique_mem.mpr
-          ⟨hβ, fun b hb => Finset.card_le_one.mp hcard b hb β hβ⟩
-        rw [hBs, Finset.sum_singleton]
-        obtain ⟨hχ1, hreg, hL0, -⟩ := hmem β hβ
-        have hβ1 : 1 / 2 ≤ β := half_le_of_real_in_region hc₁20 hreg
-        have hχ2 : χ ^ 2 = 1 := (hZ' q χ (β:ℂ) (zero_free_region_mono hc₁Z hreg) ⟨Or.inl hχ1, hL0⟩).1
-        have hβ2 := hEB q χ β hχ2 hχ1 hL0
-        exact exceptional_zero_term_bound x A q cE β hx hA hq1 hqL hcE hβ1 hβ2
-    have e1 : Real.exp (-c * Real.sqrt (Real.log x)) ≤ Real.exp (-cf * Real.sqrt (Real.log x)) := by
-      apply Real.exp_le_exp.mpr
-      have h1 : cf ≤ c := min_le_left _ _
-      have h2 := Real.sqrt_nonneg (Real.log x)
-      have := mul_le_mul_of_nonneg_right h1 h2; linarith
-    have e2 : Real.exp (-cE * Real.sqrt (Real.log x)) ≤ Real.exp (-cf * Real.sqrt (Real.log x)) := by
-      apply Real.exp_le_exp.mpr
-      have h1 : cf ≤ cE := min_le_right _ _
-      have h2 := Real.sqrt_nonneg (Real.log x)
-      have := mul_le_mul_of_nonneg_right h1 h2; linarith
-    have hC : C * x * Real.exp (-c * Real.sqrt (Real.log x)) ≤
-        max C 0 * x * Real.exp (-cf * Real.sqrt (Real.log x)) := by
-      calc C * x * Real.exp (-c * Real.sqrt (Real.log x))
-          ≤ max C 0 * x * Real.exp (-c * Real.sqrt (Real.log x)) :=
-            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left _ _) hx0) (Real.exp_pos _).le
-        _ ≤ max C 0 * x * Real.exp (-cf * Real.sqrt (Real.log x)) :=
-            mul_le_mul_of_nonneg_left e1 (mul_nonneg (le_max_right _ _) hx0)
-    have hE2 : 2 * x * Real.exp (-cE * Real.sqrt (Real.log x)) ≤
-        2 * x * Real.exp (-cf * Real.sqrt (Real.log x)) :=
-      mul_le_mul_of_nonneg_left e2 (by linarith)
-    set S : ℂ := ∑ β ∈ B, (x : ℂ) ^ (β : ℂ) / (β : ℂ) with hS
-    set a : ℂ := psiChi χ x - (if χ = 1 then (x : ℂ) else 0) with ha
-    have htri : ‖a‖ ≤ ‖a + S‖ + ‖S‖ := by
-      calc ‖a‖ = ‖(a + S) - S‖ := by rw [add_sub_cancel_right]
-        _ ≤ ‖a + S‖ + ‖S‖ := norm_sub_le _ _
-    have hsplit : (max C 0 + 2) * x * Real.exp (-cf * Real.sqrt (Real.log x)) =
-        max C 0 * x * Real.exp (-cf * Real.sqrt (Real.log x)) +
-        2 * x * Real.exp (-cf * Real.sqrt (Real.log x)) := by ring
-    linarith
+  · bound
+  · intro ⟨β, γ⟩ hw1 hw2 hw0
+    obtain ⟨hχ2, hχ1, rfl⟩ := hZ q χ ⟨β, γ⟩ (2 * u) (by linarith)
+      (by nlinarith [abs_nonneg γ])
+      (by
+        have : 3 * (c / (8 * u)) ≤ c₁ / (2 * u) := by
+          rw [mul_div_assoc', div_le_div_iff₀ (by positivity) <| by positivity]
+          nlinarith
+        linarith) hw0
+    have := hS q χ β hχ2 hχ1 <| by simp [regularizedLFunction, hχ1] at hw0
+                                   simpa
+    rw [rpow_neg <| Nat.cast_nonneg _] at this
+    have h6 := inv_anti₀ (by positivity) <| (rpow_inv_le_iff_of_pos (Nat.cast_nonneg _) hu0.le <| by positivity).2 hq'
+    nlinarith [mul_le_mul_of_nonneg_left h6 hcS.le, mul_le_mul_of_nonneg_right hc2 (inv_pos.2 hu0).le,
+      mul_pos hc <| inv_pos.2 hu0, show 3 * (c / (8 * u)) = 3 / 8 * (c * u⁻¹) by ring]
+  · have hy0 : 0 < y := by linarith
+    have hl1 := hux ▸ log_le_log hx0 hy1
+    have hl2 : log y ≤ 2 * u ^ 2 := by
+      have := log_le_log hy0 <| show y ≤ x ^ 2 by nlinarith
+      rwa [log_pow, hux, Nat.cast_ofNat] at this
+    have : u ^ 2 * (c / (8 * u)) = c / 8 * u := by field_simp
+    rw [rpow_def_of_pos hy0, rpow_def_of_pos hy0, mul_div_assoc <| 3 / (c / (8 * u)), ← Real.exp_sub]
+    calc _ ≤ 6 * (6 * u) / (c / (8 * u)) * (y * v ^ 4 + y * v ^ 4) + 3 / (c / (8 * u)) * (y * v ^ 4) := by
+          rw [← e8, ← exp_log hy0, ← Real.exp_add, Real.log_exp]
+          gcongr
+          · rw [log_le_iff_le_exp <| by positivity]
+            calc _ = (q * (rexp u + 5)) ^ 2 * (576 / c ^ 2 * u ^ 2) := by field_simp
+                                                                          ring
+              _ ≤ rexp (2 * u) ^ 2 * rexp (2 * u) := by gcongr
+              _ = _ := by rw [← Real.exp_natCast_mul, ← Real.exp_add]
+                          ring_nf
+          all_goals nlinarith
+      _ = (576 * u ^ 2 + 24 * u) / c * y * v ^ 4 := by field_simp
+                                                       ring
+      _ ≤ _ := by
+        simp [div_mul_eq_mul_div]
+        gcongr ?_ / c
+        nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 hy2) <| sq_nonneg u) <| pow_nonneg hv0.le 4,
+          mul_nonneg (mul_nonneg (by nlinarith : 0 ≤ u ^ 2 - u) hy0.le) <| pow_nonneg hv0.le 4]
+  · have e : 3 * x * (1200 / c * u ^ 2 * x * v ^ 4) / (x * v ^ 2) = 3600 / c * u ^ 2 * (x * v ^ 2) := by
+      grind
+    rw [e]
+    nlinarith [mul_le_mul_of_nonneg_left hvu (mul_pos hx0 hv0).le, mul_nonneg (mul_nonneg hx0.le <| sq_nonneg v) (by nlinarith : (0:ℝ) ≤ u ^ 2 - 1),
+      mul_le_mul_of_nonneg_right hC1 (mul_pos hx0 hv0).le]
+
+theorem zFRDirichlet : ZFRDirichlet := GlobalTheory.LandauPageRegion.main
 
 end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SiegelWalfiszOf =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExistsContourAvoidingRealZero =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExistsContourAvoidingRealZero", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open Complex MeasureTheory
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-theorem exists_contour_avoiding_real_zero (B : Finset ℝ) (hB : B.card ≤ 1) (L c₁ : ℝ) (hL : 0 < L) (hc₁ : 0 < c₁) :
-    ∃ σ₁ : ℝ, (σ₁ = 1 - c₁ / (3 * L) ∨ σ₁ = 1 - c₁ / (4 * L)) ∧
-      ∀ β ∈ B, c₁ / (24 * L) ≤ |σ₁ - β| := by
-  have hab : (1 - c₁ / (3 * L)) - (1 - c₁ / (4 * L)) = -(2 * (c₁ / (24 * L))) := by
-    field_simp
-    ring
-  have he : 0 < c₁ / (24 * L) := by positivity
-  rcases Finset.eq_empty_or_nonempty B with hB0 | ⟨β, hβ⟩
-  · exact ⟨_, Or.inl rfl, fun β hβ => by simp [hB0] at hβ⟩
-  have hBs : ∀ β' ∈ B, β' = β := fun β' hβ' => Finset.card_le_one.mp hB β' hβ' β hβ
-  by_cases h : c₁ / (24 * L) ≤ |(1 - c₁ / (3 * L)) - β|
-  · exact ⟨_, Or.inl rfl, fun β' hβ' => by rw [hBs β' hβ']; exact h⟩
-  · refine ⟨_, Or.inr rfl, fun β' hβ' => ?_⟩
-    rw [hBs β' hβ']
-    push Not at h
-    have tri := abs_sub_le (1 - c₁ / (3 * L)) β (1 - c₁ / (4 * L))
-    rw [hab, abs_neg, abs_of_pos (by positivity), abs_sub_comm β] at tri
-    linarith
-
-theorem perron_contour_decomposition (hP : PerronChi) {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q)
-    (y σ₁ σ₀ T : ℝ) (R : ℂ) (hy : 1 ≤ y) (hσ₀ : 1 < σ₀) (hT : 0 ≤ T)
-    (hrect : Formalism.ZF.rectInt (Fchi χ y) σ₁ σ₀ (-T) T = 2 * Real.pi * I * R) :
-    2 * Real.pi * ‖Schi χ y - R‖ ≤
-      ‖∫ t in (Set.Ioc (-T) T)ᶜ, Fchi χ y ((σ₀ : ℂ) + t * I)‖
-      + ‖∫ x in σ₁..σ₀, Fchi χ y ((x : ℂ) + ((-T : ℝ) : ℂ) * I)‖
-      + ‖∫ x in σ₁..σ₀, Fchi χ y ((x : ℂ) + (T : ℂ) * I)‖
-      + ‖∫ u in (-T)..T, Fchi χ y ((σ₁ : ℂ) + u * I)‖ := by
-  obtain ⟨hint, hS⟩ := hP q χ y hy σ₀ hσ₀
-  apply Formalism.ZF.norm_sub_le_of_rectangle_identity _ _ _ _ _ _ _ ?_ hrect
-  rw [hS, Formalism.ZF.integral_eq_intervalIntegral_add_compl _ hint T hT]
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExistsContourAvoidingRealZero =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ChebyshevCharacterExplicitGeneral =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ChebyshevCharacterExplicitGeneral", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExistsContourAvoidingRealZero\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PerronHorizontalSegmentBound\npublic import Formalism.ZeroFreeRegion.ZetaLogDerivativeBounds.NormIntegralComplLe\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\npublic import Mathlib.Analysis.Real.Pi.Bounds\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\npublic import Mathlib.NumberTheory.LSeries.Nonvanishing\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open Complex MeasureTheory
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-theorem chebyshev_character_explicit_general (hP : PerronChi) (hRS : RectShiftChi) (c₁ C C₀ : ℝ) (hc₁ : 0 < c₁)
-    (hc₁' : c₁ ≤ 1 / 20) (hC : 0 ≤ C) (hC₀ : 0 ≤ C₀)
-    {q : ℕ} [NeZero q] (χ : DirichletCharacter ℂ q) (B : Finset ℝ) (hχ : χ ≠ 1)
-    (hE : ExcZeros c₁ χ B)
-    (hD : ∀ s : ℂ, InRegion (c₁ / 2) q s → (∀ β ∈ B, s ≠ (β : ℂ)) →
-        ‖negLD χ s + ∑ β ∈ B, 1 / (s - (β : ℂ))‖ ≤ C * Real.log ((q : ℝ) * (|s.im| + 2)) ^ 2)
-    (hR : ∀ s : ℂ, 1 < s.re → ‖negLD χ s‖ ≤ 1 / (s.re - 1) + C₀)
-    (y T L : ℝ) (hy : 2 ≤ y) (hT : 1 ≤ T) (hL : Real.log ((q : ℝ) * (T + 2)) = L) :
-    ∃ σ₁ : ℝ, σ₁ ≤ 1 - c₁ / (4 * L) ∧
-      ‖Schi χ y - negLD χ 1 * y + ∑ β ∈ B, (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))‖ ≤
-        2 * Real.pi * ((Real.log y + C₀) * (Real.exp 1 * y)) / T
-        + (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3
-        + (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3
-        + (C * L ^ 2 + 24 * L / c₁) * y ^ σ₁ * (8 * L / c₁) * (2 * T)
-        + y ^ σ₁ * (8 * L / c₁) := by
-  obtain ⟨hBc, hBz, hBall⟩ := hE
-  have hy0 : (0:ℝ) < y := by linarith
-  have hy1 : (1:ℝ) ≤ y := by linarith
-  have hy1' : (1:ℝ) < y := by linarith
-  have hlog2 : (1:ℝ) / 2 < Real.log 2 := by
-    have h := Real.log_two_gt_d9
-    norm_num at h
-    linarith
-  have hlogy2 : Real.log 2 ≤ Real.log y := Real.log_le_log (by norm_num) hy
-  have hly : (1:ℝ) / 2 < Real.log y := by linarith
-  have hlogy : 0 < Real.log y := by linarith
-  have hlogyne : Real.log y ≠ 0 := hlogy.ne'
-  have hT0 : (0:ℝ) < T := by linarith
-  have hTabs : |T| = T := abs_of_pos hT0
-  have hq1 : (1:ℝ) ≤ (q:ℝ) := by
-    have hq : 0 < q := Nat.pos_of_ne_zero (NeZero.ne q)
-    exact_mod_cast hq
-  have hL2 : Real.log 2 ≤ L := by
-    rw [← hL]
-    exact Real.log_le_log (by norm_num) (by calc (2 : ℝ) ≤ T + 2 := by linarith
-      _ ≤ (q : ℝ) * (T + 2) := le_mul_of_one_le_left (by linarith) hq1)
-  have hLh : (1:ℝ) / 2 < L := by linarith
-  have hL0 : 0 < L := by linarith
-  have hLne : L ≠ 0 := hL0.ne'
-  have hc₁ne : c₁ ≠ 0 := hc₁.ne'
-  have ha : 0 < c₁ / L := div_pos hc₁ hL0
-  have haL : c₁ / L * L = c₁ := by field_simp
-  have ha' : c₁ / L ≤ 1 / 10 := by rw [div_le_iff₀ hL0]; linarith
-  have e3 : c₁ / (3 * L) = c₁ / L / 3 := by rw [mul_comm 3 L, ← div_div]
-  have e4 : c₁ / (4 * L) = c₁ / L / 4 := by rw [mul_comm 4 L, ← div_div]
-  have e2 : c₁ / 2 / L = c₁ / L / 2 := div_right_comm c₁ 2 L
-  have h2ε : 2 / (c₁ / (4 * L)) = 8 * L / c₁ := by rw [div_div_eq_mul_div]; ring
-  have h1δ : 1 / (c₁ / (24 * L)) = 24 * L / c₁ := one_div_div _ _
-  obtain ⟨σ₁, hσ₁c, hσ₁B⟩ := exists_contour_avoiding_real_zero B hBc L c₁ hL0 hc₁
-  rw [e3, e4] at hσ₁c
-  have hσ₁b : 1 - c₁ / L / 3 ≤ σ₁ ∧ σ₁ ≤ 1 - c₁ / L / 4 := by
-    rcases hσ₁c with h | h <;> rw [h] <;> constructor <;> linarith
-  obtain ⟨hσ₁lo, hσ₁up⟩ := hσ₁b
-  refine ⟨σ₁, by rw [e4]; exact hσ₁up, ?_⟩
-  have hσ₁lt1 : σ₁ < 1 := by linarith
-  have hσ₁pos : 0 < σ₁ := by linarith
-  have hhalf : 1 / 2 ≤ σ₁ := by linarith
-  have hgap : c₁ / (4 * L) ≤ 1 - σ₁ := by rw [e4]; linarith
-  have hσ₁reg : 1 - c₁ / 2 / Real.log ((q : ℝ) * (T + 2)) ≤ σ₁ := by
-    rw [hL, e2]; linarith
-
-  obtain ⟨σ₀, hσ₀e⟩ : ∃ σ₀ : ℝ, σ₀ = 1 + 1 / Real.log y := ⟨_, rfl⟩
-  have hinv : 1 / Real.log y * Real.log y = 1 := by field_simp
-  have hinvpos : 0 < 1 / Real.log y := div_pos one_pos hlogy
-  have hinv2 : 1 / Real.log y < 2 := by rw [div_lt_iff₀ hlogy]; linarith
-  have hσ₀gt : 1 < σ₀ := by rw [hσ₀e]; linarith
-  have hσσ : σ₁ ≤ σ₀ := by linarith
-  have hσdiff : |σ₀ - σ₁| ≤ 3 := by
-    rw [abs_of_nonneg (by linarith), hσ₀e]; linarith
-  have hyσ₀ : y ^ σ₀ = Real.exp 1 * y := by
-    rw [hσ₀e, Real.rpow_add hy0, Real.rpow_one, Real.rpow_def_of_pos hy0,
-      mul_one_div_cancel hlogyne, mul_comm]
-
-  have hB₁ : ∀ β ∈ B.filter (fun β => σ₁ < β),
-      σ₁ < β ∧ β < σ₀ ∧ deriv (DirichletCharacter.LFunction χ) (β : ℂ) ≠ 0 := by
-    intro β hβ
-    rw [Finset.mem_filter] at hβ
-    obtain ⟨-, -, hz, hd⟩ := hBz β hβ.1
-    refine ⟨hβ.2, ?_, hd⟩
-    have hβ1 : β < 1 := by
-      by_contra! hc
-      exact DirichletCharacter.LFunction_ne_zero_of_one_le_re χ (Or.inl hχ) (by simpa using hc) hz
-    linarith
-  have hB₁z : ∀ β ∈ B.filter (fun β => σ₁ < β), DirichletCharacter.LFunction χ (β : ℂ) = 0 := by
-    intro β hβ
-    rw [Finset.mem_filter] at hβ
-    exact (hBz β hβ.1).2.2.1
-  have hzer : ∀ w : ℂ, σ₁ ≤ w.re → w.re ≤ σ₀ → |w.im| ≤ T →
-      DirichletCharacter.LFunction χ w = 0 → ∃ β ∈ B.filter (fun β => σ₁ < β), w = (β : ℂ) := by
-    intro w h1 _ h3 h4
-    have hreg : InRegion c₁ q w := by
-      unfold InRegion
-      have hm := log_analytic_conductor_mono q w.im T h3
-      rw [hL] at hm
-      have hpos := log_conductor_pos_real q w.im
-      have key : c₁ / L ≤ c₁ / Real.log ((q : ℝ) * (|w.im| + 2)) := by
-        rw [div_eq_mul_one_div c₁ L, div_eq_mul_one_div c₁ (Real.log ((q : ℝ) * (|w.im| + 2)))]
-        exact mul_le_mul_of_nonneg_left (one_div_le_one_div_of_le hpos hm) hc₁.le
-      linarith
-    obtain ⟨β, hβB, hwβ⟩ := hBall w hreg ⟨Or.inl hχ, h4⟩
-    refine ⟨β, Finset.mem_filter.mpr ⟨hβB, ?_⟩, hwβ⟩
-    have h1' : σ₁ ≤ β := by rw [hwβ] at h1; simpa using h1
-    have hne := hσ₁B β hβB
-    rcases lt_or_eq_of_le h1' with h | h
-    · exact h
-    · exfalso
-      rw [h, sub_self, abs_zero] at hne
-      have hp : 0 < c₁ / (24 * L) := div_pos hc₁ (by linarith)
-      linarith
-  have hrect := hRS q χ hχ y hy0 σ₁ σ₀ T (B.filter (fun β => σ₁ < β)) hσ₁pos hσ₁lt1 hσ₀gt hT0
-    hB₁ hzer hB₁z
-  have hdec := perron_contour_decomposition hP χ y σ₁ σ₀ T _ hy1 hσ₀gt hT0.le hrect
-
-  have hAnn : 0 ≤ (Real.log y + C₀) * (Real.exp 1 * y) :=
-    mul_nonneg (by linarith) (mul_pos (Real.exp_pos 1) hy0).le
-  have hI1 : ‖∫ t in (Set.Ioc (-T) T)ᶜ, Fchi χ y ((σ₀ : ℂ) + t * I)‖ ≤
-      2 * Real.pi * ((Real.log y + C₀) * (Real.exp 1 * y)) / T := by
-    refine Formalism.ZF.norm_integral_compl_le (fun t : ℝ => Fchi χ y ((σ₀ : ℂ) + t * I)) _ T hAnn hT0 (fun t ht => ?_)
-    show ‖Fchi χ y ((σ₀ : ℂ) + t * I)‖ ≤ _
-    rw [hσ₀e]
-    exact PerronKernel.norm_right_le (negLD χ) hy1' (hT0.trans_le ht) hR
-
-  have hHnn : 0 ≤ (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 := by
-    have hCL : 0 ≤ C * L ^ 2 + 1 := by
-      have := mul_nonneg hC (sq_nonneg L)
-      linarith
-    exact div_nonneg (mul_nonneg hCL (mul_pos (Real.exp_pos 1) hy0).le) (sq_nonneg T)
-  have hH : ∀ v : ℝ, |v| = T → ‖∫ x in σ₁..σ₀, Fchi χ y ((x : ℂ) + (v : ℂ) * I)‖ ≤
-      (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3 := by
-    intro v hv
-    have hb := intervalIntegral.norm_integral_le_of_norm_le_const
-      (a := σ₁) (b := σ₀) (f := fun x : ℝ => Fchi χ y ((x : ℂ) + (v : ℂ) * I))
-      (C := (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2) (fun x hx => by
-        rw [Set.uIoc_of_le hσσ] at hx
-        have hx' := perron_horizontal_segment_bound χ c₁ C B hBc hD y T x v σ₀ σ₁ hy1 hT hv hσ₁reg
-          hx.1.le hx.2
-        rw [hL, hyσ₀] at hx'
-        exact hx')
-    exact hb.trans (mul_le_mul_of_nonneg_left hσdiff hHnn)
-
-  have hV : ‖∫ u in (-T)..T, Fchi χ y ((σ₁ : ℂ) + u * I)‖ ≤
-      (C * L ^ 2 + 24 * L / c₁) * y ^ σ₁ * (8 * L / c₁) * (2 * T) := by
-    have hb := intervalIntegral.norm_integral_le_of_norm_le_const
-      (a := -T) (b := T) (f := fun u : ℝ => Fchi χ y ((σ₁ : ℂ) + u * I))
-      (C := (C * L ^ 2 + 24 * L / c₁) * y ^ σ₁ * (8 * L / c₁)) (fun u hu => by
-        rw [Set.uIoc_of_le (by linarith)] at hu
-        have hu' : |u| ≤ T := abs_le.mpr ⟨hu.1.le, hu.2⟩
-        have hb' := perron_left_line_bound χ c₁ C hc₁.le hC B hBc hD y T u σ₁ (c₁ / (24 * L))
-          (c₁ / (4 * L)) hy0 hu' hσ₁reg hhalf (div_pos hc₁ (by linarith)) hgap
-          (div_pos hc₁ (by linarith)) hσ₁B
-        rw [hL, h1δ, h2ε] at hb'
-        exact hb')
-    have h2T : |T - -T| = 2 * T := by
-      rw [sub_neg_eq_add, abs_of_pos (by linarith)]; ring
-    rw [h2T] at hb
-    exact hb
-
-  have hO : ‖∑ β ∈ B \ B.filter (fun β => σ₁ < β),
-      (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))‖ ≤ y ^ σ₁ * (8 * L / c₁) := by
-    refine norm_sum_le_of_card_le_one _ ((Finset.card_le_card Finset.sdiff_subset).trans hBc)
-      (fun β : ℝ => (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))) _
-      (mul_nonneg (Real.rpow_nonneg hy0.le _) (div_pos (by linarith) hc₁).le) (fun β hβ => ?_)
-    rw [Finset.mem_sdiff] at hβ
-    have hβσ : β ≤ σ₁ := by
-      by_contra! hc
-      exact hβ.2 (Finset.mem_filter.mpr ⟨hβ.1, hc⟩)
-    have hreg := (hBz β hβ.1).2.1
-    unfold InRegion at hreg
-    simp only [Complex.ofReal_im, Complex.ofReal_re, abs_zero, zero_add] at hreg
-    have hl2 : Real.log 2 ≤ Real.log ((q : ℝ) * 2) := Real.log_le_log (by norm_num) (by linarith)
-    have hlq : (1:ℝ) / 2 < Real.log ((q : ℝ) * 2) := by linarith
-    have hlqne : Real.log ((q : ℝ) * 2) ≠ 0 := by linarith
-    have hr : c₁ / Real.log ((q : ℝ) * 2) * Real.log ((q : ℝ) * 2) = c₁ := by field_simp
-    have hrpos : 0 ≤ c₁ / Real.log ((q : ℝ) * 2) := div_nonneg hc₁.le (by linarith)
-    have hrh : c₁ / Real.log ((q : ℝ) * 2) ≤ 1 / 2 := by rw [div_le_iff₀ (by linarith)]; linarith
-    have hβhalf : 1 / 2 ≤ β := by linarith
-    have hom := real_zero_residue_term_bound y β σ₁ (c₁ / (4 * L)) hy1 hβhalf hβσ (div_pos hc₁ (by linarith)) hgap
-    rw [h2ε] at hom
-    exact hom
-
-  have hmain : ‖Schi χ y - (negLD χ 1 * y - ∑ β ∈ B.filter (fun β => σ₁ < β),
-      (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1)))‖ ≤
-      2 * Real.pi * ((Real.log y + C₀) * (Real.exp 1 * y)) / T
-        + (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3
-        + (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3
-        + (C * L ^ 2 + 24 * L / c₁) * y ^ σ₁ * (8 * L / c₁) * (2 * T) := by
-    have hX := norm_nonneg (Schi χ y - (negLD χ 1 * y - ∑ β ∈ B.filter (fun β => σ₁ < β),
-      (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))))
-    have h2pi : (1:ℝ) ≤ 2 * Real.pi := by linarith [Real.pi_gt_three]
-    have hXX := mul_le_mul_of_nonneg_right h2pi hX
-    have hbot := hH (-T) (by rw [abs_neg]; exact hTabs)
-    have htop := hH T hTabs
-    linarith
-  rw [← Finset.sum_sdiff (Finset.filter_subset (fun β => σ₁ < β) B)]
-  calc ‖Schi χ y - negLD χ 1 * y + (∑ β ∈ B \ B.filter (fun β => σ₁ < β),
-          (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1)) + ∑ β ∈ B.filter (fun β => σ₁ < β),
-          (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1)))‖
-        = ‖(Schi χ y - (negLD χ 1 * y - ∑ β ∈ B.filter (fun β => σ₁ < β),
-          (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1)))) + ∑ β ∈ B \ B.filter (fun β => σ₁ < β),
-          (y : ℂ) ^ (β : ℂ) / ((β : ℂ) * ((β : ℂ) - 1))‖ := by congr 1; ring
-    _ ≤ _ := norm_add_le _ _
-    _ ≤ _ := add_le_add hmain hO
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ChebyshevCharacterExplicitGeneral =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExpGainFromZeroFreeRegion =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExpGainFromZeroFreeRegion", "h": "module\n\npublic import Mathlib.Analysis.SpecialFunctions.Pow.Real\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\npublic import Mathlib.Analysis.Complex.ExponentialBounds\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-theorem perron_error_terms_sum_bound (C C₀ c₁ y T X L Pw Y ℓ : ℝ) (hc₁ : 0 < c₁) (hC : 0 ≤ C) (hC₀ : 0 ≤ C₀)
-    (hy0 : 0 < y) (hT1 : 1 ≤ T) (hTX : T * X = 1) (hL0 : 0 ≤ L) (hY : 0 ≤ Y)
-    (hℓP : ℓ ≤ Pw) (hP1 : 1 ≤ Pw) (hL2P : L ^ 2 ≤ Pw) (hL3P : L ^ 3 ≤ Pw) (hLP : L ≤ Pw) :
-    2 * Real.pi * ((ℓ + C₀) * (Real.exp 1 * y)) / T
-        + (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3
-        + (C * L ^ 2 + 1) * (Real.exp 1 * y) / T ^ 2 * 3
-        + (C * L ^ 2 + 24 * L / c₁) * Y * (8 * L / c₁) * (2 * T)
-        + Y * (8 * L / c₁) ≤
-      (2 * Real.pi * Real.exp 1 * (1 + C₀) + 6 * Real.exp 1 * (C + 1) +
-        16 * (C / c₁ + 24 / c₁ ^ 2) + 8 / c₁) * Pw * (y * X + T * Y) := by
-  have hT0 : 0 < T := by linarith
-  have hX0 : 0 < X := by by_contra h; push Not at h; have := mul_nonpos_of_nonneg_of_nonpos hT0.le h; linarith
-  have hX1 : X ≤ 1 := by have := le_mul_of_one_le_left hX0.le hT1; linarith
-  have e1 : ∀ z : ℝ, z / T = z * X := fun z => by
-    rw [div_eq_iff hT0.ne', mul_assoc, mul_comm X T, hTX, mul_one]
-  have e2 : ∀ z : ℝ, z / T ^ 2 = z * X * X := fun z => by
-    rw [div_eq_iff (pow_pos hT0 2).ne']
-    calc z = z * (T * X) * (T * X) := by rw [hTX]; ring
-      _ = z * X * X * T ^ 2 := by ring
-  simp only [e1, e2]
-  have hPw : 0 ≤ Pw := by linarith
-  have hyX : 0 ≤ y * X := mul_nonneg hy0.le hX0.le
-  have hTY : 0 ≤ T * Y := mul_nonneg hT0.le hY
-  have hcC : 0 ≤ C / c₁ := div_nonneg hC hc₁.le
-  have hc2 : 0 ≤ 24 / c₁ ^ 2 := by positivity
-  have h8 : 0 ≤ 8 / c₁ := div_nonneg (by norm_num) hc₁.le
-  have k1 : 0 ≤ 2 * Real.pi * Real.exp 1 * (1 + C₀) := mul_nonneg (by positivity) (by linarith)
-  have k2 : 0 ≤ 6 * Real.exp 1 * (C + 1) := mul_nonneg (by positivity) (by linarith)
-  have k3 : 0 ≤ 16 * (C / c₁ + 24 / c₁ ^ 2) := mul_nonneg (by norm_num) (add_nonneg hcC hc2)
-  have h1 : 2 * Real.pi * ((ℓ + C₀) * (Real.exp 1 * y)) * X ≤
-      2 * Real.pi * Real.exp 1 * (1 + C₀) * Pw * (y * X) := by
-    have hA : ℓ + C₀ ≤ (1 + C₀) * Pw := by have := le_mul_of_one_le_right hC₀ hP1; linarith
-    have hk : 0 ≤ 2 * Real.pi * Real.exp 1 * (y * X) := mul_nonneg (by positivity) hyX
-    have := mul_le_mul_of_nonneg_left hA hk
-    linarith
-  have hB0 : 0 ≤ C * L ^ 2 + 1 := add_nonneg (mul_nonneg hC (sq_nonneg L)) zero_le_one
-  have hB : C * L ^ 2 + 1 ≤ (C + 1) * Pw := by
-    linarith [mul_le_mul_of_nonneg_left hL2P hC]
-  have hXX : X * X ≤ X := mul_le_of_le_one_right hX0.le hX1
-  have h2 : (C * L ^ 2 + 1) * (Real.exp 1 * y) * X * X * 3 ≤ 3 * Real.exp 1 * (C + 1) * Pw * (y * X) := by
-    have s1 : (C * L ^ 2 + 1) * (X * X) ≤ (C * L ^ 2 + 1) * X := mul_le_mul_of_nonneg_left hXX hB0
-    have s2 : (C * L ^ 2 + 1) * X ≤ (C + 1) * Pw * X := mul_le_mul_of_nonneg_right hB hX0.le
-    have s3 := mul_le_mul_of_nonneg_left (s1.trans s2)
-      (mul_nonneg (by norm_num : (0 : ℝ) ≤ 3) (mul_nonneg (Real.exp_pos 1).le hy0.le))
-    linarith
-  have h3 : (C * L ^ 2 + 24 * L / c₁) * Y * (8 * L / c₁) * (2 * T) ≤
-      16 * (C / c₁ + 24 / c₁ ^ 2) * Pw * (T * Y) := by
-    have hid : (C * L ^ 2 + 24 * L / c₁) * Y * (8 * L / c₁) * (2 * T) =
-        (16 * (C / c₁) * L ^ 3 + 16 * (24 / c₁ ^ 2) * L ^ 2) * (T * Y) := by ring
-    rw [hid]
-    apply mul_le_mul_of_nonneg_right _ hTY
-    linarith [mul_le_mul_of_nonneg_left hL3P hcC, mul_le_mul_of_nonneg_left hL2P hc2]
-  have h4 : Y * (8 * L / c₁) ≤ 8 / c₁ * Pw * (T * Y) := by
-    have hid : Y * (8 * L / c₁) = 8 / c₁ * L * Y := by ring
-    rw [hid]
-    have s1 : 8 / c₁ * L ≤ 8 / c₁ * Pw := mul_le_mul_of_nonneg_left hLP h8
-    have s2 : Y ≤ T * Y := le_mul_of_one_le_left hY hT1
-    calc 8 / c₁ * L * Y ≤ 8 / c₁ * Pw * Y := mul_le_mul_of_nonneg_right s1 hY
-      _ ≤ 8 / c₁ * Pw * (T * Y) := mul_le_mul_of_nonneg_left s2 (mul_nonneg h8 hPw)
-  linarith only [h1, h2, h3, h4, mul_nonneg (mul_nonneg k1 hPw) hTY, mul_nonneg (mul_nonneg k2 hPw) hTY,
-    mul_nonneg (mul_nonneg k3 hPw) hyX, mul_nonneg (mul_nonneg h8 hPw) hyX]
-
-theorem exp_gain_from_zero_free_region (y s c₁ σ₁ L : ℝ) (hy0 : 0 < y) (hℓ : Real.log y = s ^ 2) (hs0 : 0 < s)
-    (hc₁ : 0 < c₁) (hL : 0 < L) (hL4 : 4 * L ≤ s) (hσ : σ₁ ≤ 1 - c₁ / (4 * L)) :
-    Real.exp (c₁ * s / 2) * y ^ σ₁ ≤ y * Real.exp (-(c₁ * s / 2)) := by
-  have hy : y = Real.exp (s ^ 2) := by rw [← hℓ, Real.exp_log hy0]
-  have hyσ : y ^ σ₁ = Real.exp (s ^ 2 * σ₁) := by rw [Real.rpow_def_of_pos hy0, hℓ]
-  rw [hyσ, ← Real.exp_add, hy, ← Real.exp_add]
-  apply Real.exp_le_exp.mpr
-  have h4L : 0 < 4 * L := by linarith
-  have hq : c₁ ≤ c₁ / (4 * L) * s := by
-    rw [div_mul_eq_mul_div, le_div_iff₀ h4L]; exact mul_le_mul_of_nonneg_left hL4 hc₁.le
-  have hc : c₁ ≤ (1 - σ₁) * s := by
-    linarith only [hq, mul_le_mul_of_nonneg_right (by linarith : c₁ / (4 * L) ≤ 1 - σ₁) hs0.le]
-  linarith only [mul_le_mul_of_nonneg_right hc hs0.le]
-
-theorem small_scale_exp_bounds (c₁ s : ℝ) (hc₁ : 0 < c₁) (hc₁' : c₁ ≤ 1 / 20) (hs : s < 10) :
-    Real.exp (c₁ * s / 2) ≤ 3 ∧ 1 ≤ 3 * Real.exp (-(c₁ / 4) * s) := by
-  constructor
-  · have h : c₁ * s / 2 ≤ 1 := by nlinarith
-    calc Real.exp (c₁ * s / 2) ≤ Real.exp 1 := Real.exp_le_exp.mpr h
-      _ ≤ 3 := by have := Real.exp_one_lt_d9; norm_num at this; linarith
-  · have h : -(1 / 8 : ℝ) ≤ -(c₁ / 4) * s := by nlinarith
-    have := Real.add_one_le_exp (-(c₁ / 4) * s)
-    linarith
-
-theorem cube_mul_exp_le_poly_bound (c₁ s y X : ℝ) (hc₁ : 0 < c₁) (hs0 : 0 < s) (hy0 : 0 < y)
-    (hX : X = Real.exp (-(c₁ * s / 2))) :
-    s ^ 3 * X * y ≤ 6 * (8 / (2 * c₁)) ^ 3 * (y * Real.exp (-(c₁ / 4) * s)) := by
-  have hu0 : 0 < c₁ * s / 4 := div_pos (mul_pos hc₁ hs0) (by norm_num)
-  have hexp : (c₁ * s / 4) ^ 3 / 6 ≤ Real.exp (c₁ * s / 4) := by
-    have h := Real.pow_div_factorial_le_exp (c₁ * s / 4) hu0.le 3
-    norm_num [Nat.factorial] at h
-    linarith
-  have hX' : X = Real.exp (-(c₁ * s / 4)) * Real.exp (-(c₁ * s / 4)) := by
-    rw [hX, ← Real.exp_add]; congr 1; ring
-  have he : Real.exp (-(c₁ / 4) * s) = Real.exp (-(c₁ * s / 4)) := by congr 1; ring
-  rw [he, hX']
-  have hu3 : (c₁ * s / 4) ^ 3 * Real.exp (-(c₁ * s / 4)) ≤ 6 := by
-    have h2 : Real.exp (c₁ * s / 4) * Real.exp (-(c₁ * s / 4)) = 1 := by
-      rw [← Real.exp_add]; simp
-    have h3 := mul_le_mul_of_nonneg_right (by linarith : (c₁ * s / 4) ^ 3 ≤ 6 * Real.exp (c₁ * s / 4))
-      (Real.exp_pos (-(c₁ * s / 4))).le
-    linarith
-  have hsu : s = 8 / (2 * c₁) * (c₁ * s / 4) := by
-    have := hc₁.ne'
-    field_simp
-    try ring
-  have hK : 0 ≤ (8 / (2 * c₁)) ^ 3 := pow_nonneg (div_nonneg (by norm_num) (by linarith)) 3
-  have key : s ^ 3 * Real.exp (-(c₁ * s / 4)) ≤ 6 * (8 / (2 * c₁)) ^ 3 := by
-    have hs3 : s ^ 3 = (8 / (2 * c₁)) ^ 3 * (c₁ * s / 4) ^ 3 := by
-      rw [← mul_pow, ← hsu]
-    rw [hs3]
-    linarith only [mul_le_mul_of_nonneg_left hu3 hK]
-  linarith only [mul_le_mul_of_nonneg_right key (mul_pos (Real.exp_pos (-(c₁ * s / 4))) hy0).le]
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExpGainFromZeroFreeRegion =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SmoothChiOf =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SmoothChiOf", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ChebyshevCharacterExplicitGeneral\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExpGainFromZeroFreeRegion\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Algebra.Order.Star.Real\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open Complex MeasureTheory
-
-noncomputable section
-
-namespace Formalism.ZeroFreeDirichlet
-
-theorem smoothed_character_sum_of : SmoothChiOf := by
-  intro hP hRS hD hRight c₁ hc₁ hc₁'
-  obtain ⟨CD, hCD⟩ := hD c₁ hc₁ hc₁'
-  obtain ⟨C₀, hC₀, hR⟩ := hRight
-  obtain ⟨C, hCdef⟩ : ∃ C : ℝ, C = max CD 0 := ⟨_, rfl⟩
-  have hC : 0 ≤ C := hCdef ▸ le_max_right _ _
-  obtain ⟨A, hAdef⟩ : ∃ A : ℝ, A = 2 * Real.pi * Real.exp 1 * (1 + C₀) + 6 * Real.exp 1 * (C + 1) +
-      16 * (C / c₁ + 24 / c₁ ^ 2) + 8 / c₁ := ⟨_, rfl⟩
-  have hA0 : 0 ≤ A := by
-    have ha1 : 0 ≤ 2 * Real.pi * Real.exp 1 * (1 + C₀) := mul_nonneg (by positivity) (by linarith)
-    have ha2 : 0 ≤ 6 * Real.exp 1 * (C + 1) := mul_nonneg (by positivity) (by linarith)
-    have ha3 : 0 ≤ 16 * (C / c₁ + 24 / c₁ ^ 2) :=
-      mul_nonneg (by norm_num) (add_nonneg (div_nonneg hC hc₁.le) (by positivity))
-    have ha4 : 0 ≤ 8 / c₁ := by positivity
-    rw [hAdef]; linarith
-  refine ⟨c₁ / 4, max (16 * A * (6 * (8 / (2 * c₁)) ^ 3)) (3 * (4 * 12 ^ 3 * A)), by positivity, ?_⟩
-  intro q _ χ B y hχ hE hy hq
-  have hD' : ∀ s : ℂ, InRegion (c₁ / 2) q s → (∀ β ∈ B, s ≠ (β : ℂ)) →
-      ‖negLD χ s + ∑ β ∈ B, 1 / (s - (β : ℂ))‖ ≤ C * Real.log ((q : ℝ) * (|s.im| + 2)) ^ 2 :=
-    fun s h1 h2 => (hCD q χ B hχ hE s h1 h2).trans
-      (mul_le_mul_of_nonneg_right (hCdef ▸ le_max_left _ _) (sq_nonneg _))
-  have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (NeZero.ne q)
-  have hy0 : 0 < y := by linarith
-  have hy1 : 1 ≤ y := by linarith
-  have hℓpos : 0 < Real.log y := Real.log_pos (by linarith)
-  obtain ⟨s, hsdef⟩ : ∃ s : ℝ, s = Real.sqrt (Real.log y) := ⟨_, rfl⟩
-  rw [← hsdef] at hq ⊢
-  have hℓ : Real.log y = s ^ 2 := by rw [hsdef]; exact (Real.sq_sqrt hℓpos.le).symm
-  have hs0 : 0 < s := by rw [hsdef]; exact Real.sqrt_pos.mpr hℓpos
-  obtain ⟨T, hTdef⟩ : ∃ T : ℝ, T = Real.exp (c₁ * s / 2) := ⟨_, rfl⟩
-  obtain ⟨X, hXdef⟩ : ∃ X : ℝ, X = Real.exp (-(c₁ * s / 2)) := ⟨_, rfl⟩
-  have hT1 : 1 ≤ T := by rw [hTdef]; exact Real.one_le_exp (by positivity)
-  have hT0 : 0 < T := by linarith
-  have hTX : T * X = 1 := by rw [hTdef, hXdef, ← Real.exp_add]; simp
-  have hX0 : 0 < X := by rw [hXdef]; exact Real.exp_pos _
-  have hX1 : X ≤ 1 := by
-    rw [hXdef]; exact Real.exp_le_one_iff.mpr (by linarith [mul_pos hc₁ hs0])
-  obtain ⟨L, hLdef⟩ : ∃ L : ℝ, L = Real.log ((q : ℝ) * (T + 2)) := ⟨_, rfl⟩
-  obtain ⟨σ₁, hσ₁, hmain⟩ :=
-    chebyshev_character_explicit_general hP hRS c₁ C C₀ hc₁ hc₁' hC hC₀ χ B hχ hE hD' (hR q χ) y T L hy hT1 hLdef.symm
-
-  have hqT1 : (1 : ℝ) ≤ (q : ℝ) * (T + 2) := one_le_mul_of_one_le_of_one_le hq1 (by linarith)
-  have hL0 : 0 ≤ L := by rw [hLdef]; exact Real.log_nonneg hqT1
-  have hlogq : Real.log q ≤ c₁ / 4 * s := (Real.log_le_iff_le_exp (by linarith)).mpr hq
-  have hlogT : Real.log (T + 2) ≤ 2 + c₁ * s / 2 := by
-    rw [Real.log_le_iff_le_exp (by linarith), Real.exp_add, ← hTdef]
-    have h3 : (3 : ℝ) ≤ Real.exp 2 := by have := Real.add_one_le_exp (2 : ℝ); linarith
-    have := mul_le_mul_of_nonneg_right h3 hT0.le
-    linarith
-  have hLb : L ≤ 3 * c₁ / 4 * s + 2 := by
-    rw [hLdef, Real.log_mul (by linarith) (by linarith)]
-    linarith
-  have hs'1 : 1 ≤ s + 2 := by linarith
-  have hLs' : L ≤ s + 2 := by
-    have : 3 * c₁ / 4 * s ≤ s := mul_le_of_le_one_left hs0.le (by linarith)
-    linarith
-  have hP1 : 1 ≤ (s + 2) ^ 3 := one_le_pow₀ hs'1
-  have h23 : (s + 2) ^ 2 ≤ (s + 2) ^ 3 := pow_le_pow_right₀ hs'1 (by norm_num)
-  have hℓP : Real.log y ≤ (s + 2) ^ 3 := by
-    rw [hℓ]
-    have h1 : s ^ 2 ≤ (s + 2) ^ 2 := pow_le_pow_left₀ hs0.le (by linarith) 2
-    linarith
-  have hL2P : L ^ 2 ≤ (s + 2) ^ 3 := by
-    have h1 : L ^ 2 ≤ (s + 2) ^ 2 := pow_le_pow_left₀ hL0 hLs' 2
-    linarith
-  have hL3P : L ^ 3 ≤ (s + 2) ^ 3 := pow_le_pow_left₀ hL0 hLs' 3
-  have hLP : L ≤ (s + 2) ^ 3 := by
-    have : s + 2 ≤ (s + 2) ^ 3 := le_self_pow₀ hs'1 (by norm_num)
-    linarith
-  have hyσ0 : 0 ≤ y ^ σ₁ := Real.rpow_nonneg hy0.le _
-  have hterms := perron_error_terms_sum_bound C C₀ c₁ y T X L ((s + 2) ^ 3) (y ^ σ₁) (Real.log y) hc₁ hC hC₀ hy0
-    hT1 hTX hL0 hyσ0 hℓP hP1 hL2P hL3P hLP
-  rw [← hAdef] at hterms
-  have htot := hmain.trans hterms
-  have hyX : 0 ≤ y * X := by positivity
-  by_cases hs : 10 ≤ s
-  ·
-    have hL4 : 4 * L ≤ s := by
-      have := mul_le_mul_of_nonneg_right hc₁' hs0.le
-      linarith
-    have hLpos : 0 < L := by
-      rw [hLdef]; apply Real.log_pos
-      have := mul_le_mul hq1 (show (3 : ℝ) ≤ T + 2 by linarith) (by norm_num) (by linarith)
-      linarith
-    have hWX : T * y ^ σ₁ ≤ y * X := by
-      rw [hTdef, hXdef]; exact exp_gain_from_zero_free_region y s c₁ σ₁ L hy0 hℓ hs0 hc₁ hLpos hL4 hσ₁
-    have hs'2 : (s + 2) ^ 3 ≤ 8 * s ^ 3 := by
-      calc (s + 2) ^ 3 ≤ (2 * s) ^ 3 := pow_le_pow_left₀ (by linarith) (by linarith) 3
-        _ = 8 * s ^ 3 := by ring
-    have hX3 := cube_mul_exp_le_poly_bound c₁ s y X hc₁ hs0 hy0 hXdef
-    calc _ ≤ A * (s + 2) ^ 3 * (y * X + T * y ^ σ₁) := htot
-      _ ≤ A * (8 * s ^ 3) * (y * X + y * X) := by gcongr
-      _ = 16 * A * (s ^ 3 * X * y) := by ring
-      _ ≤ 16 * A * (6 * (8 / (2 * c₁)) ^ 3 * (y * Real.exp (-(c₁ / 4) * s))) := by gcongr
-      _ = 16 * A * (6 * (8 / (2 * c₁)) ^ 3) * y * Real.exp (-(c₁ / 4) * s) := by ring
-      _ ≤ _ := by gcongr; exact le_max_left _ _
-  ·
-    rw [not_le] at hs
-    obtain ⟨hT3', hexp⟩ := small_scale_exp_bounds c₁ s hc₁ hc₁' hs
-    have hT3 : T ≤ 3 := hTdef ▸ hT3'
-    have hPs : (s + 2) ^ 3 ≤ 12 ^ 3 := pow_le_pow_left₀ (by linarith) (by linarith) 3
-    have hσ₁1 : σ₁ ≤ 1 := by
-      have : 0 ≤ c₁ / (4 * L) := by positivity
-      linarith
-    have hyσ : y ^ σ₁ ≤ y := by
-      have := Real.rpow_le_rpow_of_exponent_le hy1 hσ₁1
-      rwa [Real.rpow_one] at this
-    have hW3 : T * y ^ σ₁ ≤ 3 * y := mul_le_mul hT3 hyσ hyσ0 (by norm_num)
-    have hyX1 : y * X ≤ y := mul_le_of_le_one_right hy0.le hX1
-    calc _ ≤ A * (s + 2) ^ 3 * (y * X + T * y ^ σ₁) := htot
-      _ ≤ A * 12 ^ 3 * (y + 3 * y) := by gcongr
-      _ = 4 * 12 ^ 3 * A * y * 1 := by ring
-      _ ≤ 4 * 12 ^ 3 * A * y * (3 * Real.exp (-(c₁ / 4) * s)) := by gcongr
-      _ = 3 * (4 * 12 ^ 3 * A) * y * Real.exp (-(c₁ / 4) * s) := by ring
-      _ ≤ _ := by gcongr; exact le_max_right _ _
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SmoothChiOf =====
-
--- ===== clump member: Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower =====
--- clump-header: {"m": "Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower", "h": "module\n\npublic import Formalism.LandauZeroFreeBounds.LogDerivRegionChiOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.ExcBoundOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LDerivNearOne\nimport Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LGrowth\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LRight\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LandauLocal3\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.LogDerivRegionChiOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PerronChi\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.PsiChiBoundOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.RectShiftChi\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SiegelWalfiszOf\npublic import Formalism.LandauZeroFreeBounds.ExceptionalZeroBounds.SmoothChiOf\npublic import Formalism.LandauZeroFreeBounds.FinalSiegel\npublic import Formalism.LandauZeroFreeBounds.NoZeroComplex\nimport Formalism.ZeroFreeRegion.LogDerivRegion\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-namespace Formalism.ZeroFreeDirichlet
-
-theorem logDerivRegionChi : LogDerivRegionChi :=
-  log_deriv_in_zero_free_region landau_local3 lfunction_polynomial_growth inverseBound l_log_deriv_right
-
-theorem smoothChi : SmoothChi :=
-  smoothed_character_sum_of perron_formula_character rectangle_contour_shift_character logDerivRegionChi l_log_deriv_right
-
-theorem psiChiBound : PsiChiBound :=
-  chebyshev_character_bound_of smoothChi Formalism.ZF.gzPNT
-
-theorem excBound_of_siegelLower (hS : SiegelLower) : ExcBound :=
-  exceptional_zero_bound_of hS lfunction_deriv_near_one
-
-theorem siegelWalfisz_of_siegelLower (hS : SiegelLower) : SiegelWalfisz :=
-  siegel_walfisz_character_of psiChiBound zFRDirichlet (excBound_of_siegelLower hS)
-
-theorem excBound : ExcBound := excBound_of_siegelLower siegelLower
-
-theorem siegelWalfisz : SiegelWalfisz := siegelWalfisz_of_siegelLower siegelLower
-
-end Formalism.ZeroFreeDirichlet
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower =====

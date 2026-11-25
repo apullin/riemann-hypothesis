@@ -13,6 +13,7 @@ public import Formalism.GL3MeanSquares.HookFormulaTorsion.OneAddInvPowLeExpOne
 public import Formalism.SharpRestriction.GlobalSchurBounds.JointsL
 import Mathlib.Tactic.Linter.Style
 import Formalism.LandauZeroFreeBounds.SiegelWalfiszAPOfSiegelLower
+import Mathlib.NumberTheory.Harmonic.Bounds
 import Mathlib.Tactic.Linter.HaveILetI
 import Formalism.LocalRingCardinality.RankBoundMonotoneInDimension
 
@@ -62,7 +63,7 @@ theorem numerical_nonvanishing_bound : Formalism.HermitianLattices.ZeroFreeRegio
     calc x ^ (2 * ε / 15) / (4 * Real.log x ^ 2) * lam
         ≤ x ^ (2 * ε / 15) / (4 * Real.log x ^ 2) * (2 * x ^ (ε / 5) * Real.log x ^ 2) :=
           mul_le_mul_of_nonneg_left hlamle (by positivity)
-      _ = x ^ (ε / 3) / 2 := by rw [hsplit]; field_simp <;> ring
+      _ = x ^ (ε / 3) / 2 := by rw [hsplit]; field_simp; ring
       _ ≤ Real.log y := ha
   · have hsplit : x ^ (ε / 3) = x ^ (ε / 6) * x ^ (ε / 6) := by
       rw [← Real.rpow_add hx0]; congr 1; ring
@@ -1409,7 +1410,7 @@ theorem proposition_six_family_of_real_classes {eps : ℝ} (Fm : FamP eps) (h6 :
 private theorem conductor_le_of_quadratic_squares {N M : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (hp : χ.IsPrimitive)
     (h2 : χ ^ 2 = 1) (hM : M ∣ N) (hM0 : M ≠ 0)
     (hsq : ∀ t : ℤ, ∃ v : ZMod N, v ^ 2 = 1 + (M : ZMod N) * (t : ZMod N)) : N ≤ M := by
-  haveI : NeZero M := ⟨hM0⟩
+  have : NeZero M := ⟨hM0⟩
   have hf : χ.FactorsThrough M := by
     rw [DirichletCharacter.factorsThrough_iff_ker_unitsMap hM]
     intro u hu
@@ -1605,7 +1606,7 @@ theorem proviso_e (L : SizeData₂ D) (h4f : LinkB.RankM D) (hDu : StandardLatti
   have hfR : (0 : ℝ) < D.R.f := by exact_mod_cast hf
   have hkR : (0 : ℝ) < D.R.k := by exact_mod_cast (by omega : 0 < D.R.k)
   have hX : Real.exp (StandardLattice.logXuD D u) ^ (D.R.f * D.R.k) = StandardLattice.DstarD D / StandardLattice.duStarU D u := by
-    rw [← Real.exp_nat_mul]
+    rw [← Real.exp_natCast_mul]
     unfold StandardLattice.logXuD StandardLattice.logXu
     push_cast
     rw [show (D.R.f : ℝ) * D.R.k * (1 / ((D.R.f : ℝ) * D.R.k) * Real.log (StandardLattice.DstarD D / StandardLattice.duStarU D u)) =
