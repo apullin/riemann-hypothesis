@@ -83,7 +83,7 @@ theorem main : GroundTheory.Heights₂.Heights.NumbersDVR.FlagIndependence.State
       (GenericProjClosureDivisor.proof TwistedDualGensExpress.proof)
   have hFM : SegreFlagClosureModel.Statement :=
     SegreFlagClosureModel.proof (SegreFlagClosureTrdeg.proof SegreFlagConeAlg.proof)
-  have hSP := SegreFlagClosurePullback.proof _root_.GlobalTheory.CompanionTheory.Ar.Num.PairNumberPullback.main hPE hFM
+  have hSP := SegreFlagClosurePullback.proof PositivityTheory.Xgn.t_s_pullback hPE hFM
     PairNumberRelabel.proof VerticalDivisorJoinPullback.proof SegreFlagClosureBirational.proof
   have hSCN := SegreClosureNumber.proof hPE hFM
     _root_.GlobalTheory.CompanionTheory.CommAlg.SegreFlag.segreFlagClosureCut hSP

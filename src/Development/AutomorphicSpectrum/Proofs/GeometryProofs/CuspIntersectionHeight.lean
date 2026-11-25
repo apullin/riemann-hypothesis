@@ -125,8 +125,6 @@ variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
   {D : ComponentData II Ψ K ι Ω E} {O Lt : Type} [CommRing O] [AddCommGroup Lt] [Module O Lt]
 
 
-
-
 end Main
 
 section Points
@@ -468,7 +466,7 @@ theorem div_mem_of_span_eq (R : Subring Ω) {t g : Ω} (ht : t ≠ 0) (hg : g �
 theorem detLat_isGenAt {E : Type} [AddCommGroup E] [Module Ω E] (V : Lat ξ E) {r : ℕ} {s b : Fin r → E}
     {T : Matrix (Fin r) (Fin r) Ω} {p : Cpt ξ} (hs : LinearIndependent Ω s) (hb : V.IsFrameAt b p)
     (hT : ∀ k, b k = ∑ k', T k' k • s k') (hdet : T.det ≠ 0) : (detLat V s).IsGenAt p T.det := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.BigBlock.detLat_isGenAt <;> assumption
+  apply LevelTowerAlt.determinant_lattice_generator <;> assumption
 
 end Det
 
@@ -628,11 +626,6 @@ theorem val_descend (ξ : Sp Ω ⟶ X) (zL : Sp L ⟶ X) (e : L →+* ℂ) {a : 
     ⟨h'', _, (genMap_stalkSpecializes ξ hc h' h'' s).trans hs, rfl⟩
   exact ⟨_, hv, CxVal.unique (valAt_of_field_map ξ zL _ e rfl hv) ⟨h', s, hs, rfl⟩⟩
 
-theorem coords_field_map (ξ : Sp Ω ⟶ X) {K : Type} {J : K → Type} {y : (Σ k, J k) → Ω} {zL : Sp L ⟶ X}
-    {w : (Σ k, J k) → L} (hw : CoordsAt ξ y zL w) (e : L →+* ℂ) :
-    CoordsAt ξ y (spMap e ≫ zL) (fun p => e (w p)) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.Vert.coords_map <;> assumption
-
 theorem not_inFibre [CharZero Ω] [CharZero L] (ξ : Sp Ω ⟶ X) (zL : Sp L ⟶ X) (h : genPt ξ ⤳ centre zL) {p : ℕ}
     (hp : p ≠ 0) : ¬ InFibre ξ p ⟨centre zL, h⟩ := by
   unfold InFibre
@@ -663,13 +656,13 @@ theorem datum (hG : Top.Given) (E : Type) [Field E] [NumberField E] [IsCMField E
       ∀ τ, (Or.𝔐.V (Or.sm τ)).IsFrameAt (s τ) ⟨centre zL, Or.𝔐.all _⟩ := by
   classical
   obtain ⟨e₀⟩ : Nonempty (L →+* ℂ) := inferInstance
-  have hw₀ := coords_field_map Or.𝔐.ξ hw e₀
+  have hw₀ := GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.Vert.coords_map Or.𝔐.ξ hw e₀
   obtain ⟨⟨d⟩, hall⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.phMu_eq_log_small_blocks_abelian hG E H D Xo l c Y II K J Ω W Dc Hd S₀ Or _ _ hw₀
   obtain ⟨⟨s, hs⟩, hs2⟩ := hall d
   obtain ⟨hfr, hu0, -⟩ := hs2 s hs
   have hT := Or.𝔐.tie
   have tv : ∀ (e : L →+* ℂ) (a : Ω) (r : ℂ), ValAt Or.𝔐.ξ (spMap e ≫ zL) a r ↔ IsValueAt Dc.y a (fun p => e (w p)) r :=
-    fun e a r => _root_.GlobalTheory.CompanionTheory.Ar.valAt_iff_isValueAt_coords _ _ _ K J _ hT _ _ (Or.𝔐.all _) (coords_field_map Or.𝔐.ξ hw e) a r
+    fun e a r => _root_.GlobalTheory.CompanionTheory.Ar.valAt_iff_isValueAt_coords _ _ _ K J _ hT _ _ (Or.𝔐.all _) (GlobalTheory.CompanionTheory.Ar.Cusp.PtHt.Vert.coords_map Or.𝔐.ξ hw e) a r
 
   obtain ⟨vf, hvf, hvf0⟩ := d.inDom.2
   obtain ⟨fL, hfL, hfe⟩ := val_descend _ _ _ ((tv e₀ _ _).2 hvf)

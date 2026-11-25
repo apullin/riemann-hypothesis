@@ -39,7 +39,7 @@ import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieLatticeDominantC
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelExistsUniqueEquiv
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelIsoTransport
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalCptIffNormalScheme
+import Development.WeilBound.CoreStatements.HodgeTatePoints.MfBase
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.IsHTFormOver
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.OmegaLatticeDominantCompat
@@ -548,9 +548,9 @@ theorem omP_ext' {Y : Model Xo c (algebraMap (𝓞 c.F) c.F)} {S : Finset ℕ} {
     rwa [hR] at this
   have key : A'.M.htOm A'.t.PP.L (p ^ A.R p) = (A.M.htOm A.t.PP.L (p ^ A.R p)).pull A'.ξ g jd := by
     rcases Nat.eq_zero_or_pos (D.p + D.q) with hpq | hpq
-    · exact (_root_.GlobalTheory.CompanionTheory.Ar.HtPull.main A.X Ω A.ξ A.tie.gen ((_root_.GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal _ Ω A.ξ A.tie.gen A.all).2.2 A.normal) A.t.G A.t.semi
+    · exact (_root_.GlobalTheory.CompanionTheory.Ar.HtPull.main A.X Ω A.ξ A.tie.gen ((PositivityTheory.HtPt.Mf.xr_normal _ Ω A.ξ A.tie.gen A.all).2.2 A.normal) A.t.G A.t.semi
         A.t.PP.L _ (Nat.one_le_iff_ne_zero.2 hn) (A.tors p hp) _ (OmLink.genWeil_trivial o A.t m0 hN hpq) A.Li A.M A'.X Ω' A'.ξ A'.tie.gen
-        ((_root_.GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal _ Ω' A'.ξ A'.tie.gen A'.all).2.2 A'.normal) g i hd A'.t.G m.φ m.cart A'.t.PP.L _
+        ((PositivityTheory.HtPt.Mf.xr_normal _ Ω' A'.ξ A'.tie.gen A'.all).2.2 A'.normal) g i hd A'.t.G m.φ m.cart A'.t.PP.L _
         (OmLink.genWeil_trivial o' A'.t m0' hN hpq) A'.Li A'.M j₁ jd hpt hadj).1
     · funext p'
       have hsp : genPt A.ξ ⤳ g p'.1 := LatModel.dominates_spec hd p'

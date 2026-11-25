@@ -11,14 +11,14 @@ public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.NumberTheory.Padics.PadicIntegers
 public import Mathlib.RingTheory.Henselian
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.CompleteIntegersProperties
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfFin
+import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfMain
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.PolarisedDivisibleGroupExists
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFreeOverLocalRing
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionFive
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionFourStatement
-import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionOne
 import Mathlib.Tactic.Linter.HaveILetI
 
 @[expose] public section
@@ -41,11 +41,11 @@ def ordTower (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClosed C] [Char
     [IsCommMonObj G] (hG : IsSemiAbelian G) (y : Spec (CommRingCat.of O) ⟶ S) (La : Type) [AddCommGroup La]
     [Module.Free ℤ La] [Module.Finite ℤ La] (X : TorsTower p G y La) (L : Type) [AddCommGroup L] [Module O L]
     (M : LieModel G y L) : OrdTower p O La L :=
-  haveI : IsLocalRing O := (_root_.GlobalTheory.CompanionTheory.Ar.HT.padicComplete_integers_structure p C v O hv hp hO).2.1.toIsLocalRing
-  have h3 := _root_.GlobalTheory.CompanionTheory.Ar.HT.tw_hopf_main p C v O hv hp hO S G hG y La X
+  haveI : IsLocalRing O := (PositivityTheory.HtPt.Twhopf.padic_alg p C v O hv hp hO).2.1.toIsLocalRing
+  have h3 := PositivityTheory.HtPt.Twhopf.tw_hopf p C v O hv hp hO S G hG y La X
   have h4 := _root_.PositivityTheory.HtPt.Gi.tw_res p C v O hv hp hO S G hG y La X
   have h5 := _root_.GlobalTheory.CompanionTheory.Ar.HT.TwDer.der_main p C v O hv hp hO S G hG y La X L M
-  have h6 := (GlobalTheory.T.semiabelian_adic_torsion_four p C v O hv hp hO S G hG y La X L M).1
+  have h6 := (PositivityTheory.HtPt.Twfunct.tw_funct p C v O hv hp hO S G hG y La X L M).1
   { A := fun n => (X.Γ n).btOrder ⊤
     hopf := by
       obtain ⟨U, H, -, -, -, h, -⟩ := h3
@@ -67,13 +67,13 @@ theorem pointHT (hF : FarguesHodgeTate) : PointHT := by
     hrank ζ hζ hζp hpair κ hκ
   haveI : Module.Free ℤ La := hu.free
   haveI : Module.Finite ℤ La := hu.finite
-  haveI : IsLocalRing O := (_root_.GlobalTheory.CompanionTheory.Ar.HT.padicComplete_integers_structure p C v O hv hp hO).2.1.toIsLocalRing
+  haveI : IsLocalRing O := (PositivityTheory.HtPt.Twhopf.padic_alg p C v O hv hp hO).2.1.toIsLocalRing
   obtain ⟨hLf, hLfin⟩ := lie_free_finite S G hG.smooth O y L M
   let T := ordTower p C v O hv hp hO S G hG y La X L M
   have hacts : ∀ a : 𝓞 E, T.Acts (DistribSMul.toAddMonoidHom La a) (ρL a) := by
     intro a n f g hfg
     haveI := hmon a
-    exact (GlobalTheory.T.semiabelian_adic_torsion_four p C v O hv hp hO S G hG y La X L M).2 (act a) _ (ρL a) (hind a) (hact a) n f g hfg
+    exact (PositivityTheory.HtPt.Twfunct.tw_funct p C v O hv hp hO S G hG y La X L M).2 (act a) _ (ρL a) (hind a) (hact a) n f g hfg
   have hpe : T.PairingExtends EF ζ := fun n =>
     _root_.PositivityTheory.HtPt.Twpair.tw_pair p C v O hv hp hO S G hG y La X EF ζ (fun n => (hζ n).pow_eq_one) hpair n
   exact _root_.GlobalTheory.CompanionTheory.Ar.HT.TowerPoint.exists_HTPoint hF p C v O hv hp hO E c hc La EF N u hu L T ρL ζ κ hacts hrank hζ hζp hpe hκ

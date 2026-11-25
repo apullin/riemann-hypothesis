@@ -110,7 +110,7 @@ theorem ModelDimension.geo_core (Or : RootOrigin Y SS RM Fx) (Fr : Small.GenFram
   obtain ⟨y₃, h₃⟩ := GlobalTheory.Frames.FramedBaseChange.exists_frMap hS E H Dw l Xo c _ _ φA (genFr h Z)
   have hk : φ.comp (algebraMap (kap Z) (Om Z)) = Or.𝔐.fn.comp ψ.toRingHom := RingHom.ext hφk
   have hbase : spMap φ ≫ (genFr h Z).x = Fr.y₀.x := by
-    rw [hgx, ← Category.assoc, spc, hk, ← hy₀]
+    rw [hgx, ← Category.assoc, Formalism.L2.Pj.spMap_comp_ring, hk, ← hy₀]
     exact hx
   have hx₃ : y₃.x = Fr.y₀.x := h₃.1.trans hbase
   have hcoef : ∀ s (i j : Fin (Dw.mult (Small.labelC s))), φ (genCoef Z (Small.labelC s) i j) = v s j i := by
@@ -130,7 +130,7 @@ theorem ModelDimension.geo_core (Or : RootOrigin Y SS RM Fx) (Fr : Small.GenFram
     have hv : (fun j => spMap (Formalism.L2.Pj.dualMap φ) ≫ spMap (Formalism.L2.Pj.dualMap (algebraMap (kap Z) (Om Z))) ≫
         y₀.u (Small.labelC s) j) = fun j => (N.pt (Or.Fl.j (ec (Small.labelC s) j))).left := by
       funext j
-      rw [hj, ← Category.assoc, spc, ← dualMap_comp₂, hk]
+      rw [hj, ← Category.assoc, Formalism.L2.Pj.spMap_comp_ring, ← Formalism.L2.Pj.dualMap_comp, hk]
     rw [hbase, hv, comb_iff N] at h1
     rw [h₃.2.1]
     refine h1.trans ?_

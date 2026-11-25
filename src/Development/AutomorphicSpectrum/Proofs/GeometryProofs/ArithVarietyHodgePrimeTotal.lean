@@ -583,8 +583,8 @@ theorem order_overlap {R₁ R₂ R' : Type} [CommRing R₁] [IsDomain R₁] [Com
     (fl₁ : Module.Flat R₁ R') (fl₂ : Module.Flat R₂ R') (h : R₂) [IsLocalization.Away h R'] {a : T → R₁}
     (ha : a ∈ Γ₁.btOrder ⊤) :
     ∃ (m : ℕ), ∃ b ∈ Γ₂.btOrder ⊤, ∀ t, algebraMap R₂ R' (b t) = algebraMap R₂ R' h ^ m * algebraMap R₁ R' (a t) := by
-  have e1 := _root_.GlobalTheory.CompanionTheory.Ar.BT.FlatBC.btOrder_flat_baseChange R₁ T Γ₁ R' Γ' F₁ hF₁ fl₁
-  have e2 := _root_.GlobalTheory.CompanionTheory.Ar.BT.FlatBC.btOrder_flat_baseChange R₂ T Γ₂ R' Γ' F₂ hF₂ fl₂
+  have e1 := PositivityTheory.HtPt.Htat.ValuationInjectivePi.btOrder_flat_baseChange R₁ T Γ₁ R' Γ' F₁ hF₁ fl₁
+  have e2 := PositivityTheory.HtPt.Htat.ValuationInjectivePi.btOrder_flat_baseChange R₂ T Γ₂ R' Γ' F₂ hF₂ fl₂
   have hz : (fun t => algebraMap R₁ R' (a t)) ∈ extOrder (algebraMap R₂ R') (Γ₂.btOrder ⊤) := by
     rw [← e2, e1]
     exact Algebra.subset_adjoin ⟨a, ha, rfl⟩
@@ -648,7 +648,7 @@ theorem der_overlap {R₁ R₂ R' : Type} [CommRing R₁] [IsDomain R₁] [CommR
     exact ⟨w, (hiff fa w).1 hw⟩
   obtain ⟨w, hw⟩ := hwb
   have hz : (fun t => algebraMap R₁ R' (f₁ t)) ∈ Γ'.btOrder ⊤ := by
-    rw [_root_.GlobalTheory.CompanionTheory.Ar.BT.FlatBC.btOrder_flat_baseChange R₁ T Γ₁ R' Γ' F₁ hF₁ fl₁]
+    rw [PositivityTheory.HtPt.Htat.ValuationInjectivePi.btOrder_flat_baseChange R₁ T Γ₁ R' Γ' F₁ hF₁ fl₁]
     exact Algebra.subset_adjoin ⟨f₁, hf₁, rfl⟩
   have hw₁ : ∃ w₁, Γ'.IsDerAtOne (F₁ ≫ i₁) M' N (fun t => algebraMap R₁ R' (f₁ t)) w₁ := by
     obtain ⟨-, -, -, -, -, hθ⟩ := _root_.GlobalTheory.CompanionTheory.Ar.BT.lemmaBT_holds R' T Γ' S G x' N (F₁ ≫ i₁) hi' hsm

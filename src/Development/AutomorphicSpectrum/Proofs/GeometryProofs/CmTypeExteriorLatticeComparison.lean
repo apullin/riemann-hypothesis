@@ -348,7 +348,7 @@ theorem frame_gram {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host 
     (hodgeGram_iff_of_sabMap E H _ _ _ _ _ 𝔐.m z (y₀ ≫ Y.j) n w v' Γ₀ hz.symm hu3).2 hG2
   let A : Matrix (Fin n) (Fin n) ℂ := ρ.mapMatrix T'
   have hG4 : IsHodgeGram 𝔐.t.G 𝔐.t.PP.L z vb (A * Γ₀ * A.conjTranspose) :=
-    _root_.GlobalTheory.CompanionTheory.Relay.hodge_gram_linear_combination _ _ _ z n n w vb Γ₀ A (fun k => (hw k).isTanAt) hG3 hcomb
+    PositivityTheory.Xgf.hodge_gram_linear_combination _ _ _ z n n w vb Γ₀ A (fun k => (hw k).isTanAt) hG3 hcomb
   have hEq : Γ = (A * Γ₀ * A.conjTranspose).transpose :=
     gram_eq _ _ _ z n vb _ Γ 𝔐.t.PP.isLB htan' hG4 hIP
   have hdet : T.det * T'.det = 1 := by rw [← Matrix.det_mul, hTT, Matrix.det_one]

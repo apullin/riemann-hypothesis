@@ -208,7 +208,7 @@ theorem finConstAll : FinConstAll := by
   obtain ⟨ϖ, hϖ⟩ := IsDiscreteValuationRing.exists_irreducible O
   have hdvd : ϖ ∣ ((p : ℕ) : O) := dvd_prime β κ hnorm hϖ
   obtain ⟨hprop, hnormal, hover, hgf, hfd, hrk, hrk'⟩ :=
-    GlobalTheory.T.proper_normal_compactification E H D l Xo c O β Y U Z τ hβ hfr hτ
+    PositivityTheory.Xgn.integral_model_facts E H D l Xo c O β Y U Z τ hβ hfr hτ
   letI : Algebra O Z.Ω := (Z.inc.comp β).toAlgebra
   haveI := hfd
   haveI := hprop

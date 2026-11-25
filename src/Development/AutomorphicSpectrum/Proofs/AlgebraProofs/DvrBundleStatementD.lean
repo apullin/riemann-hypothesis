@@ -89,7 +89,7 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
   have hscJ := hpull.2.2 _ hlat
   have hmodJ : IsModelOver (pointIdeal O (joinCoord x z)) d :=
     ((BundleExamples.isModelOver_iff O _ d).1 hJ).2
-  obtain ⟨-, f, f', hpair⟩ := _root_.GlobalTheory.CompanionTheory.Ar.FlagPairOfFrames.main O Ω (K ⊕ K') (Sum.elim ι ι') (joinCoord x z) ϖ hϖ d hmodJ N V
+  obtain ⟨-, f, f', hpair⟩ := PositivityTheory.Xgn.t_flagpair_of_frames O Ω (K ⊕ K') (Sum.elim ι ι') (joinCoord x z) ϖ hϖ d hmodJ N V
     (EB 0) (EB 1) hsameJ w w (b 0) (b 1) (hall 0).2 (hall 1).2 (fun i j hij => by
       simp [Module.Basis.repr_self, hij.ne])
   have hnum := _root_.GlobalTheory.CompanionTheory.Ar.Num.ck_rootNum_eq_pairNum_on_flagPair O Ω K ι x ϖ hϖ d hmod N V E E' hsame K' ι' z hJ hbir (EB 0) (EB 1) p0 p1

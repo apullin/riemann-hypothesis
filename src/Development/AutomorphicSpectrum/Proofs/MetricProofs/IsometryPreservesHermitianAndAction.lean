@@ -101,7 +101,7 @@ theorem isometry_and_commutes : ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
     (∀ x y, R'.form (γ x) (γ y) = R.form x y) → (∀ x, R'.P (γ x) = φ (R.P x)) →
     (∀ x y, R'.ip (φ x) (φ y) = R.ip x y) ∧ ∀ a x, φ (R.B a x) = R'.B a (φ x) := by
   intro E _ _ _ g Λ _ _ R R' γ φ hf hP
-  have hs := (_root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R).2.1
+  have hs := (LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R).2.1
   exact ⟨isometry_of_periods R R' hs γ φ hf hP, commutes_of_periods R R' hs γ φ hP⟩
 
 end GlobalTheory.CompanionTheory.Ar.Cusp.PeriodIso

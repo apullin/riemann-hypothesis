@@ -307,10 +307,10 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.cm_pack_pure_frame : ∀ (E : 
         (spMap (dualMap (algebraMap X.K ℂ)) ≫ (v a).left)) →
       IsEigFrame Xo.univ.t.act (under X.y) (X.β.comp (tauIn c σ)) v := by
     intro b σ n T v hT hspan hd
-    obtain ⟨⟨v', hv'⟩, hiff⟩ := GlobalTheory.CompanionTheory.Relay.tangent_vectors_base_change E H _ Xo.univ.t X.K ℂ (algebraMap X.K ℂ) (under X.y) (FU.u i P)
+    obtain ⟨⟨v', hv'⟩, hiff⟩ := PositivityTheory.Xgf.tangent_vectors_base_change E H _ Xo.univ.t X.K ℂ (algebraMap X.K ℂ) (under X.y) (FU.u i P)
       (X.β.comp (tauIn c σ)) n v X.pt.symm
     rw [hiff v' hv']
-    obtain ⟨M, ρ, hact, hρ, hder, -⟩ := GlobalTheory.CompanionTheory.Relay.lie_model_with_cm_action E H D l Xo c g ty FU i P hP
+    obtain ⟨M, ρ, hact, hρ, hder, -⟩ := PositivityTheory.Xgf.lie_model_with_cm_action E H D l Xo c g ty FU i P hP
     have hz := _root_.PositivityTheory.Xgf.curve_z_ne_zero E H _ (Z b)
     obtain ⟨-, huniq, -⟩ := GlobalTheory.isDerivAt0_ex_isTanAt E H D l Xo (algebraMap (KA l) ℂ) g ty FU i P hP
     have e : ∀ a, v' a = M.pt ((Z b).z • T a) := fun a => by
@@ -336,7 +336,7 @@ theorem _root_.GlobalTheory.CompanionTheory.Relay.cm_pack_pure_frame : ∀ (E : 
   have hpq : D.p + D.q = (FU.Di i).p + (FU.Di i).q := by rw [(FU.sig i).1, (FU.sig i).2]
   obtain ⟨⟨hl1, hs1⟩, hl2, hs2⟩ := _root_.PositivityTheory.Xgf.pure_type_projection_independent E H (FU.Di i) g ty P hP D.p D.q x τ hty hpq hτ hx hli
   refine ⟨?_, fun v w hvw => ⟨X.hy, le_refl _, ?_, ?_⟩⟩
-  · obtain ⟨M, ρ, lam, -, -, -, -, -, hcm⟩ := _root_.GlobalTheory.CompanionTheory.Relay.cm_lie_model_action E H D l Xo c g ty FU i Z P hP X
+  · obtain ⟨M, ρ, lam, -, -, -, -, -, hcm⟩ := PositivityTheory.Xgf.cm_lie_model_action E H D l Xo c g ty FU i Z P hP X
     exact ⟨fun a => M.pt (HT.eigProj ρ (X.β.comp (tauE c τ)) (lam true ⟨x (.inl a), hx.1 a⟩)),
       fun j => M.pt (HT.eigProj ρ (X.β.comp (tauE c (ComplexEmbedding.conjugate τ))) (lam false ⟨x (.inr j), hx.2 j⟩)),
       fun a => (hcm _ _ _ _).2 rfl, fun j => (hcm _ _ _ _).2 rfl⟩

@@ -352,7 +352,7 @@ namespace GlobalTheory.CompanionTheory.Ar.Cusp
 
 theorem riemLat_basis_periods_linearIndependent : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (R : RiemLat E g Λ) (n : ℕ) (b : Module.Basis (Fin n) ℤ Λ), LinearIndependent ℝ (fun j => R.P (b j)) := by
   intro E _ _ _ g Λ _ _ R n b
-  have hspan : Submodule.span ℝ (Set.range R.P) = ⊤ := (_root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R).2.1
+  have hspan : Submodule.span ℝ (Set.range R.P) = ⊤ := (LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R).2.1
   have hmem : ∀ x : Λ, R.P x ∈ Submodule.span ℝ (Set.range fun j => R.P (b j)) := by
     intro x
     have hx : x ∈ Submodule.span ℤ (Set.range b) := by
@@ -1244,7 +1244,7 @@ theorem exists_univ_quot : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
     intro x h
     simp only [π, dite_eq_left h]
     exact (hex x h).choose_spec
-  have hinj : Function.Injective R₀'.P := (_root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g' Λ' Unit R₀').1
+  have hinj : Function.Injective R₀'.P := (LevelTowerAlt.riemann_lattice_eigen_projections E g' Λ' Unit R₀').1
   have hπs : ∀ x', ∃ x ∈ D, π x = x' := by
     intro x'
     have : R₀'.P x' ∈ Set.range R₀'.P := ⟨x', rfl⟩

@@ -53,9 +53,6 @@ theorem unitAt_or_of_add (hg : IsCptGen ξ) (p : Cpt ξ) {s t : Ω} (hs : s ∈ 
   · exact Or.inl ((GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt (hg.inj p) _).1 h)
   · exact Or.inr ((GlobalTheory.CompanionTheory.Ar.TieVB.isUnit_iff_unitAt (hg.inj p) _).1 h)
 
-theorem unitAt_mul {p : Cpt ξ} {s t : Ω} (hs : unitAt ξ p s) (ht : unitAt ξ p t) : unitAt ξ p (s * t) :=
-  ⟨mul_ne_zero hs.1 ht.1, mul_mem hs.2.1 ht.2.1, by rw [mul_inv]; exact mul_mem hs.2.2 ht.2.2⟩
-
 theorem unitAt_pow {p : Cpt ξ} {s : Ω} (hs : unitAt ξ p s) (n : ℕ) : unitAt ξ p (s ^ n) :=
   ⟨pow_ne_zero _ hs.1, pow_mem hs.2.1 _, by rw [← inv_pow]; exact pow_mem hs.2.2 _⟩
 
@@ -69,12 +66,7 @@ theorem unitAt_of_mul {p : Cpt ξ} {s t : Ω} (hs : s ∈ regAt ξ p) (ht : t �
   rw [this]
   exact mul_mem hs h.2.2
 
-theorem unitAt_one (p : Cpt ξ) : unitAt ξ p 1 := ⟨one_ne_zero, one_mem _, by simp [one_mem]⟩
-
 theorem not_unitAt_zero (p : Cpt ξ) : ¬ unitAt ξ p 0 := fun h => h.1 rfl
-
-theorem regAt_genPt (hg : IsCptGen ξ) (a : Ω) : a ∈ regAt ξ (⟨genPt ξ, specializes_rfl⟩ : Cpt ξ) :=
-  _root_.GlobalTheory.CompanionTheory.Ar.TieVB.regAt_genPt hg a
 
 section Chart
 
@@ -86,10 +78,6 @@ theorem exists_chart (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) :
       Function.Injective (secVal ξ U h) ∧
       ∀ a : Ω, a ∈ Algebra.adjoin o (Set.range fun j => x j / x c) ↔ a ∈ (secVal ξ U h).range :=
   _root_.GlobalTheory.CompanionTheory.Ar.TieVB.exists_chart hT hc
-
-theorem exists_point (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (P : Ideal (chartRing o x c)) (hP : P.IsPrime) :
-    ∃ p : Cpt ξ, InChart ξ x c p ∧ ∀ s : chartRing o x c, s ∈ P ↔ ¬ unitAt ξ p s := by
-  apply GlobalTheory.CompanionTheory.Ar.TieVB.exists_point <;> assumption
 
 theorem exists_basic (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (V : X.Opens) {q : Cpt ξ}
     (hq : InChart ξ x c q) (hV : q.1 ∈ V) :
@@ -103,7 +91,7 @@ theorem ideal_eq_top (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) (I : Ideal
     (h : ∀ p : Cpt ξ, InChart ξ x c p → ∃ s ∈ I, unitAt ξ p s) : I = ⊤ := by
   by_contra hI
   obtain ⟨M, hM, hle⟩ := Ideal.exists_le_maximal I hI
-  obtain ⟨p, hp, hs⟩ := exists_point hT hc M hM.isPrime
+  obtain ⟨p, hp, hs⟩ := GlobalTheory.CompanionTheory.Ar.TieVB.exists_point hT hc M hM.isPrime
   obtain ⟨s, hsI, hu⟩ := h p hp
   exact (hs s).1 (hle hsI) hu
 
@@ -139,7 +127,7 @@ theorem exists_pow_mul_mem (hT : CoordTie o ξ x) {c : κ} (hc : x c ≠ 0) {f a
     rw [Ideal.radical_eq_sInf, Ideal.mem_sInf]
     rintro P ⟨hle, hP⟩
     by_contra hfP
-    obtain ⟨p, hp, hs⟩ := exists_point hT hc P hP
+    obtain ⟨p, hp, hs⟩ := GlobalTheory.CompanionTheory.Ar.TieVB.exists_point hT hc P hP
     have hu : unitAt ξ p f := by
       by_contra hn
       exact hfP ((hs ⟨f, hf⟩).2 hn)
@@ -234,7 +222,7 @@ theorem exists_pow_smul_mem (hT : CoordTie o ξ x) {L : Lat ξ E} {r : ℕ} (hVB
     exact Submodule.subset_span ⟨i, rfl⟩
   have h1 : (1 : chartRing o x c) ∈ N := by rw [hN]; trivial
   obtain ⟨n, hn⟩ := h1
-  exact ⟨n, fun p hp => hn p hp (unitAt_one p)⟩
+  exact ⟨n, fun p hp => hn p hp (GlobalTheory.CompanionTheory.Ar.TieVB.unitAt_one p)⟩
 
 theorem exists_uniform (hT : CoordTie o ξ x) {L : Lat ξ E} {r : ℕ} (hVB : L.IsVB r ⊤) {c : κ} (hc : x c ≠ 0)
     {q : Cpt ξ} (hq : InChart ξ x c q) {e : E} (he : e ∈ L q) :
@@ -255,7 +243,7 @@ theorem exists_uniform (hT : CoordTie o ξ x) {L : Lat ξ E} {r : ℕ} (hVB : L.
     exact Submodule.subset_span ⟨i, rfl⟩
   obtain ⟨s₀, hs₀, hu₀, hM⟩ := GlobalTheory.CompanionTheory.Ar.TieVB.exists_den_span hT hq M hMs he'
   obtain ⟨n, hn⟩ := exists_pow_smul_mem hT hVB hc hh hM
-  refine ⟨h ^ n * s₀, mul_mem (pow_mem hh n) hs₀, unitAt_mul (unitAt_pow huq n) hu₀, fun p hp => ?_⟩
+  refine ⟨h ^ n * s₀, mul_mem (pow_mem hh n) hs₀, GlobalTheory.CompanionTheory.Ar.TieVB.unitAt_mul (unitAt_pow huq n) hu₀, fun p hp => ?_⟩
   rw [mul_smul]
   exact hn p hp
 
@@ -289,7 +277,7 @@ theorem isFrameOver_iff_forall_isFrameAt : ∀ (X : Scheme.{0}) (Ω : Type) [Fie
       exact TieFrame.mem_of_smul_mem _ (TieFrame.unitAt_pow hu n) ((hch c hc _).1 hn p hp)
   · intro hfr
     let p₀ : Cpt ξ := ⟨genPt ξ, specializes_rfl⟩
-    have hreg : ∀ a : Ω, a ∈ regAt ξ p₀ := TieFrame.regAt_genPt hT.gen
+    have hreg : ∀ a : Ω, a ∈ regAt ξ p₀ := GlobalTheory.CompanionTheory.Ar.TieVB.regAt_genPt hT.gen
     have hp₀ : InChart ξ (GroundTheory.Heights₂.Heights.LowerBoundFree.segreCoord y) c p₀ :=
       ⟨hc, fun c' => hreg _⟩
     have hu₀ : unitAt ξ p₀ f := ⟨hf0, hreg _, hreg _⟩

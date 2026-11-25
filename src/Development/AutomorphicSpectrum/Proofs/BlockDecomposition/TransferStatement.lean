@@ -24,11 +24,9 @@ attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 variable {n : ℕ}
 
-alias isOpen_omegaSet := _root_.ReciprocityTheory.ChartRestriction.DS.S7.isOpen_omega
-
 lemma omF_diffAt {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : F ∈ OmF n) {z : Matrix (Fin n) (Fin n) ℂ}
     (hz : z ∈ OmegaSet n) : DifferentiableAt ℂ F z :=
-  PsW.diffAt hF.1 isOpen_omegaSet hz
+  PsW.diffAt hF.1 ReciprocityTheory.ChartRestriction.DS.S7.isOpen_omega hz
 
 lemma contDiffOn_vector_field_derivative (Y : Fin n → Fin n → ℂ) (F : (Fin n → Fin n → ℂ) → ℂ) (S : Set (Fin n → Fin n → ℂ))
     (hS : IsOpen S) (hF : ContDiffOn ℂ ⊤ F S) :
@@ -41,7 +39,7 @@ lemma contDiffOn_vector_field_derivative (Y : Fin n → Fin n → ℂ) (F : (Fin
 lemma lop_mem (Y : Matrix (Fin n) (Fin n) ℂ) {F : Matrix (Fin n) (Fin n) ℂ → ℂ} (hF : F ∈ OmF n) :
     lop Y F ∈ OmF n := by
   refine ⟨?_, fun z hz => ite_eq_right hz⟩
-  exact (contDiffOn_vector_field_derivative Y F _ isOpen_omegaSet hF.1).congr fun z hz => ite_eq_left hz
+  exact (contDiffOn_vector_field_derivative Y F _ ReciprocityTheory.ChartRestriction.DS.S7.isOpen_omega hF.1).congr fun z hz => ite_eq_left hz
 
 lemma phiO_mem (μ : Fin n → ℤ) : PhiO μ ∈ OmF n := by
   refine ⟨?_, fun z hz => Set.indicator_of_notMem hz _⟩
@@ -108,7 +106,7 @@ lemma lWord_neg_eq {F F' : Matrix (Fin n) (Fin n) ℂ → ℂ} (hFF : Set.EqOn F
   | cons Z D ih =>
     intro z hz
     have hev : lWord (D.map Neg.neg) F =ᶠ[𝓝 z] lwM D F' :=
-      Filter.eventually_of_mem (isOpen_omegaSet.mem_nhds hz) fun y hy => ih hy
+      Filter.eventually_of_mem (ReciprocityTheory.ChartRestriction.DS.S7.isOpen_omega.mem_nhds hz) fun y hy => ih hy
     show fderiv ℂ (lWord (D.map Neg.neg) F) z (-Z * z) = lop Z (lwM D F') z
     rw [hev.fderiv_eq, lop, ite_eq_left hz, Matrix.neg_mul, map_neg]
 

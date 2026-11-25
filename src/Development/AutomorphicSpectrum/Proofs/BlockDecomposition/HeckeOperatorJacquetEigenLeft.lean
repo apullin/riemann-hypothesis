@@ -46,12 +46,9 @@ theorem mem_Km_of_entries {N : ℕ} (m : ℕ) (g : GL (Fin N) k)
   rw [key]
   by_cases h : i = j <;> simp [Matrix.one_apply, h]
 
-theorem isOpen_Km (N m : ℕ) : IsOpen (Zls.Km k N m : Set (GL (Fin N) k)) := by
-  apply GlobalTheory.CompanionTheory.KmTop.isOpen_Km
-
 theorem isCompact_Km (N m : ℕ) : IsCompact (Zls.Km k N m : Set (GL (Fin N) k)) :=
   GlobalTheory.SplitFlip.isCompact_KO.of_isClosed_subset
-    (Subgroup.isClosed_of_isOpen _ (isOpen_Km N m)) (_root_.GlobalTheory.CompanionTheory.HeckeOpMul.Km_le_KO N m)
+    (Subgroup.isClosed_of_isOpen _ (GlobalTheory.CompanionTheory.KmTop.isOpen_Km N m)) (_root_.GlobalTheory.CompanionTheory.HeckeOpMul.Km_le_KO N m)
 
 theorem eq_zero_of_forms {N : ℕ} {V : Type} [AddCommGroup V] [Module ℂ V]
     {π : Representation ℂ (GL (Fin N) k) V} (hπ : IsSmooth π) {m : ℕ} {w : V}

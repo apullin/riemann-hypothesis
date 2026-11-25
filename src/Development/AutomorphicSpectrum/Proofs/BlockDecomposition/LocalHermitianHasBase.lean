@@ -313,17 +313,8 @@ section Form
 
 variable {R V : Type} [CommRing R] [AddCommGroup V] [Module R V] {c : R →+* R} {h : V → V → R}
 
-theorem add_left (hH : IsHerm c h) (x y z : V) : h (x + y) z = h x z + h y z := by
-  rw [hH.symm z (x + y), hH.add_right, map_add (f := _), ← hH.symm z x, ← hH.symm z y]
-
-theorem smul_left (hH : IsHerm c h) (a : R) (x y : V) : h (a • x) y = c a * h x y := by
-  rw [hH.symm y (a • x), hH.smul_right, map_mul, ← hH.symm y x]
-
 theorem zero_left (hH : IsHerm c h) (y : V) : h 0 y = 0 := by
-  rw [← zero_smul R (0 : V), smul_left hH, map_zero, zero_mul]
-
-theorem zero_right (hH : IsHerm c h) (x : V) : h x 0 = 0 := by
-  rw [← zero_smul R (0 : V), hH.smul_right, zero_mul]
+  rw [← zero_smul R (0 : V), GlobalTheory.CompanionTheory.KFin.swapHerm_smul_left hH, map_zero, zero_mul]
 
 end Form
 
@@ -353,7 +344,7 @@ theorem pair_mem_of_even : ∀ {k R V : Type} [Field k] [CommRing R] [Algebra k 
       rw [hanis z h0, GlobalTheory.CompanionTheory.KFin.EvenAniso.zero_left hH, W.map_zero] at hs
       exact absurd hs (not_lt.mpr zero_le)
     · intro h0
-      rw [hanis w h0, GlobalTheory.CompanionTheory.KFin.EvenAniso.zero_right hH, W.map_zero] at hs
+      rw [hanis w h0, GlobalTheory.CompanionTheory.KFin.swapHerm_zero_right hH, W.map_zero] at hs
       exact absurd hs (not_lt.mpr zero_le)
   have core : ∀ (z w : V) (a b : R), W a ≤ 1 → W b ≤ 1 → h z z = a + c a → h w w = b + c b →
       1 < W (h z w) →
@@ -406,8 +397,8 @@ theorem pair_mem_of_even : ∀ {k R V : Type} [Field k] [CommRing R] [Algebra k 
       linear_combination (h z w * c (h z w) * h z z) * hM' - (a * c a * h w w) * hDinv
     have hv : h ((c a * h w w) • z + (h z z * M * c (h z w)) • w)
         ((c a * h w w) • z + (h z z * M * c (h z w)) • w) = 0 := by
-      simp only [GlobalTheory.CompanionTheory.KFin.EvenAniso.add_left hH, hH.add_right,
-        GlobalTheory.CompanionTheory.KFin.EvenAniso.smul_left hH, hH.smul_right, map_mul, hcc, hself, hcM']
+      simp only [GlobalTheory.CompanionTheory.KFin.swapHerm_add_left hH, hH.add_right,
+        GlobalTheory.CompanionTheory.KFin.swapHerm_smul_left hH, hH.smul_right, map_mul, hcc, hself, hcM']
       rw [hsym z w]
       linear_combination (h z z * h w w) * hkey - (h z z * h w w * M * h z w * c (h z w)) * hzz
     have hv0 := hanis _ hv
@@ -415,7 +406,7 @@ theorem pair_mem_of_even : ∀ {k R V : Type} [Field k] [CommRing R] [Algebra k 
       rw [hv0, GlobalTheory.CompanionTheory.KFin.EvenAniso.zero_left hH]
     have e2 : h ((c a * h w w) • z + (h z z * M * c (h z w)) • w) z = 0 := by
       rw [hv0, GlobalTheory.CompanionTheory.KFin.EvenAniso.zero_left hH]
-    simp only [GlobalTheory.CompanionTheory.KFin.EvenAniso.add_left hH, GlobalTheory.CompanionTheory.KFin.EvenAniso.smul_left hH, map_mul,
+    simp only [GlobalTheory.CompanionTheory.KFin.swapHerm_add_left hH, GlobalTheory.CompanionTheory.KFin.swapHerm_smul_left hH, map_mul,
       hcc, hself, hcM'] at e1 e2
     rw [hsym z w] at e2
     have hfac1 : h w w * h z w * (a + h z z * M) = 0 := by linear_combination e1
@@ -931,7 +922,7 @@ theorem hasBase_of_field {k R : Type} [Field k] [CommRing R] [Algebra k R] (c : 
         · have hr : W (r : R) ≤ 1 := (h𝔬 r).1 r.2
           rw [h𝔬, map_mul, map_mul, hWc]
           exact mul_le_one' (mul_le_one' hr hr) ((h𝔬 a).1 ha)
-        · rw [Subring.smul_def, _root_.GlobalTheory.CompanionTheory.KFin.EvenAniso.smul_left hH, hH.smul_right, hz, map_mul, map_mul, hinv]
+        · rw [Subring.smul_def, GlobalTheory.CompanionTheory.KFin.swapHerm_smul_left hH, hH.smul_right, hz, map_mul, map_mul, hinv]
           ring }
   have hLM : ∀ N : Submodule 𝔬 V, IsEvenInt c 𝔬 h N → N ≤ M := by
     intro N hN' x hx
@@ -1022,7 +1013,7 @@ theorem hasBase_of_split {k R : Type} [Field k] [CommRing R] (O : ValuationSubri
         apply φ.injective
         rw [map_mul, hc, RingEquiv.apply_symm_apply, map_one, Prod.swap_prod_mk, Prod.mk_mul_mk,
           mul_comm (α / α') (α' / α), hs] <;> rfl
-      rw [hp, hp, _root_.GlobalTheory.CompanionTheory.KFin.EvenAniso.smul_left hH, hH.smul_right, ← mul_assoc, hcs, one_mul]
+      rw [hp, hp, GlobalTheory.CompanionTheory.KFin.swapHerm_smul_left hH, hH.smul_right, ← mul_assoc, hcs, one_mul]
     · obtain ⟨r, rfl⟩ := hspan z
       rw [hp, smul_smul, hL1, hL2]
       have e1 : (φ (φ.symm (α' / α, α / α') * r)).1 = α' / α * (φ r).1 := by

@@ -2,7 +2,7 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeGoodBaseChange
+public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FirstLatticeBaseChange
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocallyFreeTestPointMembership
 
 @[expose] public section
@@ -25,12 +25,12 @@ theorem hodge_annihilator_lattice {o Ω : Type} [CommRing o] [Field Ω] [Algebra
     (hN : IsNoetherianRing R) (hF : IsFractionRing R Ω) (hI : IsIntegrallyClosedIn R Ω)
     (φ : Equiv.Perm Sg) (hT : D.TestFacts R p w χ φ) (hG : D.Good₁ R p χ) (τ : Sg) :
     mulLat w (stdLat R _) ≤ D.af R p (χ τ) := by
-  have H := _root_.GlobalTheory.CompanionTheory.Ar.Num.LatticeGoodBaseChange.main D R p w χ hC hB hG
+  have H := PositivityTheory.Xgn.good_lattice_base_change D R p w χ hC hB hG
   obtain ⟨hp0, hwR, -, -, hχ⟩ := hC
   intro x hx
   obtain ⟨u, hu, rfl⟩ := AddSubgroup.mem_map.mp hx
   have hu' : ∀ i, u i ∈ R := (PositivityTheory.Xgn.GoodLatticeBaseChange.mem_stdLat R u).mp hu
-  refine _root_.GlobalTheory.CompanionTheory.Ar.Num.HaLattice.main R p hp hp0 hN hF hI n (D.af R p (χ τ)) (H.1 τ).1 _ ⟨1, ?_⟩ ?_
+  refine PositivityTheory.Xgn.t_ha_lattice R p hp hp0 hN hF hI n (D.af R p (χ τ)) (H.1 τ).1 _ ⟨1, ?_⟩ ?_
   · have hy : linMap n (χ τ) (w • u) ∈ stdLat R (Fin n → F) :=
       linMap_mem_stdLat R (χ τ) (hχ τ).2.2 _ ((_root_.PositivityTheory.Xgn.GoodLatticeBaseChange.mem_stdLat R _).mpr fun i => by
         simpa using R.mul_mem hwR (hu' i))

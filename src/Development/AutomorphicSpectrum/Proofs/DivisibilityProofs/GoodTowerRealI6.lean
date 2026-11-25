@@ -450,14 +450,14 @@ theorem unit_off (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E)
   obtain ⟨q, hqc, hq⟩ := _root_.GlobalTheory.CompanionTheory.Ar.OrVert.exists_domBy_chart M.K M.ι M.Ω M.Ω M.y o.𝔐.X o.𝔐.ξ o.𝔐.all o.𝔐.tie (RingHom.id _) W cM h1 h3
   obtain ⟨q₀, hqc₀, hq₀⟩ := _root_.GlobalTheory.CompanionTheory.Ar.OrVert.exists_domBy_chart R.K R.ι R.Ω M.Ω R.y o₀.𝔐.X o₀.𝔐.ξ o₀.𝔐.all o₀.𝔐.tie i W cR h2 h4
   have hξ : o.𝔐.ξ ≫ o.𝔐.f = spMap i ≫ o₀.𝔐.ξ ≫ o₀.𝔐.f := by
-    rw [o.g_over, o₀.g_over, ← hi, OrVert.spMap_comp', Category.assoc]
+    rw [o.g_over, o₀.g_over, ← hi, ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc]
   have hy := _root_.GlobalTheory.CompanionTheory.Ar.OrVert.image_eq_of_domBy E H D l Xo c Y S ∅ M.Ω R.Ω M.K R.K M.ι R.ι M.y R.y o.𝔐 o₀.𝔐 i hξ W q q₀ hq hq₀
   obtain ⟨ι, hext, hspan, hpt, hW⟩ :=
     _root_.GlobalTheory.CompanionTheory.Ar.OrVert.LieCmp.lie_cmp E H D l Xo c Y S ∅ M.Ω R.Ω M.K R.K M.ι R.ι M.y R.y o.𝔐 o₀.𝔐 o₀.Fl i hξ
   have hsl := hext.1
   have hspanW := hW W.toSubring q q₀ hq.1 hq₀.1 hy
   have hFl : ∀ s j, o.Fl.b s j = ι (o₀.Fl.b s j) := fun s j => (hpt _ _).1 (by
-    rw [o.g_flag, o₀.g_flag, ← hi, OrVert.dualMap_comp', OrVert.spMap_comp', Category.assoc])
+    rw [o.g_flag, o₀.g_flag, ← hi, OrVert.dualMap_comp', ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc])
   have hWq : ∀ a ∈ regAt o.𝔐.ξ q, a ∈ W := hq.1
   have hdW : ((discr E : ℤ) : M.Ω)⁻¹ ∈ W := by
     have h := inv_natCast_mem W (discr E).natAbs fun p hp hd => hS p (hdisc p hp (Int.natCast_dvd.2 hd))

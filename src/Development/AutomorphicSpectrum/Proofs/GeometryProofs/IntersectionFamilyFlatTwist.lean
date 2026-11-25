@@ -229,7 +229,7 @@ theorem FlatHerm.exists_rep : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ 
     _root_.PositivityTheory.Xgn.exists_representative_avoiding_ideal K ι (mCoordIdeal y) W S.f S.g S.df S.dg hV.2.1 hW hPW S.hf S.hg S.g_ne S.unit
   refine ⟨f', g', df', dg', hf', hg', fun k => (hdeg k).trans (S.deg k), hfW, hgW, hrel, hunit, ?_⟩
   intro σ z hz
-  have hcl := _root_.GlobalTheory.CompanionTheory.Ar.Flat.nonvanishing_dense K ι (mCoordIdeal y) d S.g hV S.g_ne hz.1
+  have hcl := PositivityTheory.Xgn.nonvanishing_points_dense K ι (mCoordIdeal y) d S.g hV S.g_ne hz.1
   have hfreq := mem_closure_iff_frequently.mp hcl
   have hnear := PtOver.eventually_ptOver hO hz
   have hcontA : ContinuousAt A.h z :=

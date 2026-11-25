@@ -150,10 +150,6 @@ theorem comp_ring {B B' : Type} [CommRing B] [CommRing B'] (ψ : B →+* B') {Z 
   rw [seccomp B' Z Z' x' φ W h h s]
   exact key _ hx h
 
-theorem dualMap_snd {R R' : Type} [CommRing R] [CommRing R'] (φ : R →+* R') (a : DualNumber R) :
-    (dualMap φ a).snd = φ a.snd := by
-  simp [dualMap]
-
 end GlobalTheory.CompanionTheory.Ar.HtPull
 end
 
@@ -827,7 +823,7 @@ theorem ht_pull {X X' : Scheme.{0}} {Ω Ω' : Type} [Field Ω] [Field Ω'] {ξ :
     have hcomp : ∀ k, (secVal (B := DualNumber (X'.presheaf.stalk q'.1)) (v' k).left (φ ⁻¹ᵁ W) (hk k) (φ.app W s)).snd =
         (f.stalkMap q'.1).hom (secVal (B := DualNumber (X.presheaf.stalk (f q'.1))) (v k).left W (hk₀ k) s).snd := by
       intro k
-      exact (congrArg TrivSqZeroExt.snd (comp_ring (dualMap (f.stalkMap q'.1).hom) (v' k).left (v k).left φ (hvv k) W (hk k) (hk₀ k) s)).trans (dualMap_snd _ _)
+      exact (congrArg TrivSqZeroExt.snd (comp_ring (dualMap (f.stalkMap q'.1).hom) (v' k).left (v k).left φ (hvv k) W (hk k) (hk₀ k) s)).trans (GlobalTheory.CompanionTheory.Ar.SqAdd.dualMap_snd _ _)
     choose ρ hρ hρe using fun k => hD (B k) (v k) (hv k) (hk₀ k)
     have hρ' := fun k => hreg _ (hρ k)
     have hρe' : ∀ k, w (B k) = genMap ξ ⟨f q'.1, hd.specializes q'⟩

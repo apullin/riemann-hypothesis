@@ -453,7 +453,7 @@ theorem eigComp_eq_sum : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   obtain ⟨N, a, c, h⟩ := exists_coeffs s
   refine ⟨N, a, c, ?_⟩
   intro g Λ _ _ R z
-  obtain ⟨-, -, hs, hsum, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, hs, hsum, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   have hB : ∀ (b : 𝓞 E) (t : E →+* ℂ), R.B b (eigComp R.B (t.comp (algebraMap (𝓞 E) E)) z) =
       t (algebraMap (𝓞 E) E b) • eigComp R.B (t.comp (algebraMap (𝓞 E) E)) z := by
     intro b t
@@ -1042,7 +1042,7 @@ theorem gram_append_det {r k : ℕ} (w : Fin r → Fin g → ℂ) (x : Fin k →
 
 theorem exists_eigLin (s : 𝓞 E →+* ℂ) :
     ∃ L : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ), ∀ x, L x = eigComp R.B s x := by
-  obtain ⟨-, -, h1, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h1, -, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   have hl := (h1 s).2.2.1
   have h0 : eigComp R.B s 0 = 0 := by simpa using hl (-1) 0 0
   exact ⟨{ toFun := eigComp R.B s
@@ -1052,7 +1052,7 @@ theorem exists_eigLin (s : 𝓞 E →+* ℂ) :
 theorem eigComp_mem (W : Submodule ℂ (Fin g → ℂ)) (hW : ∀ a, ∀ y ∈ W, R.B a y ∈ W) (s : 𝓞 E →+* ℂ)
     {y : Fin g → ℂ} (hy : y ∈ W) : eigComp R.B s y ∈ W := by
   classical
-  obtain ⟨-, -, h1, h2, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h1, h2, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   obtain ⟨Ls, hLs⟩ := exists_eigLin R s
   obtain ⟨L, hLW, hLid, hLF⟩ := exists_proj R.B W hW s
     ((Finset.univ.image fun t : E →+* ℂ => t.comp (algebraMap (𝓞 E) E)).erase s) (Finset.notMem_erase _ _)
@@ -1086,7 +1086,7 @@ theorem gram_append_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   intro E _ _ _ g g' Λ Λ' _ _ _ _ R R' q I s r k v x hI hv hq hR hx
   classical
   obtain ⟨-, hvI, hvli, hidx⟩ := hv
-  obtain ⟨-, -, h1, h2, h3⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h1, h2, h3⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   have hwli : LinearIndependent ℂ fun a => eigComp R.B s (R.P (v a)) :=
     (_root_.LevelTowerAlt.eigen_projection_conjugate_inner E g Λ Unit R I hI s).2 r v hvI hvli
   obtain ⟨M, hz, hdet⟩ := gram_append_det R _ x hwli
@@ -1228,7 +1228,7 @@ theorem perEmb {U W : Set (Fin n → ℂ)} {R : (Fin n → ℂ) → RiemLat E g 
   have hwl : ∀ t ∈ U, LinearIndependent ℂ fun a => w a t := fun t ht =>
     (_root_.LevelTowerAlt.eigen_projection_conjugate_inner E g Λ Unit (R t) I (hiso t ht) s).2 r v hvI hvli
   have hwe : ∀ t, ∀ a, w a t ∈ eigSp (R t).B s := fun t a =>
-    ((_root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit (R t)).2.2.1 s).1 _
+    ((LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit (R t)).2.2.1 s).1 _
   have ht₀U := hWU ht₀
   obtain ⟨k, J, rfl, hli⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Exchange.exists_completion_by_members g m r (fun a => w a t₀) (fun i => b i t₀) (hwl _ ht₀U) (hbl _ ht₀U)
     (fun a => by rw [hbs _ ht₀U]; exact hwe _ a)
@@ -1584,7 +1584,7 @@ theorem logDet_cont {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ}
       fun v => continuousOn_iff_continuous_restrict.1 (hR.2 v).continuousOn
   apply continuous_finsetSum _
   intro τ _
-  apply Continuous.log _ (fun (x : U) => (gram_det_pos _ _ (hl x x.2 τ)).ne')
+  apply Continuous.log _ (fun (x : U) => (GlobalTheory.CompanionTheory.Ar.Cusp.FrameChange.gram_det_re_pos _ _ (hl x x.2 τ)).ne')
   apply Complex.continuous_re.comp
   apply Continuous.matrix_det
   apply continuous_matrix
@@ -1660,11 +1660,11 @@ theorem point_formula (Or : CptOrigin Y S₀ Dc Hd) {z : Sp ℂ ⟶ Or.𝔐.X} {
     Matrix.of fun p q => (Real.pi : ℂ) * R.ip (x τ p) (x τ q)
   have hΓ : ∀ τ, Or.𝔐.M.GramAt Or.𝔐.t.PP.L z (s τ) (Γ τ) := fun τ =>
     ⟨fun p => v (τ, p), fun p => hv (τ, p), fun p q =>
-      hodgeInnerProduct_of_fibreLatticeVector hfib (fun i => (hv i).isTanAt) (τ, p) (τ, q)⟩
+      GlobalTheory.CompanionTheory.Ar.Cusp.FibreEx.hodgeInnerProduct_eq_pi_mul_riemannForm hfib (fun i => (hv i).isTanAt) (τ, p) (τ, q)⟩
   have hdet : ∀ τ, Real.log (Γ τ).det.re = ((Dc.N - Dc.j : ℕ) : ℝ) * Real.log Real.pi +
       Real.log (R.gram (x τ)).det.re := by
     intro τ
-    have hpos := gram_det_pos R (x τ) (hx τ)
+    have hpos := GlobalTheory.CompanionTheory.Ar.Cusp.FrameChange.gram_det_re_pos R (x τ) (hx τ)
     have e1 : Γ τ = (Real.pi : ℂ) • R.gram (x τ) := by
       ext p q; rfl
     rw [e1, Matrix.det_smul, Fintype.card_fin, ← Complex.ofReal_pow, Complex.re_ofReal_mul,
@@ -1791,8 +1791,8 @@ theorem near_all (hG : Top.Given) (Or : CptOrigin Y S₀ Dc Hd) {U : ((Σ k, J k
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.cusp_intersection_positive : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] [IsAbelianGalois ℚ E] (H : Host E) (D : Datum H) (Xo : ∀ l : Tor.Level H, Moduli D l) (l : Tor.Level H) (c : Coeff l) (Y : Model (Xo l) c (algebraMap (𝓞 c.F) c.F)) (II : IntersectionSystem) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : CMType H → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (Dc : ComponentData II (CMType H) K J Ω W) (Hd : HodgeData Dc) (S₀ : Finset ℕ) (Or : CptOrigin Y S₀ Dc Hd) (U : ((Σ k, J k) → ℂ) → ℝ), Or.𝔐.IsCuspWeight Or.sm U → ChartPsh Dc (phMu Hd) ∧ ChartCont Dc (phMu Hd) ∧ ChartPsh Dc (corrW Hd U) ∧ ChartCont Dc (corrW Hd U) := by
   intro hG E _ _ _ _ H D Xo l c Y II K _ J _ Ω _ _ W _ _ Dc Hd S₀ Or U hU
-  refine ⟨fun a => _root_.GlobalTheory.CompanionTheory.AnForm.PshLocal.isPsh_of_locally _ _ _ (isOpen_offBd Dc a) fun t ht => ?_, fun a t ht => ?_,
-    fun a => _root_.GlobalTheory.CompanionTheory.AnForm.PshLocal.isPsh_of_locally _ _ _ (isOpen_offBd Dc a) fun t ht => ?_, fun a t ht => ?_⟩
+  refine ⟨fun a => _root_.GlobalTheory.CompanionTheory.AnForm.PshLocal.isPsh_of_locally _ _ _ (GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.isOpen_offBd Dc a) fun t ht => ?_, fun a t ht => ?_,
+    fun a => _root_.GlobalTheory.CompanionTheory.AnForm.PshLocal.isPsh_of_locally _ _ _ (GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.isOpen_offBd Dc a) fun t ht => ?_, fun a t ht => ?_⟩
   · obtain ⟨V, h1, h2, h3, -⟩ := (near_all hG Or hU a t ht).1
     exact ⟨V, h1, h2, h3⟩
   · obtain ⟨V, h1, h2, -, h3⟩ := (near_all hG Or hU a t ht).1

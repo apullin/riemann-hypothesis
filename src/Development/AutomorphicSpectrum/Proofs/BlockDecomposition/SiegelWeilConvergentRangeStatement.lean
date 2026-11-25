@@ -274,9 +274,6 @@ theorem HasCO.sub {G : Type} [AddGroup G] [TopologicalSpace G] (h : HasCO G) (S 
   · intro x hx
     exact hsub (hPW hx)
 
-theorem small_pow {z : ℂ} (h : ∀ k : ℕ, ‖z ^ k - 1‖ < 1 / 2) : z = 1 :=
-  by apply _root_.UpperTheory.Reformulated.B.EqOneOfPowNear.eq_one_of_pow_near <;> assumption
-
 end GlobalTheory.CompanionTheory.SiegelND.Integ.Period
 
 namespace GlobalTheory.CompanionTheory.SiegelND.Integ.Period
@@ -326,7 +323,7 @@ theorem psiFin_trivial (F : Type) [Field F] [NumberField F] (ψ : AddChar (AF F)
       isOpen_lt ((hc.sub continuous_const).norm) continuous_const
     exact this.mem_nhds (by simp [h0])
   obtain ⟨P, hPo, -, hPB⟩ := hasCO_Af F _ hB
-  refine ⟨P, hPo, fun y hy => small_pow fun k => ?_⟩
+  refine ⟨P, hPo, fun y hy => GlobalTheory.KeyLemmaTwo.main fun k => ?_⟩
   have hk : psiFin F ψ (k • y) = psiFin F ψ y ^ k := by
     induction k with
     | zero =>

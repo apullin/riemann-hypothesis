@@ -166,14 +166,6 @@ theorem zOp_contDiffOn (w : List (Bool × ℕ)) {u : Mat n → V} (hu : ContDiff
   | nil => exact hu
   | cons p w ih => exact GlobalTheory.CompanionTheory.RCalc.gel_contDiffOn p.1 p.2 ih
 
-theorem zOp_append (w w' : List (Bool × ℕ)) (u : Mat n → V) :
-    zOp (w ++ w') u = zOp w (zOp w' u) := by
-  induction w with
-  | nil => rfl
-  | cons p w ih =>
-    show gel p.1 p.2 (zOp (w ++ w') u) = gel p.1 p.2 (zOp w (zOp w' u))
-    rw [ih]
-
 end Ops
 
 private theorem isHecke_div_and_resEtaPow_div (n : ℕ) (s : Bool) (m : ℕ) : ∃ (M : ℕ) (e : Fin M → ℂ) (v : Fin M → List (Bool × ℕ)), (∀ χ : Inf n, IsHerm χ → conj (zVal [(s, m)] χ) = ∑ j, e j * zVal (v j) χ) ∧ (LgFacts → RCalc → ∀ [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G n)) [μ.IsHaarMeasure] (V : Type) [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V] (f h : Mat n → V), ContDiffOn ℝ ∞ f (GLs n) → ContDiffOn ℝ ∞ h (GLs n) → Cpt f → Cpt h → ∫ y : G n, ⟪gel s m f y.val, h y.val⟫_ℂ ∂μ = ∑ j, e j * ∫ y : G n, ⟪f y.val, zOp (v j) h y.val⟫_ℂ ∂μ) := by
@@ -238,7 +230,7 @@ theorem word_adjoint : ∀ (n : ℕ) (w : List (Bool × ℕ)), ∃ (N : ℕ) (c 
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [hi hL hR μ V f (zOp (v j) h) hf (zOp_contDiffOn _ hh) cf (cpt_zOp hL _ ch), Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
-      rw [zOp_append]
+      rw [GlobalTheory.CompanionTheory.WaveMult.Swap.zOp_append]
       ring
 
 end GlobalTheory.CompanionTheory.WaveMult.WordAdj
@@ -296,8 +288,6 @@ theorem one_dim (Φ A B : ℝ → ℝ → ℂ)
 
 variable {n : ℕ}
 
-alias val_mem_GLs := _root_.GlobalTheory.CompanionTheory.WaveMult.Ibp.val_mem
-
 theorem continuous_val : Continuous (fun y : G n => y.val) := Units.continuous_val
 
 section Int
@@ -322,7 +312,7 @@ theorem hasDerivAt_integral (hL : LgFacts) (c c' : ℝ → Mat n → ℂ)
       Continuous (fun p : ℝ × G n => f p.1 p.2.val) := by
     intro f hf
     exact hf.comp_continuous (continuous_fst.prodMk (continuous_val.comp continuous_snd))
-      fun p => ⟨Set.mem_univ _, val_mem_GLs p.2⟩
+      fun p => ⟨Set.mem_univ _, GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs p.2⟩
   have contc := cont2 hc
   have contc' := cont2 hc'
   have cont1 : ∀ {f : ℝ → Mat n → ℂ}, Continuous (fun p : ℝ × G n => f p.1 p.2.val) → ∀ x,
@@ -340,7 +330,7 @@ theorem hasDerivAt_integral (hL : LgFacts) (c c' : ℝ → Mat n → ℂ)
       _ ≤ |x - r| + |r| := abs_add_le _ _
       _ ≤ |r| + 1 := by linarith
   have hfar : ∀ y : G n, R < lg y.val → ∀ x, |x| ≤ |r| + 1 → c x y.val = 0 ∧ c' x y.val = 0 :=
-    fun y hy x hx => hR x hx _ (val_mem_GLs y) hy
+    fun y hy x hx => hR x hx _ (GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs y) hy
   have hr0 : |r| ≤ |r| + 1 := by linarith
   have hbound : Integrable ({y : G n | lg y.val ≤ R}.indicator fun _ => C) μ := by
     refine IntegrableOn.integrable_indicator ?_ hK.measurableSet
@@ -357,7 +347,7 @@ theorem hasDerivAt_integral (hL : LgFacts) (c c' : ℝ → Mat n → ℂ)
       exact hC (x, y) ⟨(hball x hx).2, hy⟩
     · rw [Set.indicator_of_notMem (by exact hy), (hfar y (not_le.mp hy) x (hball x hx).1).2]
       simp
-  · exact Filter.Eventually.of_forall fun y x _ => hd x _ (val_mem_GLs y)
+  · exact Filter.Eventually.of_forall fun y x _ => hd x _ (GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs y)
 
 end Int
 
@@ -389,10 +379,6 @@ section Time
 
 variable {V : Type} [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 
-theorem isOpen_GLs (n : ℕ) : IsOpen (GLs n) := by
-  have hc : Continuous (fun y : Mat n => y.det) := Continuous.matrix_det continuous_id
-  exact isOpen_ne.preimage hc
-
 def dt (a : ℝ → Mat n → V) : ℝ → Mat n → V := fun t y => deriv (fun s => a s y) t
 
 def Sm (a : ℝ → Mat n → V) : Prop := ContDiffOn ℝ ∞ (Function.uncurry a) (Set.univ ×ˢ GLs n)
@@ -401,10 +387,10 @@ def Sp (a : ℝ → Mat n → V) : Prop := ∀ B : ℝ, ∃ R : ℝ, ∀ t, |t| 
 
 theorem hasDerivAt_dt {a : ℝ → Mat n → V} (h : Sm a) (t : ℝ) {y : Mat n} (hy : y ∈ GLs n) :
     HasDerivAt (fun s => a s y) (dt a t y) t :=
-  (smooth_deriv_gen a (isOpen_GLs n) h).2 t y hy
+  (smooth_deriv_gen a (GlobalTheory.CompanionTheory.WaveMult.isOpen_GLs_dens n) h).2 t y hy
 
 theorem sm_dt {a : ℝ → Mat n → V} (h : Sm a) : Sm (dt a) :=
-  (smooth_deriv_gen a (isOpen_GLs n) h).1
+  (smooth_deriv_gen a (GlobalTheory.CompanionTheory.WaveMult.isOpen_GLs_dens n) h).1
 
 theorem sm_at {a : ℝ → Mat n → V} (h : Sm a) (t : ℝ) : ContDiffOn ℝ ∞ (a t) (GLs n) := by
   have h1 : ContDiff ℝ ∞ (fun y : Mat n => (t, y)) := contDiff_const.prodMk contDiff_id
@@ -435,8 +421,8 @@ variable [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G n)) [μ.IsH
 theorem integrable_inner (hL : LgFacts) {f h : Mat n → V} (hf : ContinuousOn f (GLs n)) (hh : ContinuousOn h (GLs n))
     (R : ℝ) (hv : ∀ y ∈ GLs n, R < lg y → ⟪f y, h y⟫_ℂ = 0) :
     Integrable (fun y : G n => ⟪f y.val, h y.val⟫_ℂ) μ := by
-  refine integrable_of_vanish μ hL _ ?_ R fun y hy => hv _ (val_mem_GLs y) hy
-  exact (hf.comp_continuous continuous_val val_mem_GLs).inner (hh.comp_continuous continuous_val val_mem_GLs)
+  refine integrable_of_vanish μ hL _ ?_ R fun y hy => hv _ (GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs y) hy
+  exact (hf.comp_continuous continuous_val GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs).inner (hh.comp_continuous continuous_val GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs)
 
 def Pr (a b : ℝ → Mat n → V) (t s : ℝ) : ℂ := ∫ y : G n, ⟪a t y.val, b s y.val⟫_ℂ ∂μ
 
@@ -612,10 +598,10 @@ theorem wave_pairing_second_time_derivative (hL : LgFacts) (hR : RCalc) {E : KMo
   unfold Pr
   calc ∫ y : G n, ⟪dt (dt u) t y.val, v s y.val⟫_ℂ ∂μ = ∫ y : G n, ⟪Om (u t) y.val, v s y.val⟫_ℂ ∂μ :=
         integral_congr_ae (Filter.Eventually.of_forall fun y => by
-          simp only [dt_dt hu t (val_mem_GLs y)])
+          simp only [dt_dt hu t (GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs y)])
     _ = ∫ y : G n, ⟪u t y.val, Om (v s) y.val⟫_ℂ ∂μ := h
     _ = _ := integral_congr_ae (Filter.Eventually.of_forall fun y => by
-          simp only [dt_dt hv s (val_mem_GLs y)])
+          simp only [dt_dt hv s (GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs y)])
 
 theorem line_const (hL : LgFacts) (hR : RCalc) {E : KMod n} {u v : ℝ → Mat n → E.V} (hu : IsWave E u) (hv : IsWave E v)
     (su : Sp u) (sv : Sp v) (β : ℝ) (hβ : β * β = 1) (t s r : ℝ) :
@@ -664,12 +650,12 @@ theorem _root_.GlobalTheory.CompanionTheory.WaveMult.wave_symm : LgFacts → RCa
   · intro s
     unfold Pr
     have : ∀ y : G n, ⟪dt u 0 y.val, v s y.val⟫_ℂ = 0 := fun y => by
-      rw [dt_zero hu (val_mem_GLs y), inner_zero_left]
+      rw [dt_zero hu (GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs y), inner_zero_left]
     simp [this]
   · intro t
     unfold Pr
     have : ∀ y : G n, ⟪u t y.val, dt v 0 y.val⟫_ℂ = 0 := fun y => by
-      rw [dt_zero hv (val_mem_GLs y), inner_zero_right]
+      rw [dt_zero hv (GlobalTheory.CompanionTheory.WaveSpd.val_mem_GLs y), inner_zero_right]
     simp [this]
 
 end GlobalTheory.CompanionTheory.WaveMult.WaveSymm

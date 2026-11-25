@@ -514,8 +514,6 @@ theorem lat_fin (h : IsCptGen ξ) (G : Over X) [GrpObj G] [IsCommMonObj G] [Smoo
     (fun s n hn => Submodule.smul_mem _ s hn) (fun a b ha hb => add_mem ha hb)
   exact Submodule.subset_span (by rw [hr]; exact ⟨m, rfl⟩)
 
-alias dualMap_comp := _root_.PositivityTheory.Xgn.NormalLatticeRange.dualMap_comp
-
 theorem lat_gen (h : IsCptGen ξ) (G : Over X) [GrpObj G] [IsCommMonObj G] [Smooth G.hom] {E : Type}
     [AddCommGroup E] [Module Ω E] (M : LieModel G ξ E) {p q : Cpt ξ} (hs : q.1 ⤳ p.1) :
     M.lat q = Submodule.span (regAt ξ q) (M.lat p : Set E) := by
@@ -540,7 +538,7 @@ theorem lat_gen (h : IsCptGen ξ) (G : Over X) [GrpObj G] [IsCommMonObj G] [Smoo
     have h1 := hjq (j e)
     have h2 := (castPt_pt_left (spMap_regIncl_regPt h hs).symm Mq (j e)).symm.trans (hj e)
     have h3 : (dualMap (algebraMap (regAt ξ q) Ω)).comp (dualMap (algebraMap (regAt ξ p) (regAt ξ q))) =
-        dualMap (algebraMap (regAt ξ p) Ω) := dualMap_comp _ _
+        dualMap (algebraMap (regAt ξ p) Ω) := PositivityTheory.Xgn.NormalLatticeRange.dualMap_comp _ _
     refine h1.trans ?_
     rw [h2, ← h3]
     simp only [spMap, CommRingCat.ofHom_comp, Spec.map_comp, Category.assoc]

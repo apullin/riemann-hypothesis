@@ -845,29 +845,13 @@ theorem nonempty_maximal_points (X : Type) [TopologicalSpace X] [QuasiSober X] [
   have heq : closure {x'} = irreducibleComponent x := (hm.eq_of_subset hirr' hsub).symm
   exact (inseparable_iff_closure_eq.2 (heq.trans hg.def.symm)).eq
 
-theorem exists_typeFn {E : Type} [Field E] [NumberField E] [IsCMField E] (H : Host E) (p q : ℕ) :
-    ∃ (g : ℕ) (ty : Fin g → (E →+* ℂ)), IsTypeFn H p q ty := by
-  classical
-  let m : (E →+* ℂ) → ℕ := fun τ => if τ (H.rt : E) = H.rt0 then p else q
-  let e := Fintype.equivFin (Σ τ : E →+* ℂ, Fin (m τ))
-  refine ⟨_, fun i => (e.symm i).1, ?_⟩
-  have key : ∀ τ : E →+* ℂ, Nat.card {i // (e.symm i).1 = τ} = m τ := by
-    intro τ
-    have e1 : {i // (e.symm i).1 = τ} ≃ Fin (m τ) :=
-      (e.symm.subtypeEquiv (fun _ => Iff.rfl)).trans (Equiv.sigmaSubtype τ)
-    rw [Nat.card_congr e1, Nat.card_fin]
-  intro τ
-  refine ⟨fun h => ?_, fun h => ?_⟩
-  · rw [key]; simp [m, h]
-  · rw [key]; simp [m, h]
-
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Tor.Level H}
 
 theorem moduli_nonempty (hc : N1c) (Xo : Moduli D l) : Nonempty Xo.X := by
   rcases Nat.eq_zero_or_pos (D.p + D.q) with h | h
   · obtain ⟨f, -, -⟩ := Xo.rep (Sp (KA l)) (𝟙 _) inferInstance (GlobalTheory.Models.RankZero.zeroObj h l _)
     exact ⟨f (IsLocalRing.closedPoint (KA l))⟩
-  · obtain ⟨g, ty, hty⟩ := exists_typeFn H D.p D.q
+  · obtain ⟨g, ty, hty⟩ := GlobalTheory.AllClasses.exists_isTypeFn H D.p D.q
     obtain ⟨F⟩ := hc E H D l Xo (KA l).val.toRingHom g ty h rfl hty
     exact ⟨F.u ⟨0, F.n_pos⟩ 0 (IsLocalRing.closedPoint ℂ)⟩
 
@@ -982,7 +966,6 @@ theorem discr_inv_mem {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommRi
   · rw [e]; simpa using hu
   · rw [e]
     simpa using (regAt ξ p).neg_mem hu
-
 
 
 theorem isFlagVBOn_genFib : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (S₀ S : Finset ℕ) (Ω₁ Ω : Type) [Field Ω₁] [Field Ω] (K₁ : Type) [Fintype K₁] (J₁ : K₁ → Type) [∀ k, Fintype (J₁ k)] (y₁ : (Σ k, J₁ k) → Ω₁) (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (y : (Σ k, J k) → Ω) (A : HodgeCpt Y S₀ y₁) (Fl : A.Flag) (B : HodgeCpt Y S y) (i : Ω₁ →+* Ω) (h : B.X ⟶ A.X) (jA : A.Li →+ B.Li), GlobalTheory.CompanionTheory.Ar.Dominates B.ξ A.ξ h i → B.f = h ≫ A.f → B.cst = i.comp A.cst → IsExtOver i jA → (∀ e, (B.M.pt (jA e)).left ≫ B.m.φ = spMap (dualMap i) ≫ (A.M.pt e).left ≫ A.m.φ) → (∀ a e, jA (A.ρ a e) = B.ρ a (jA e)) → B.M.lat = A.M.lat.pull B.ξ h jA → ∀ q ∈ genFib B.ξ, ∀ s, (B.V s).IsFlagVBOn {q} (fun a => jA (Fl.b s a)) := by

@@ -161,11 +161,6 @@ end GlobalTheory.CompanionTheory.Ar.Sl.Transl
 
 noncomputable section
 namespace GlobalTheory.CompanionTheory.Ar.Sl.Transl
-theorem spMap_comp' {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] (f : R' →+* R'') (g : R →+* R') :
-    spMap (f.comp g) = spMap f ≫ spMap g := by
-  show Spec.map (CommRingCat.ofHom (f.comp g)) = Spec.map _ ≫ Spec.map _
-  rw [← Spec.map_comp]
-  rfl
 
 theorem gc_spMap {R : Type} [CommRing R] {F : Type} [Field F] (g : R →+* F) (z : Sp F) (t : R) :
     GlobalTheory.TwistLoc.gc (spMap g) z t = toStk z (g t) := by

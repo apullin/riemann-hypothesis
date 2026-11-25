@@ -379,18 +379,13 @@ theorem Rw_zero (w : List (Bool × Fin n × Fin n)) : Rw w (0 : Mat n → V) = 0
 theorem sob_zero : Sob μ (0 : Mat n → V) :=
   ⟨contDiffOn_const, fun w => by rw [Rw_zero]; exact MemLp.zero⟩
 
-theorem cls_zero : cls μ (0 : Mat n → V) = 0 := by
-  have h : MemLp (fun y : G n => (0 : Mat n → V) y.val) 2 μ := MemLp.zero
-  rw [cls_eq μ h]
-  exact MemLp.toLp_zero h
-
 theorem cls_mem {f : Mat n → V} (hf : Sob μ f) : cls μ f ∈ Msob μ V :=
   Submodule.subset_span ⟨f, hf, rfl⟩
 
 theorem exists_rep (x : Lp V 2 μ) (hx : x ∈ Msob μ V) : ∃ f : Mat n → V, Sob μ f ∧ cls μ f = x := by
   induction hx using Submodule.span_induction with
   | mem x h => exact h
-  | zero => exact ⟨0, sob_zero, cls_zero⟩
+  | zero => exact ⟨0, sob_zero, GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero⟩
   | add x y _ _ hx hy =>
     obtain ⟨f, hf, rfl⟩ := hx
     obtain ⟨f', hf', rfl⟩ := hy
@@ -401,7 +396,7 @@ theorem exists_rep (x : Lp V 2 μ) (hx : x ∈ Msob μ V) : ∃ f : Mat n → V,
     obtain ⟨f, hf, rfl⟩ := hx
     have h := sob_comb a hf (sob_zero (μ := μ) (V := V))
     refine ⟨_, h.1, ?_⟩
-    simpa [Rw, cls_zero] using h.2 []
+    simpa [Rw, GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero] using h.2 []
 
 def rp (x : Msob μ V) : Mat n → V := Classical.choose (exists_rep x.1 x.2)
 
@@ -455,8 +450,6 @@ theorem X_skew (hu : Uniq μ V) (hI : ∀ f f' : Mat n → V, Sob μ f → Sob �
   rw [eu, ev, X_cls hu p hf, X_cls hu p hf']
   exact hI f f' hf hf' (bs p)
 
-theorem memS {f : Mat n → V} (hf : Sob μ f) : MemLp (fun y : G n => f y.val) 2 μ := hf.2 []
-
 theorem cls_smul (a : ℂ) {f : Mat n → V} (h : MemLp (fun y : G n => f y.val) 2 μ) :
     cls μ (fun g => a • f g) = a • cls μ f := by
   rw [cls_eq μ h, cls_eq μ (f := fun g => a • f g) (h.const_smul a)]
@@ -481,12 +474,12 @@ theorem X_bracket (hu : Uniq μ V)
     rw [Module.End.mul_apply, X_cls hu b hf, X_cls hu a (sob_bs b hf)]
   have hs : ∀ k, (((c k : ℂ) • X hu k) ⟨cls μ f, cls_mem hf⟩ : Msob μ V).1 =
       cls μ (fun g => (c k : ℂ) • Rd (bs k) f g) := fun k => by
-    rw [LinearMap.smul_apply, X_cls hu k hf, cls_smul _ (memS (sob_bs k hf))]
+    rw [LinearMap.smul_apply, X_cls hu k hf, cls_smul _ (GlobalTheory.CompanionTheory.WaveFc.Asm.sob_memLp (sob_bs k hf))]
     rfl
   rw [LinearMap.sub_apply, Submodule.coe_sub, hij, hij, LinearMap.sum_apply, Submodule.coe_sum]
   simp only [hs]
-  rw [← h1.2, ← cls_sub μ (memS (sob_bs i (sob_bs j hf))) (memS (sob_bs j (sob_bs i hf)))]
-  refine cls_congr μ ((memS (sob_bs i (sob_bs j hf))).sub (memS (sob_bs j (sob_bs i hf)))) fun g hg => ?_
+  rw [← h1.2, ← cls_sub μ (GlobalTheory.CompanionTheory.WaveFc.Asm.sob_memLp (sob_bs i (sob_bs j hf))) (GlobalTheory.CompanionTheory.WaveFc.Asm.sob_memLp (sob_bs j (sob_bs i hf)))]
+  refine cls_congr μ ((GlobalTheory.CompanionTheory.WaveFc.Asm.sob_memLp (sob_bs i (sob_bs j hf))).sub (GlobalTheory.CompanionTheory.WaveFc.Asm.sob_memLp (sob_bs j (sob_bs i hf)))) fun g hg => ?_
   rw [hB f hf _ _ g hg, GlobalTheory.CompanionTheory.FcCalc.Ibp.Rd_expand f hc g]
   refine Finset.sum_congr rfl fun k _ => ?_
   exact (Complex.coe_smul _ _).symm

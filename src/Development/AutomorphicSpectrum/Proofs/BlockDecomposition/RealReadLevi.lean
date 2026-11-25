@@ -289,8 +289,6 @@ open scoped Classical TensorProduct
 
 namespace GlobalTheory.CompanionTheory.ReadLevel
 
-alias mem_fixed_iff := _root_.GlobalTheory.LGrp.mem_fixed
-
 theorem extTensor_twRep {G H V W : Type} [Group G] [Group H] [AddCommGroup V] [Module ℂ V] [AddCommGroup W]
     [Module ℂ W] (ρ : Representation ℂ G V) (σ : Representation ℂ H W) (χ : G →* ℂˣ) (ψ : H →* ℂˣ)
     (m : G × H) (x : V ⊗[ℂ] W) :
@@ -310,11 +308,11 @@ theorem isSpherical_of_equiv {G V W : Type} [Group G] [AddCommGroup V] [Module �
   refine (Submodule.ne_bot_iff _).2 ⟨φ.toLinearEquiv.symm v, ?_, fun e => hv0 (by
     have h2 := congrArg φ.toLinearEquiv e
     rwa [LinearEquiv.apply_symm_apply, map_zero] at h2)⟩
-  refine mem_fixed_iff.2 fun g hg => φ.toLinearEquiv.injective ?_
+  refine GlobalTheory.CuspRep.LocEx.mem_fix.2 fun g hg => φ.toLinearEquiv.injective ?_
   have h1 : φ.toLinearEquiv (ρ g (φ.toLinearEquiv.symm v)) = σ g (φ.toLinearEquiv (φ.toLinearEquiv.symm v)) :=
     LinearMap.congr_fun (φ.isIntertwining' g) _
   rw [h1, LinearEquiv.apply_symm_apply]
-  exact mem_fixed_iff.1 hv g hg
+  exact GlobalTheory.CuspRep.LocEx.mem_fix.1 hv g hg
 
 theorem fixed_ind₂_ne_bot (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {a b n : ℕ} (e : Fin a ⊕ Fin b ≃ Fin n) {W : Type} [AddCommGroup W] [Module ℂ W]
@@ -336,7 +334,7 @@ theorem exists_fixed_of_sep {G V X : Type} [Group G] [TopologicalSpace G] [AddCo
     by_contra hc
     exact hv0 (hsep v hv hsm fun j => by_contra fun hj => hc ⟨j, hj⟩)
   refine ⟨Lj j v, hj, fun m hm => ?_⟩
-  rw [← hLj j m v hv hsm, mem_fixed_iff.1 hfix m hm]
+  rw [← hLj j m v hv hsm, GlobalTheory.CuspRep.LocEx.mem_fix.1 hfix m hm]
 
 theorem fixed_ind₂_twist (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
     {a b n : ℕ} (e : Fin a ⊕ Fin b ≃ Fin n) {V W : Type} [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]

@@ -236,9 +236,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l}
 
-theorem rt0_conj_neg_ne_zero (H : Host E) : starRingEnd ℂ H.rt0 = -H.rt0 :=
-  _root_.UpperTheory.Reformulated.B.ComplexConjugateRootEqNeg.rt0_conj_neg_ne_zero H
-
 theorem tauIn_rt_eq (τ : E →+* ℂ) (σ : c.F →+* ℂ) :
     σ (tauIn c τ H.rt) = H.rt0 ∨ σ (tauIn c τ H.rt) = -H.rt0 := by
   have h : (σ (tauIn c τ H.rt)) ^ 2 = H.rt0 ^ 2 := by
@@ -321,7 +318,7 @@ theorem flat_first_of_resolution_gaga : Geo.ResK.ResKStatement → GagaSections 
     rcases tauIn_rt_eq (c := c) (H := H) τ s with h | h
     · exact exists_infNorm_of_rt hR hG Z hβ hr hτ hZ hl hm s h
     · obtain ⟨t, ht⟩ := exists_infNorm_of_rt hR hG Z hβ hr hτ hZ hl hm ((starRingEnd ℂ).comp s)
-        (by rw [RingHom.comp_apply, h, map_neg, rt0_conj_neg_ne_zero, neg_neg])
+        (by rw [RingHom.comp_apply, h, map_neg, UpperTheory.Reformulated.B.ComplexConjugateRootEqNeg.rt0_conj_neg_ne_zero, neg_neg])
       refine ⟨t, ?_⟩
       have := _root_.GlobalTheory.CompanionTheory.Ar.Flat.hasInfNorm_conj E H D l Xo c U τ φ _ t hl ht
       rwa [show (starRingEnd ℂ).comp ((starRingEnd ℂ).comp s) = s from RingHom.ext fun x => by simp] at this

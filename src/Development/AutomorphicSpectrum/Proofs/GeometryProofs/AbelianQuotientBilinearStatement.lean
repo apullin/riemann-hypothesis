@@ -19,7 +19,7 @@ public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.Conne
 public import Development.AbelianVarietyTheory.Proofs.UniformizationProofs.ExistsNormalisedGen
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.AbelianSchemeGerms
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.QQuasiCompact
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalBilinearTermProduct
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.Comp1IdentityLeft
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeRelationStatement
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeUnitStatement
 import Mathlib.Tactic.Linter.Style
@@ -43,7 +43,7 @@ import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.RingTheory.RegularLocalRing.Defs
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientDifferentialMatrix, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeTransform, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGermPowerSeries, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SubstitutionBilinearFormTransform, Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitTrivialOnBothAxes, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinear, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinearStatement
+-- Members: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientDifferentialMatrix, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeTransform, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGermPowerSeries, Development.AutomorphicSpectrum.Proofs.GeometryProofs.SubstitutionBilinearFormTransform, Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitTrivialOnBothAxes, Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinear
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientDifferentialMatrix =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientDifferentialMatrix", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SqMap\npublic import Formalism.SharpRestriction.Divisibility.GeneratorPowers.LinEig\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Std.Tactic.BVDecide.Normalize.Prop\nimport Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes\nimport Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft\nimport Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.IsSplitGaussChars\n\n"}
@@ -155,11 +155,6 @@ theorem tanPt_prod (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S
     intro c
     rw [List.ofFn_succ, List.prod_cons, ih (fun i => c i.succ), Fin.sum_univ_succ, tanPt_add F hlaw]
 
-theorem sum_single (cf : Fin d → S) : (∑ i, cf i • (Pi.single i 1 : Fin d → S)) = cf := by
-  classical
-  ext j
-  simp [Finset.sum_apply, Pi.single_apply]
-
 theorem comb_eq (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S) ≫ x 1 = 1)
     (F : Germ.FGLaw S d)
     (hlaw : homAt x0 (jetSubstP 1 fun p : Fin 1 × Fin d => psTrunc 1 (F.F p.2)) ≫ x 1 =
@@ -174,7 +169,7 @@ theorem comb_eq (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S) �
     rw [hu, hv, tanPt_smul]
   rw [← hw, e]
   have := tanPt_prod h0 F hlaw d (fun i => cf i • Pi.single i 1)
-  rw [sum_single] at this
+  rw [ReciprocityTheory.ChartRestriction.G.Chart.sum_single] at this
   exact congrArg (fun f => f.left) this
 
 theorem comb_tanPt (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S) ≫ x 1 = 1)
@@ -187,7 +182,7 @@ theorem comb_tanPt (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S
   refine ⟨fun i => tanPt t x0 x (cf i • Pi.single i 1), fun i => ?_, ?_⟩
   · rw [tanPt_smul, hv]
   · have := tanPt_prod h0 F hlaw d (fun i => cf i • Pi.single i 1)
-    rw [sum_single] at this
+    rw [ReciprocityTheory.ChartRestriction.G.Chart.sum_single] at this
     exact congrArg (fun f => f.left) this
 
 theorem tanPt_isTan (h0 : homAt x0 (jetAug : Jet S (Fin 1 × Fin d) 1 →ₐ[S] S) ≫ x 1 = 1)
@@ -355,11 +350,6 @@ abbrev jAx1 (R : Type) [CommRing R] (d m : ℕ) : Jet R (Fin 2 × Fin d) m →�
   jetSubstP m fun p : Fin 2 × Fin d =>
     (![fun j => MvPolynomial.X ((0 : Fin 1), j), fun _ => 0] : Fin 2 → Fin d → MvPolynomial (Fin 1 × Fin d) R) p.1 p.2
 
-theorem cc_psTrunc {κ : Type} [Fintype κ] [DecidableEq κ] (m : ℕ) (f : MvPowerSeries κ R) :
-    MvPolynomial.constantCoeff (psTrunc m f) = MvPowerSeries.constantCoeff f := by
-  rw [MvPolynomial.constantCoeff_eq, coeff_psTrunc _ _ _ (by simp)]
-  simp
-
 theorem cc_psIn (m : ℕ) (l : Fin 2) (f : PS R 1 d) :
     MvPolynomial.constantCoeff (psIn d m ![l] f) = MvPowerSeries.constantCoeff f := by
   rw [psIn, MvPolynomial.constantCoeff_rename, _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc]
@@ -413,9 +403,9 @@ theorem double_substitution_first_axis (Qs : Fin d' → PS R 1 d) (hQ : ∀ i, M
   rw [cc_psIn, hQ, map_zero, sub_zero, psIn, MvPolynomial.aeval_rename]
   fin_cases l
   · simp [Function.comp_def]
-    have h0 : MvPolynomial.constantCoeff (psTrunc m (Qs j)) = 0 := by rw [cc_psTrunc, hQ]
+    have h0 : MvPolynomial.constantCoeff (psTrunc m (Qs j)) = 0 := by rw [Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc, hQ]
     first
-      | simp [cc_psTrunc, hQ]
+      | simp [Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc, hQ]
   · simp [Function.comp_def, _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc, hQ]
     exact bind_fst _
 
@@ -430,9 +420,9 @@ theorem double_substitution_second_axis (Qs : Fin d' → PS R 1 d) (hQ : ∀ i, 
   · simp [Function.comp_def, _root_.Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc, hQ]
     exact bind_fst _
   · simp [Function.comp_def]
-    have h0 : MvPolynomial.constantCoeff (psTrunc m (Qs j)) = 0 := by rw [cc_psTrunc, hQ]
+    have h0 : MvPolynomial.constantCoeff (psTrunc m (Qs j)) = 0 := by rw [Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc, hQ]
     first
-      | simp [cc_psTrunc, hQ]
+      | simp [Formalism.MainNotions.ModuliIntegralCharts.H1.FBIdPh.cc_psTrunc, hQ]
 
 theorem first_axis_comp_jet_inclusion (m : ℕ) :
     (jAx0 R d m).comp (jetCopy d m (0 : Fin 2)) = (Algebra.ofId R _).comp (jetAug : Jet R (Fin 1 × Fin d) m →ₐ[R] R) := by
@@ -1402,7 +1392,7 @@ end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitTrivialOnBothAxes =====
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinear =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinear", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.QQuasiCompact\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft\npublic import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalBilinearTermProduct\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SqMap\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientDifferentialMatrix\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeRelationStatement\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeTransform\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeUnitStatement\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGermPowerSeries\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientLineBundleGauge\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SubstitutionBilinearFormTransform\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitTrivialOnBothAxes\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne\n\n"}
+-- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinear", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.QQuasiCompact\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft\npublic import Development.WeilBound.CoreStatements.HodgeTatePoints.Comp1IdentityLeft\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SqMap\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientDifferentialMatrix\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeRelationStatement\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeTransform\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGaugeUnitStatement\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientGermPowerSeries\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientLineBundleGauge\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SubstitutionBilinearFormTransform\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.UnitTrivialOnBothAxes\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne\n\n"}
 section -- clump:auto
 @[expose] public section
 
@@ -1434,12 +1424,12 @@ theorem frame_gauge : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   have hcs : ∀ (b : 𝓞 E) (i : Fin d), MvPowerSeries.constantCoeff (g.B.A.act b i) = 0 := fun b i => g.B.A.const b i
   have hp0 : ∀ i : Fin d, MvPowerSeries.constantCoeff (pt k (n := 1) d 0 i) = 0 := fun i => by simp [pt]
   have hp2 : ∀ (j : Fin 2) (i : Fin d), MvPowerSeries.constantCoeff (pt k (n := 2) d j i) = 0 := fun j i => by simp [pt]
-  obtain ⟨-, -, -, hT, hbT, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc k d lam lam (pt k d 0) (g.B.A.act (star a)) hax hax hp0 (hcs _)
-  obtain ⟨-, -, -, hS, hbS, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc k d lam lam (g.B.A.act a) (pt k d 0) hax hax (hcs _) hp0
+  obtain ⟨-, -, -, hT, hbT, -⟩ := PositivityTheory.HtPt.Ca.bil_calc k d lam lam (pt k d 0) (g.B.A.act (star a)) hax hax hp0 (hcs _)
+  obtain ⟨-, -, -, hS, hbS, -⟩ := PositivityTheory.HtPt.Ca.bil_calc k d lam lam (g.B.A.act a) (pt k d 0) hax hax (hcs _) hp0
   rw [germ_comp1_zero_point_left _ (hp2 0)] at hT hbT
   rw [germ_comp1_zero_point_left _ (hp2 1)] at hS hbS
-  obtain ⟨-, -, e1, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc k d (subQ Qs (gB.B.ad a)) _ (pt k d 0) (pt k d 0) hA hT hp0 hp0
-  obtain ⟨-, -, e2, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Conj.BilCalc.bil_calc k d _ (g.B.ad a) (pt k d 0) (pt k d 0) hS hadx hp0 hp0
+  obtain ⟨-, -, e1, -⟩ := PositivityTheory.HtPt.Ca.bil_calc k d (subQ Qs (gB.B.ad a)) _ (pt k d 0) (pt k d 0) hA hT hp0 hp0
+  obtain ⟨-, -, e2, -⟩ := PositivityTheory.HtPt.Ca.bil_calc k d _ (g.B.ad a) (pt k d 0) (pt k d 0) hS hadx hp0 hp0
   have h := congrArg (fun f => bil f 1 1) hrel
   beta_reduce at h
   rw [e1, e2, hbT, hbS, hbA, hl, lin_pt_eq_one, Matrix.transpose_one, Matrix.one_mul, Matrix.mul_one] at h
@@ -1453,17 +1443,3 @@ end -- clump:auto
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinear =====
-
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinearStatement =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinearStatement", "h": "module\n\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.QQuasiCompact\npublic import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft\npublic import Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinear\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Development.AutomorphicSpectrum.Definitions.AdelicLattices.FactPrimes\nimport Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsGenOfIsVBOne\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Crv GlobalTheory.CompanionTheory.Ar.Conj GlobalTheory.CompanionTheory.Ar.Flat GlobalTheory.CompanionTheory.Ar.Fl
-open scoped CategoryTheory.Obj
-attribute [local instance] Over.cartesianMonoidalCategory
-
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.AbelianQuotientBilinearStatement =====

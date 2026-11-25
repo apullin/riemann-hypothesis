@@ -875,25 +875,15 @@ open GlobalTheory.HolHom GlobalTheory.CompanionTheory.Ar.Flat.ExpChart
 
 variable {R C D : Type} [CommRing R] [CommRing C] [CommRing D]
 
-theorem surj_fstC (q : Sp (DualNumber C)) :
-    ∃ p : Sp C, spMap (TrivSqZeroExt.fstHom C C C).toRingHom p = q := by
-  apply GlobalTheory.CompanionTheory.Ar.InvDer.surj_fst
-
 theorem le_dual {X : Scheme.{0}} {v : Sp (DualNumber C) ⟶ X} {x : Sp C ⟶ X}
     (h : spMap (TrivSqZeroExt.fstHom C C C).toRingHom ≫ v = x) {U : X.Opens} (hx : ⊤ ≤ x ⁻¹ᵁ U) : ⊤ ≤ v ⁻¹ᵁ U := by
   intro q _
-  obtain ⟨p, rfl⟩ := surj_fstC q
+  obtain ⟨p, rfl⟩ := GlobalTheory.CompanionTheory.Ar.InvDer.surj_fst q
   subst h
   have h1 := hx (Set.mem_univ p)
   change (spMap (TrivSqZeroExt.fstHom C C C).toRingHom ≫ v) p ∈ U at h1
   change v _ ∈ U
   rwa [Scheme.Hom.comp_apply] at h1
-
-alias spMap_comp' := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
-
-theorem dualMap_comp (β : R →+* C) (κ : C →+* D) : dualMap (κ.comp β) = (dualMap κ).comp (dualMap β) := by
-  refine RingHom.ext fun x => ?_
-  ext <;> simp [dualMap]
 
 variable (G : Over (Sp R)) [GrpObj G]
 
@@ -911,7 +901,7 @@ theorem ptU_over (β : R →+* C) : ptU G β ≫ G.hom = spMap β := by
 theorem ptV_over (M : LieModel G (𝟙 (Sp R)) E) (β : R →+* C) (w : E) :
     ptV M β w ≫ G.hom = spMap ((algebraMap C (DualNumber C)).comp β) := by
   have e : (M.pt w).left ≫ G.hom = spMap (algebraMap R (DualNumber R)) ≫ 𝟙 (Sp R) := Over.w (M.pt w)
-  rw [Category.assoc, e, Category.comp_id, ← spMap_comp']
+  rw [Category.assoc, e, Category.comp_id, ← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
   congr 1
   refine RingHom.ext fun x => ?_
   ext <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl']
@@ -921,7 +911,7 @@ theorem ptV_fst (M : LieModel G (𝟙 (Sp R)) E) (β : R →+* C) (w : E) :
   rw [ptU, ← M.tan w, ← Category.assoc, ← Category.assoc]
   congr 1
   show spMap _ ≫ spMap _ = spMap _ ≫ spMap _
-  rw [← spMap_comp', ← spMap_comp']
+  rw [← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, ← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
   congr 1
   refine RingHom.ext fun x => ?_
   show TrivSqZeroExt.fst (dualMap β x) = β (TrivSqZeroExt.fst x)
@@ -929,7 +919,7 @@ theorem ptV_fst (M : LieModel G (𝟙 (Sp R)) E) (β : R →+* C) (w : E) :
 
 theorem one_left_comp (β : R →+* C) (θ : C →+* ℂ) :
     (1 : Over.mk (spMap (θ.comp β)) ⟶ G).left = spMap θ ≫ ptU G β := by
-  rw [one_left_spMap, spMap_comp', Category.assoc]
+  rw [one_left_spMap, ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc]
 
 theorem le_one_left (β : R →+* C) (θ : C →+* ℂ) {V : G.left.Opens} (h : ⊤ ≤ ptU G β ⁻¹ᵁ V) :
     ⊤ ≤ (1 : Over.mk (spMap (θ.comp β)) ⟶ G).left ⁻¹ᵁ V := by
@@ -944,7 +934,7 @@ theorem snd_val_comp (M : LieModel G (𝟙 (Sp R)) E) (β : R →+* C) (θ : C �
     (h : ⊤ ≤ ptV M β w ⁻¹ᵁ V) (f : Γ(G.left, V)) :
     TrivSqZeroExt.snd (valR (spMap (dualMap (θ.comp β)) ≫ (M.pt w).left) V f) =
       θ (TrivSqZeroExt.snd (valR (ptV M β w) V f)) := by
-  rw [dualMap_comp, spMap_comp', Category.assoc, valR_spMap _ _ _ h]
+  rw [GlobalTheory.CompanionTheory.Ar.InvDer.dualMap_comp, ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc, valR_spMap _ _ _ h]
   simp [dualMap]
 
 theorem fst_val (M : LieModel G (𝟙 (Sp R)) E) (β : R →+* C) (w : E) {V : G.left.Opens}

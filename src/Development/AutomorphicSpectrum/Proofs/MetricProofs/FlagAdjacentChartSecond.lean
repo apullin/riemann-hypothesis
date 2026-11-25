@@ -193,7 +193,7 @@ theorem chart_exact : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Finty
     rw [Fin.lt_def]
     omega
   refine ⟨fun τ' r s => analytic_wH h ε τ' r s _, fun w hw => ⟨fun τ' => ⟨?_, ?_⟩, ?_, fun τ' i => ⟨?_, ?_⟩⟩⟩
-  · exact isBlockDiag_mul (hh τ').1 (lowMat_isBlockDiag _ _)
+  · exact GlobalTheory.CompanionTheory.Ar.PB.IsBlockDiag.mul (hh τ').1 (lowMat_isBlockDiag _ _)
   · rw [wH, Matrix.det_mul, lowMat_det, mul_one]
     exact (hh τ').2
   · exact basePart_fst

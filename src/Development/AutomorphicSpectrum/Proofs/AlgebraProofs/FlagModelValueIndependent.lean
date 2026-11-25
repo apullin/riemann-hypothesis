@@ -460,7 +460,7 @@ theorem main : GroundTheory.Heights₂.Heights.NumbersDVR.FlagModelJoinLeftAlt.S
     GroundTheory.Heights₂.Heights.NumbersDVR.JoinVerticalDivisor.proof
     (GroundTheory.Heights₂.Heights.NumbersDVR.FlagPairJoinLeft.proof
       GroundTheory.Heights₂.Heights.NumbersDVR.JoinVerticalDivisorLeft.proof)
-    (GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.proof _root_.GlobalTheory.CompanionTheory.Ar.Num.PairNumberPullback.main
+    (GroundTheory.Heights₂.Heights.NumbersDVR.PairNumberJoinLeft.proof PositivityTheory.Xgn.t_s_pullback
       GroundTheory.Heights₂.Heights.NumbersDVR.JoinVerticalDivisorLeft.proof
       GroundTheory.Heights₂.Heights.NumbersDVR.BirationalJoin.proof)
 
@@ -500,7 +500,7 @@ section -- clump:auto
 namespace GlobalTheory.CompanionTheory.Ar.Num.FlagModelJoinRight
 
 theorem main : GroundTheory.Heights₂.Heights.NumbersDVR.FlagModelJoinRightAlt.Statement :=
-  PositivityTheory.Xgn.A_s_joinright.of_pullback _root_.GlobalTheory.CompanionTheory.Ar.Num.PairNumberPullback.main
+  PositivityTheory.Xgn.A_s_joinright.of_pullback PositivityTheory.Xgn.t_s_pullback
 
 end GlobalTheory.CompanionTheory.Ar.Num.FlagModelJoinRight
 end -- clump:auto

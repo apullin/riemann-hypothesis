@@ -414,7 +414,7 @@ theorem fineJac_step (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) (Δ :
       rfl
   have hup : jm (dec Δ) hd π ≤ 1 := by
     refine (_root_.GlobalTheory.CompanionTheory.JmMono.jm_le_of_isSubquotient (dec Δ) hd π _ (isSmooth_prodIrr _ hd0) hsub).trans ?_
-    rw [GlobalTheory.T.jacquet_multiplicity_cuspidal_product hA Δ.term (dec Δ) hd0 hd Δ.isCusp_term (isCusp_dec Δ), hset, Set.ncard_singleton]
+    rw [GlobalTheory.CompanionTheory.CuspJm.main hA Δ.term (dec Δ) hd0 hd Δ.isCusp_term (isCusp_dec Δ), hset, Set.ncard_singleton]
     simp
   obtain ⟨e, he, h1⟩ := _root_.GlobalTheory.CompanionTheory.SegNcjm.exists_perm_one_le_jm hA Δ.term hd0 Δ.isCusp_term π hsm hc.1 hsub
   obtain ⟨h, hh⟩ := shape Δ.len _ he (fun a => Δ.isCusp_term _) h1

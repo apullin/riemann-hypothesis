@@ -342,10 +342,6 @@ theorem convR_tst_mul_finGL (E : Type) [Field E] [NumberField E] [_root_.NumberF
   simp only [tst_finGL_inv_mul U β u hu] at h
   simpa only [mul_assoc] using h
 
-theorem convR_tst_right_invariant : ∀ (E : Type) [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] (a : ℕ) (μ : Measure (GA E a)) [μ.IsHaarMeasure] [μ.IsMulRightInvariant] (U : Subgroup (GL (Fin a) (Af E))) (β : Lie E a → ℂ) (Fl : GA E a → ℂ) (u : GL (Fin a) (Af E)), u ∈ U → ∀ x : GA E a, convR μ (tst U β) Fl (x * finGL E a u) = convR μ (tst U β) Fl x := by
-  intro E _ _ _ a μ _ _ U β Fl u hu x
-  exact convR_tst_mul_finGL E a μ U β Fl u hu x
-
 end GlobalTheory.CompanionTheory.SmoothRep
 end -- clump:auto
 end -- clump:auto
@@ -797,8 +793,6 @@ namespace GlobalTheory.CompanionTheory.SmoothRep.Inj
 
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
 
-alias continuous_infGL_alt := _root_.GlobalTheory.CuspQuot.continuous_infGL
-
 theorem R_apply_eq {μ : Measure (GA E a)} [μ.IsHaarMeasure] [μ.IsMulRightInvariant] {U : Subgroup (GL (Fin a) (Af E))}
     {v : L2 (latticeGL E a) μ} (hv : ∀ u ∈ U, R (latticeGL E a) μ (finGL E a u) v = v) {g : GA E a}
     (hu : GeneralLinearGroup.map (pFin E) g⁻¹ ∈ U) :
@@ -816,7 +810,7 @@ theorem exists_isTest_Rop_injective : ∀ (E : Type) [Field E] [NumberField E] [
   have hΦ : Continuous Φ := by
     refine continuous_clm_apply.2 fun w => ?_
     simp only [hΦv]
-    exact ((continuous_R (w : L2 (latticeGL E a) μ)).comp (continuous_infGL_alt.comp continuous_inv)).sub
+    exact ((continuous_R (w : L2 (latticeGL E a) μ)).comp (GlobalTheory.CompanionTheory.IsoTypes.continuous_infGL.comp continuous_inv)).sub
       continuous_const
   have hΦ1 : Φ 1 = 0 := by
     ext w
@@ -1253,7 +1247,7 @@ theorem lieD_cv {U : Subgroup (GL (Fin a) (Af E))} (hUo : IsOpen (U : Set (GL (F
   (_root_.GlobalTheory.CompanionTheory.SmoothRep.convR_tst_mem_Sm E a μ U hUo hUc β hβ Fl hFl).2 X g
 
 theorem cv_fin (U : Subgroup (GL (Fin a) (Af E))) (β : Lie E a → ℂ) (Fl : GA E a → ℂ) {u : GL (Fin a) (Af E)} (hu : u ∈ U)
-    (x : GA E a) : convR μ (tst U β) Fl (x * finGL E a u) = convR μ (tst U β) Fl x := _root_.GlobalTheory.CompanionTheory.SmoothRep.convR_tst_right_invariant E a μ U β Fl u hu x
+    (x : GA E a) : convR μ (tst U β) Fl (x * finGL E a u) = convR μ (tst U β) Fl x := GlobalTheory.CompanionTheory.SmoothRep.convR_tst_mul_finGL E a μ U β Fl u hu x
 
 theorem cv_cpt (U : Subgroup (GL (Fin a) (Af E))) {β : Lie E a → ℂ} (hβ : ConjInv β) (F : L2 (latticeGL E a) μ) (k : Kinf E a)
     (x : GA E a) :

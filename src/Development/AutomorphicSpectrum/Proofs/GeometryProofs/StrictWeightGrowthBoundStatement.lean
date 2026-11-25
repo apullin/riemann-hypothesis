@@ -1370,7 +1370,7 @@ theorem root_origin_weight_free : ∀ (E : Type) [Field E] [NumberField E] [IsCM
     exact (mul_ne_zero hε0 hy₁') this
   have hH₁P : H₁ ∉ mCoordIdeal RM.y := fun h => hy₁' (aeval_eq_zero_of_mem RM.y h)
   have hu : IsFormOff (mCoordIdeal RM.y) (f * (G₁ * H₁)) := by
-    refine ⟨⟨_, isMultiHomog_mul hf (isMultiHomog_mul hG₁ hH₁)⟩, fun h => ?_⟩
+    refine ⟨⟨_, MultiProjectiveCoordinates.Val.mh_mul hf (MultiProjectiveCoordinates.Val.mh_mul hG₁ hH₁)⟩, fun h => ?_⟩
     rcases hPprime.mem_or_mem h with h | h
     · exact hfP h
     · rcases hPprime.mem_or_mem h with h | h
@@ -1535,13 +1535,6 @@ section -- clump:auto
 
 open MvPolynomial ReciprocityTheory.ChartRestriction.G.Geo GlobalTheory.CompanionTheory.Ar.Small Filter Topology
 
-private theorem isMultiHomog_mul_rational_sup_metrics {K : Type} {ι : K → Type} [∀ k, Fintype (ι k)] {f g : MRing ι}
-    {d e : K → ℕ} (hf : IsMultiHomog f d) (hg : IsMultiHomog g e) : IsMultiHomog (f * g) (d + e) := by
-  classical
-  intro m hm k
-  obtain ⟨a, ha, b, hb, rfl⟩ := Finset.mem_add.mp (support_mul f g hm)
-  simp only [Finsupp.add_apply, Finset.sum_add_distrib, Pi.add_apply, hf a ha k, hg b hb k]
-
 theorem MultiProjectiveCoordinates.exists_form_with_valuation : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Ω : Type) [Field Ω] (y : (Σ k, ι k) → Ω), Birational y → IsRelevant (mCoordIdeal y) → ∀ (a : K → ℤ) (s : Ω), ∃ h : MRing ι, IsFormOff (mCoordIdeal y) h ∧ ∀ (𝕜 : Type) [Field 𝕜] (z : (Σ k, ι k) → 𝕜), aeval z h ≠ 0 → ∃ w, HasVal y a s z w := by
   intro K _ ι _ Ω _ y hbir hrel a s
   classical
@@ -1581,8 +1574,8 @@ theorem MultiProjectiveCoordinates.exists_form_with_valuation : ∀ (K : Type) [
     ⟨monomial (mon fun k => (-a k).toNat) 1, hmon_homog (fun k => (-a k).toNat), hmon_ne (fun k => (-a k).toNat)⟩
   clear hmon_homog hmon_ne
   obtain ⟨d, g0, h0, hg0, hh0, hy0, hgy0⟩ := hbir (s * aeval y Mn / aeval y Mp)
-  have hH : IsMultiHomog (h0 * Mn) (d + fun k => (-a k).toNat) := isMultiHomog_mul_rational_sup_metrics hh0 hMnh
-  have hG : IsMultiHomog (g0 * Mp) (d + fun k => (a k).toNat) := isMultiHomog_mul_rational_sup_metrics hg0 hMph
+  have hH : IsMultiHomog (h0 * Mn) (d + fun k => (-a k).toNat) := GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hh0 hMnh
+  have hG : IsMultiHomog (g0 * Mp) (d + fun k => (a k).toNat) := GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hg0 hMph
   refine ⟨h0 * Mn, ⟨⟨_, hH⟩, ?_⟩, ?_⟩
   · intro hmem
     have hk : mConeMap y (h0 * Mn) = 0 := RingHom.mem_ker.mp hmem
@@ -1627,8 +1620,8 @@ theorem norm_le_of_small (y : (Σ k, ι k) → Ω) (A : HermLine ι) (a₀ D : K
   obtain ⟨dg₀, dh₀, g₀, h₀, mg₀, mh₀, d₀, y₀, n₀, v₀⟩ := hx
   obtain ⟨dg, dh, g, h, mg, mh, d, yy, nz, v⟩ := hW
   have key := hS (dg + N • dh₀) (N • dg₀ + dh) (g * h₀ ^ N) (g₀ ^ N * h) z
-    (Small.Fund.isMultiHomog_mul mg (_root_.GlobalTheory.CompanionTheory.Ar.Small.RepAt.form_pow mh₀ N))
-    (Small.Fund.isMultiHomog_mul (_root_.GlobalTheory.CompanionTheory.Ar.Small.RepAt.form_pow mg₀ N) mh)
+    (MultiProjectiveCoordinates.Val.mh_mul mg (_root_.GlobalTheory.CompanionTheory.Ar.Small.RepAt.form_pow mh₀ N))
+    (MultiProjectiveCoordinates.Val.mh_mul (_root_.GlobalTheory.CompanionTheory.Ar.Small.RepAt.form_pow mg₀ N) mh)
     (fun k => by
       have e1 := d k
       have e2 := d₀ k
@@ -1840,7 +1833,7 @@ theorem vs_mult : Top.Given → ∀ (E : Type) [Field E] [NumberField E] [IsCMFi
   have hform : Small.IsFormOff (mCoordIdeal (T.M B b).y) (w * e) := by
     obtain ⟨d₁, h₁⟩ := hw.1
     obtain ⟨d₂, h₂⟩ := he.1
-    refine ⟨⟨_, Small.Fund.isMultiHomog_mul h₁ h₂⟩, fun h => ?_⟩
+    refine ⟨⟨_, MultiProjectiveCoordinates.Val.mh_mul h₁ h₂⟩, fun h => ?_⟩
     have hp : (mCoordIdeal (T.M B b).y).IsPrime := RingHom.ker_isPrime _
     rcases hp.mem_or_mem h with h | h
     · exact hw.2 h

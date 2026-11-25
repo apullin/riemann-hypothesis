@@ -101,7 +101,7 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
   have hp1 : IsPull O x z E' (EB 1) := (hj 1).1
   have hB : SameGeneric O (joinCoord x z) (EB 0) (EB 1) :=
     (GlobalTheory.CompanionTheory.Ar.Num.PullPreserve.pull_preserve O Ω K ι x N V E E' K' ι' z (EB 0) (EB 1) hp0 hp1).2.1 hEE'
-  obtain ⟨-, f, g, hfp⟩ := _root_.GlobalTheory.CompanionTheory.Ar.FlagPairOfFrames.main O Ω (K ⊕ K') (Sum.elim ι ι') (joinCoord x z) ϖ hϖ d
+  obtain ⟨-, f, g, hfp⟩ := PositivityTheory.Xgn.t_flagpair_of_frames O Ω (K ⊕ K') (Sum.elim ι ι') (joinCoord x z) ϖ hϖ d
     ((GroundTheory.Heights₂.Heights.NumbersDVR.BundleExamples.isModelOver_iff O _ d).1 hW').2 N V (EB 0) (EB 1) hB w w (b 0) (b 1) (hj 0).2 (hj 1).2
     (fun i j hij => by simp [Finsupp.single_apply, hij.ne])
   obtain ⟨FB, hF⟩ := (GlobalTheory.CompanionTheory.Ar.Num.PullExists.main O Ω K ι x N V₁ F).1 K' ι' z

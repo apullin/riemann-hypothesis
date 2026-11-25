@@ -1109,8 +1109,6 @@ theorem exists_tied_chart {E : Type} [Field E] [NumberField E] [IsCMField E] {H 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E} {D : Datum H} {l : Level H}
   {Xo : Moduli D l} {c : Coeff l} {O : Type} [CommRing O] {β : O →+* c.F}
 
-alias spMap_comp' := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
-
 theorem exists_lift_of_centre_mem {X : Scheme.{0}} (W : X.Opens) (w : Sp ℂ ⟶ X) (h : centre w ∈ W) :
     ∃ w' : Sp ℂ ⟶ W.toScheme, w' ≫ W.ι = w := by
   have hr : Set.range w ⊆ Set.range W.ι := by
@@ -1166,7 +1164,7 @@ theorem exists_model_chart (Y : Model Xo c β) (σ : c.F →+* ℂ) {X' : Scheme
       _ = (w' ≫ W'.ι) ≫ s' ≫ spMap (IntermediateField.inclusion c.le).toRingHom := by
             rw [h2]; simp only [Category.assoc]
       _ = _ := by
-            rw [hw', spMap_comp', ← (hpt z hz).1]; simp only [Category.assoc]
+            rw [hw', GlobalTheory.Frames.NonzeroGenerates.spMap_comp', ← (hpt z hz).1]; simp only [Category.assoc]
   obtain ⟨ρ, C, i₀, e, mi, me, hρ, hρ1, hej, hek, hψ, hm₂, hm₁⟩ := exists_tied_chart Xo _ _ T U₀ j₀
     (g₀ ≫ pullback.fst _ _) tU d a (fun z => spMap (ψ z)) ha inferInstance n₁ n₂
     (ReciprocityTheory.ChartRestriction.G.PullbackSections.isHolTo_spMap hol.1 hol.2) hp
@@ -1251,7 +1249,7 @@ theorem exists_vec (Y : Model Xo c β) {σ' : KA l →+* ℂ} {n a : ℕ} (C : B
   have hq : IsPullback C.m₁.φ C.tV.G.hom C.t.G.hom C.j := C.m₁.cart.1
   have hsq : spMap (dualMap ψz) ≫ spMap (algebraMap C.R (DualNumber C.R)) =
       spMap (algebraMap ℂ (DualNumber ℂ)) ≫ spMap ψz := by
-    rw [← spMap_comp', ← spMap_comp']
+    rw [← GlobalTheory.Frames.NonzeroGenerates.spMap_comp', ← GlobalTheory.Frames.NonzeroGenerates.spMap_comp']
     congr 1
     ext a <;> simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
   have w : (spMap (dualMap ψz) ≫ (C.M.pt u).left) ≫ C.t.G.hom =
@@ -1281,7 +1279,7 @@ theorem exists_vec (Y : Model Xo c β) {σ' : KA l →+* ℂ} {n a : ℕ} (C : B
 
 theorem spMap_dual {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
     spMap (dualMap (g.comp f)) = spMap (dualMap g) ≫ spMap (dualMap f) := by
-  rw [← LiePull.dualMap_comp, spMap_comp']
+  rw [← LiePull.dualMap_comp, GlobalTheory.Frames.NonzeroGenerates.spMap_comp']
 
 theorem chart_unit (Y : Model Xo c β) (τ : E →+* ℂ) (σ : c.F →+* ℂ) (Φ : CFn Xo c) (A : Y.X.Opens) (hA : IsAffineOpen A)
     {EB : Type} [AddCommGroup EB] [Module Γ(Y.X, A) EB] (MB : LieModel Y.t.G hA.fromSpec EB) (e₁ : Fin D.p → EB)
@@ -1312,7 +1310,7 @@ theorem chart_unit (Y : Model Xo c β) (τ : E →+* ℂ) (σ : c.F →+* ℂ) (
   choose u₁ hu₁ using fun i => exists_coord hA.fromSpec fR f hf mR.φ mR.cart C.M (MB.pt (e₁ i)) (MB.tan _)
   choose u₂ hu₂ using fun j => exists_coord hA.fromSpec fR f hf mR.φ mR.cart C.M (MB.pt (e₂ j)) (MB.tan _)
   have hy0 : spMap (C.ψ 0) ≫ 𝟙 _ ≫ f = spMap ((C.ψ 0).comp fR) ≫ hA.fromSpec := by
-    rw [Category.id_comp, ← hf, spMap_comp', Category.assoc]
+    rw [Category.id_comp, ← hf, GlobalTheory.Frames.NonzeroGenerates.spMap_comp', Category.assoc]
   have hfr0 := hframe ((C.ψ 0).comp fR) _
     (fun i => LieCarrier.epsHom ((C.ψ 0).comp fR) hA.fromSpec _ rfl ≫ MB.pt (e₁ i))
     (fun j => LieCarrier.epsHom ((C.ψ 0).comp fR) hA.fromSpec _ rfl ≫ MB.pt (e₂ j)) rfl
@@ -1359,7 +1357,7 @@ theorem chart_unit (Y : Model Xo c β) (τ : E →+* ℂ) (σ : c.F →+* ℂ) (
         rw [spMap_dual, Category.assoc]
       exact e₂'.trans q.symm
     have hy : (C.pt z ≫ k') ≫ Y.j = spMap ((C.ψ z).comp fR) ≫ hA.fromSpec := by
-      rw [Category.assoc, hkj, ← Category.assoc, hp, spMap_comp', Category.assoc, hf]
+      rw [Category.assoc, hkj, ← Category.assoc, hp, GlobalTheory.Frames.NonzeroGenerates.spMap_comp', Category.assoc, hf]
     have hf2 := hframe ((C.ψ z).comp fR) ((C.pt z ≫ k') ≫ Y.j) v₀ w₀ hy (by rw [hy]; exact hover z hz.1) c1 c2
     exact ⟨v, w, v₀, w₀, _root_.GlobalTheory.CompanionTheory.Ar.Flat.isFramed_of_model E H D l Xo c O β Y τ σ _ v w v₀ w₀ (hsnd z hz) a1 b1 hf2.1 hf2.2, a1, b1,
       c1, c2, fun i => ⟨uu i, a2 i, a3 i⟩, fun j => ⟨uw j, b2 j, b3 j⟩⟩
@@ -1394,7 +1392,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Flat.flat_unit_along_families : ∀ (E :
   let g : Γ(X', V) →+* C.R := (Spec.preimage i₀).hom
   have hg : spMap g = i₀ := Spec.map_preimage i₀
   have hfR : spMap (g.comp aV) ≫ hA.fromSpec = i₀ ≫ hV.fromSpec ≫ π := by
-    rw [GlobalTheory.CompanionTheory.Ar.Flat.ChartFamily.spMap_comp', Category.assoc, haV, hg]
+    rw [GlobalTheory.Frames.NonzeroGenerates.spMap_comp', Category.assoc, haV, hg]
   have hin : ∀ z ∈ ball (0 : Fin d → ℂ) 1, (ρ : ℂ) • z ∈ ball (0 : Fin d → ℂ) 1 := fun z hz => by
     rw [mem_ball_zero_iff] at hz ⊢
     rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg hρ.le]
@@ -1402,13 +1400,13 @@ theorem GlobalTheory.CompanionTheory.Ar.Flat.flat_unit_along_families : ∀ (E :
   have hover : ∀ z ∈ ball (0 : Fin d → ℂ) 1,
       (spMap ((C.ψ z).comp (g.comp aV)) ≫ hA.fromSpec) ≫ Y.s = spMap (σ.comp β) := fun z hz => by
     have e : spMap ((C.ψ z).comp (g.comp aV)) ≫ hA.fromSpec = spMap (C.ψ z) ≫ i₀ ≫ hV.fromSpec ≫ π := by
-      rw [GlobalTheory.CompanionTheory.Ar.Flat.ChartFamily.spMap_comp', Category.assoc, hfR]
+      rw [GlobalTheory.Frames.NonzeroGenerates.spMap_comp', Category.assoc, hfR]
     rw [e]
     calc (spMap (C.ψ z) ≫ i₀ ≫ hV.fromSpec ≫ π) ≫ Y.s = (spMap (C.ψ z) ≫ i₀) ≫ hV.fromSpec ≫ s' ≫ spMap β := by
           simp only [Category.assoc, hπ]
       _ = (spMap (ψ ((ρ : ℂ) • z)) ≫ hV.fromSpec ≫ s') ≫ spMap β := by
           rw [hψ z hz]; simp only [Category.assoc]
-      _ = _ := by rw [(hpts _ (hin z hz)).1, GlobalTheory.CompanionTheory.Ar.Flat.ChartFamily.spMap_comp']
+      _ = _ := by rw [(hpts _ (hin z hz)).1, GlobalTheory.Frames.NonzeroGenerates.spMap_comp']
   have hsnd : ∀ z ∈ punct d a 1, (C.pt z ≫ k') ≫ pullback.snd _ _ = spMap σ := fun z hz => by
     rw [Category.assoc, hks, ← Category.assoc, (C.pt_eq z hz).1, ← Category.assoc, hψ z hz.1]
     exact (hpts _ (hin z hz.1)).1
@@ -1432,7 +1430,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Flat.flat_unit_along_families : ∀ (E :
   have hbε₁ : b ∈ ball b₀ ε₁ := ball_subset_ball (min_le_left _ _) hbε
   obtain ⟨hκb, hyb'⟩ := hκ b hbε₁
   refine ⟨(ψ (κ b)).comp aV, ?_, ?_⟩
-  · rw [GlobalTheory.CompanionTheory.Ar.Flat.ChartFamily.spMap_comp', Category.assoc, haV, hyb', Category.assoc]
+  · rw [GlobalTheory.Frames.NonzeroGenerates.spMap_comp', Category.assoc, haV, hyb', Category.assoc]
   intro hW yy v w v₀ w₀ hyj hys hv hw hv₀ hw₀
   have hρz : (ρ : ℂ) • ((ρ : ℂ)⁻¹ • κ b) = κ b := smul_inv_smul₀ hρc _
   have hcen : centre (spMap (ψ (κ b)) ≫ hV.fromSpec) ∉ ((W' : Set X')ᶜ) := by
@@ -1458,7 +1456,7 @@ theorem GlobalTheory.CompanionTheory.Ar.Flat.flat_unit_along_families : ∀ (E :
   subst hyy
   have hf : (ψ (κ b)).comp aV = (C.ψ ((ρ : ℂ)⁻¹ • κ b)).comp (g.comp aV) := by
     have e : spMap ((ψ (κ b)).comp aV) = spMap ((C.ψ ((ρ : ℂ)⁻¹ • κ b)).comp (g.comp aV)) := by
-      rw [← cancel_mono hA.fromSpec, GlobalTheory.CompanionTheory.Ar.Flat.ChartFamily.spMap_comp', GlobalTheory.CompanionTheory.Ar.Flat.ChartFamily.spMap_comp',
+      rw [← cancel_mono hA.fromSpec, GlobalTheory.Frames.NonzeroGenerates.spMap_comp', GlobalTheory.Frames.NonzeroGenerates.spMap_comp',
         Category.assoc, Category.assoc, hfR, haV, ← Category.assoc (spMap _) i₀, hpψ]
     exact congrArg CommRingCat.Hom.hom (Spec.map_injective e)
   rw [hf] at hv₀ hw₀

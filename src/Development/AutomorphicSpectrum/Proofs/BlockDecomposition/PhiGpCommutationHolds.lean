@@ -115,10 +115,6 @@ section SlopeTestRemainingChoices
 variable {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [AddCommGroup W] [Module ℂ W]
 
-theorem cIndSpace_ext {H : Subgroup G} {τ : Representation ℂ H W} {a b : cIndSpace H τ}
-    (h : ∀ g, a.1.1.1 g = b.1.1.1 g) : a = b :=
-  Subtype.ext (Subtype.ext (Subtype.ext (funext h)))
-
 theorem mul_mem_indSpace {H : Subgroup G} {τ τ' : Representation ℂ H W} {ψ : G →* ℂˣ}
     (hτ : ∀ (h : H) (w : W), τ' h w = ((ψ h : ℂˣ) : ℂ) • τ h w) (f : cIndSpace H τ) :
     (fun g => ((ψ g : ℂˣ) : ℂ) • f.1.1.1 g) ∈ indSpace H τ' := by
@@ -175,14 +171,14 @@ theorem nonempty_twist_cInd_equiv : ∀ {G W : Type} [Group G] [TopologicalSpace
     rw [mul_comm, cancel]
   let e : cIndSpace H σ ≃ₗ[ℂ] cIndSpace H (twist σ (χ.comp H.subtype)) :=
     { toFun := mulC hχ h1 t1
-      map_add' := fun a b => cIndSpace_ext fun g => smul_add _ (a.1.1.1 g) (b.1.1.1 g)
-      map_smul' := fun c a => cIndSpace_ext fun g => smul_comm _ c (a.1.1.1 g)
+      map_add' := fun a b => GlobalTheory.CompanionTheory.CIndCongr.ext_fun fun g => smul_add _ (a.1.1.1 g) (b.1.1.1 g)
+      map_smul' := fun c a => GlobalTheory.CompanionTheory.CIndCongr.ext_fun fun g => smul_comm _ c (a.1.1.1 g)
       invFun := mulC hχ h2 t2
-      left_inv := fun a => cIndSpace_ext fun g => by
+      left_inv := fun a => GlobalTheory.CompanionTheory.CIndCongr.ext_fun fun g => by
         rw [mulC_apply, mulC_apply, smul_smul, cancel, one_smul]
-      right_inv := fun a => cIndSpace_ext fun g => by
+      right_inv := fun a => GlobalTheory.CompanionTheory.CIndCongr.ext_fun fun g => by
         rw [mulC_apply, mulC_apply, smul_smul, cancel', one_smul] }
-  refine ⟨Representation.Equiv.mk e fun y => LinearMap.ext fun f => cIndSpace_ext fun g => ?_⟩
+  refine ⟨Representation.Equiv.mk e fun y => LinearMap.ext fun f => GlobalTheory.CompanionTheory.CIndCongr.ext_fun fun g => ?_⟩
   show ((χ g : ℂˣ) : ℂ) • (((χ y : ℂˣ) : ℂ) • f.1.1.1 (g * y)) =
     ((χ (g * y) : ℂˣ) : ℂ) • f.1.1.1 (g * y)
   rw [smul_smul, map_mul, Units.val_mul]
@@ -432,10 +428,6 @@ section Abstract
 variable {G W : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [AddCommGroup W] [Module ℂ W]
 
-theorem cInd_ext {H : Subgroup G} {σ : Representation ℂ H W} {a b : cIndSpace H σ}
-    (h : ∀ g, a.1.1.1 g = b.1.1.1 g) : a = b :=
-  Subtype.ext (Subtype.ext (Subtype.ext (funext h)))
-
 theorem cInd_left {H : Subgroup G} {σ : Representation ℂ H W} (a : cIndSpace H σ) {h : G}
     (hh : h ∈ H) (g : G) : a.1.1.1 (h * g) = σ ⟨h, hh⟩ (a.1.1.1 g) :=
   a.1.1.2 ⟨h, hh⟩ g
@@ -457,7 +449,7 @@ theorem indicator_mem (H U : Subgroup G) (hUH : U ≤ H) (hU : U.Normal) (θ : U
     intro a' h1 h2
     obtain ⟨v', hv1, hv2⟩ := exists_indicator H σ hE v
     have e : a' = cInd H σ (u : G) v' - (θ u : ℂ) • v' := by
-      apply cInd_ext
+      apply GlobalTheory.CompanionTheory.CIndCongr.ext_fun
       intro g
       by_cases hg : g ∈ E
       · rw [h1 g hg]
@@ -472,7 +464,7 @@ theorem indicator_mem (H U : Subgroup G) (hUH : U ≤ H) (hU : U.Normal) (θ : U
   | zero =>
     intro a' h1 h2
     have e : a' = 0 := by
-      apply cInd_ext
+      apply GlobalTheory.CompanionTheory.CIndCongr.ext_fun
       intro g
       by_cases hg : g ∈ E
       · exact h1 g hg
@@ -484,7 +476,7 @@ theorem indicator_mem (H U : Subgroup G) (hUH : U ≤ H) (hU : U.Normal) (θ : U
     obtain ⟨x', hx1, hx2⟩ := exists_indicator H σ hE x
     obtain ⟨y', hy1, hy2⟩ := exists_indicator H σ hE y
     have e : a' = x' + y' := by
-      apply cInd_ext
+      apply GlobalTheory.CompanionTheory.CIndCongr.ext_fun
       intro g
       by_cases hg : g ∈ E
       · rw [h1 g hg]
@@ -499,7 +491,7 @@ theorem indicator_mem (H U : Subgroup G) (hUH : U ≤ H) (hU : U.Normal) (θ : U
     intro a' h1 h2
     obtain ⟨x', hx1, hx2⟩ := exists_indicator H σ hE x
     have e : a' = c • x' := by
-      apply cInd_ext
+      apply GlobalTheory.CompanionTheory.CIndCongr.ext_fun
       intro g
       by_cases hg : g ∈ E
       · rw [h1 g hg]
@@ -566,7 +558,7 @@ theorem mem_of_local (H U : Subgroup G) (hUH : U ≤ H) (hU : U.Normal) (θ : U 
       exact ⟨E, mem_nhdsWithin_of_mem_nhds (hE.isOpen.mem_nhds hx), E, subset_rfl, hE, r⟩
   obtain ⟨E, hCE, hE, b, hb, hb1, hb2⟩ := key
   have e : f = b := by
-    apply cInd_ext
+    apply GlobalTheory.CompanionTheory.CIndCongr.ext_fun
     intro g
     by_cases hg : g ∈ E
     · exact (hb1 g hg).symm
@@ -982,15 +974,11 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.LeibPhi.UNorm
 
-theorem mem_of_mirProj_eq_one {k : Type} [Field k] {n : ℕ} (u : Mir k n) (hu : mirabolicProjection k n u = 1) :
-    u ∈ MirUin k n := by
-  apply GlobalTheory.CompanionTheory.BZPhiPG.Grp.mem_of_mirProj_eq_one' <;> assumption
-
 theorem mirUin_normal : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k]
     [IsNonarchimedeanLocalField k] (n : ℕ), (MirUin k n).Normal := by
   intro k _ _ _ _ n
   refine ⟨fun u hu g => ?_⟩
-  apply GlobalTheory.CompanionTheory.LeibPhi.UNorm.mem_of_mirProj_eq_one
+  apply GlobalTheory.CompanionTheory.BZPhiPG.Grp.mem_of_mirProj_eq_one'
   rw [map_mul, map_mul, map_inv, GlobalTheory.CompanionTheory.BZPhiPG.Grp.mirProj_eq_one_of_mem u hu,
     mul_one, mul_inv_cancel]
 

@@ -191,7 +191,7 @@ theorem gram_append_of_frame {r k : ℕ} (f : Fin r → Fin g → ℂ) (q p' : F
 
 theorem exists_eigLin (s : 𝓞 E →+* ℂ) :
     ∃ L : (Fin g → ℂ) →ₗ[ℂ] (Fin g → ℂ), ∀ x, L x = eigComp R.B s x := by
-  obtain ⟨-, -, h1, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h1, -, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   have hl := (h1 s).2.2.1
   have h0 : eigComp R.B s 0 = 0 := by simpa using hl (-1) 0 0
   exact ⟨{ toFun := eigComp R.B s
@@ -216,7 +216,7 @@ theorem comp_ne {s : 𝓞 E →+* ℂ} {t t₀ : E →+* ℂ} (h₀ : t₀.comp 
 
 theorem eigComp_adjoint (s : 𝓞 E →+* ℂ) (x y : Fin g → ℂ) :
     R.ip x (eigComp R.B s y) = R.ip (eigComp R.B s x) y := by
-  obtain ⟨-, -, h1, h2, h3⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h1, h2, h3⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   obtain ⟨t₀, ht₀⟩ := exists_ext s
   have hl : R.ip x (eigComp R.B s y) = R.ip (eigComp R.B s x) (eigComp R.B s y) := by
     calc R.ip x (eigComp R.B s y)
@@ -253,7 +253,7 @@ theorem eigComp_mem_span (I : Submodule (𝓞 E) Λ) (s : 𝓞 E →+* ℂ) {u :
 theorem eigComp_P_mem_span (s : 𝓞 E →+* ℂ) {r : ℕ} (y : Fin r → Λ) {z : Λ}
     (hz : z ∈ Submodule.span (𝓞 E) (Set.range y)) :
     eigComp R.B s (R.P z) ∈ Submodule.span ℂ (Set.range fun a => eigComp R.B s (R.P (y a))) := by
-  obtain ⟨-, -, h1, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h1, -, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   obtain ⟨L, hL⟩ := exists_eigLin R s
   induction hz using Submodule.span_induction with
   | mem x hx =>
@@ -310,7 +310,7 @@ end Riem
 theorem gram_append_split : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (g : ℕ) (Λ : Type) [AddCommGroup Λ] [Module (𝓞 E) Λ] (R : RiemLat E g Λ) (I : Submodule (𝓞 E) Λ) (s₀ : 𝓞 E →+* ℂ) (r k : ℕ) (y : Fin r → Λ) (q p : Fin k → Fin g → ℂ), (∀ a, y a ∈ I) → (Submodule.span (𝓞 E) (Set.range y)).toAddSubgroup.relIndex I.toAddSubgroup ≠ 0 → (∀ c, q c ∈ eigSp R.B s₀) → (∀ c, p c - q c ∈ Submodule.span ℂ (R.P '' (I : Set Λ))) → (∀ c, ∀ x ∈ I, R.ip (R.P x) (p c) = 0) → (R.gram (Fin.append (fun a => eigComp R.B s₀ (R.P (y a))) q)).det = (R.gram fun a => eigComp R.B s₀ (R.P (y a))).det * (Matrix.of fun c c' => R.ip (p c) (q c')).det := by
   intro E _ _ _ g Λ _ _ R I s₀ r k y q p hy hidx hq hpq hp
   classical
-  obtain ⟨-, -, h1, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h1, -, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   obtain ⟨L, hL⟩ := exists_eigLin R s₀
   have hqfix : ∀ c, eigComp R.B s₀ (q c) = q c := fun c => (h1 s₀).2.1 _ (hq c)
   have hdiff : ∀ c, q c - eigComp R.B s₀ (p c) ∈

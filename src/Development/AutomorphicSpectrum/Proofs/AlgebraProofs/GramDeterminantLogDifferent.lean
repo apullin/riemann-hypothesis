@@ -53,7 +53,7 @@ theorem exists_inverse {E : Type} [Field E] [NumberField E] [IsCMField E] (H : H
       ((δ : E) • gramE D x) * C = (N : E) • (1 : Matrix I I E) ∧ ∃ n₀ : ℕ, ¬ ℓ ∣ n₀ ∧ N = n₀ * n₀ * n₁ := by
   obtain ⟨hli, n₀, hn₀, hspan⟩ := hx
   obtain ⟨-, hadd1, hadd2, hsm1, hsm2, -, -⟩ := _root_.PositivityTheory.Xgf.sesq_sesquilinear_skew_hermitian E H D
-  obtain ⟨-, hdual⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Fl.unimodularity_sesq E H D
+  obtain ⟨-, hdual⟩ := PositivityTheory.Xgf.sesq_unimodular_dual E H D
   have hδE : (δ : E) ≠ 0 := by simpa using hδ0
   let S := Submodule.span (𝓞 E) (Set.range x)
   let b : Module.Basis I (𝓞 E) S := Module.Basis.span hli

@@ -94,7 +94,7 @@ theorem geoNum_nonneg (hK : ReciprocityTheory.ChartRestriction.G.ArakelovGeometr
       exact (mem_support_iff.1 hm) (by rw [coeff_C, ite_eq_right (Ne.symm h)])
     simp [hm0]
   have hnh : ¬ IsHorizontal W := fun h => hnot W h (by rwa [map_natCast])
-  obtain ⟨h1, h2, h3⟩ := (GlobalTheory.CompanionTheory.Ar.PB.Known.divSuppArith K ι P D (oneLine (ι := ι)) (C (p : ℤ)) W hP hsec hW).2 hnh
+  obtain ⟨h1, h2, h3⟩ := (ReciprocityTheory.ChartRestriction.G.Geo.divSuppArith K ι P D (oneLine (ι := ι)) (C (p : ℤ)) W hP hsec hW).2 hnh
   refine hK K ι W D a h1 h2.ne_zero h3 fun j W' hW' hWW' hdim => ?_
   exact ha j W' hW' (le_sup_left.trans (hle.trans hWW'))
     (ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.charOf_eq_of_mem hW'.1 hp (hWW' hpW)) hdim

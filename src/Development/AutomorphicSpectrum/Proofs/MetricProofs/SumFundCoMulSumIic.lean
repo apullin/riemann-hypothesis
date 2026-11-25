@@ -84,13 +84,6 @@ theorem aeval_scale {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι
   rw [hprod]
   ring
 
-theorem isMultiHomog_mul {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] {f g : MRing ι}
-    {a b : K → ℕ} (hf : IsMultiHomog f a) (hg : IsMultiHomog g b) : IsMultiHomog (f * g) (a + b) := by
-  classical
-  intro m hm k
-  obtain ⟨m₁, h₁, m₂, h₂, rfl⟩ := Finset.mem_add.1 (MvPolynomial.support_mul f g hm)
-  simp [Finset.sum_add_distrib, hf m₁ h₁ k, hg m₂ h₂ k]
-
 theorem aeval_eq_zero_of_mem {K : Type} {ι : K → Type} {Ω : Type} [Field Ω] (y : (Σ k, ι k) → Ω)
     {f : MRing ι} (hf : f ∈ mCoordIdeal y) : aeval y f = 0 := by
   have hc : (MvPolynomial.eval (fun _ : K => (1 : Ω))).comp (mConeMap y).toRingHom = (aeval y).toRingHom :=

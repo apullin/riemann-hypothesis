@@ -45,10 +45,6 @@ theorem sum_mapDomain_block (hv : ∀ p, (v p).1 = κ p.1) [DecidableEq K'] (m :
     ∑ i, (Finsupp.mapDomain v m) ⟨k', i⟩ = ∑ p : Σ k, ι k, if κ p.1 = k' then m p else 0 := by
   convert _root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.sum_mapDomain_block hv m k'
 
-theorem isMultiHomog_rename_block (hb : IsBlockMap κ v) {f : MRing ι} {b : K → ℕ} (hf : IsMultiHomog f b) :
-    IsMultiHomog (rename v f) (Function.extend κ b 0) :=
-  _root_.GlobalTheory.CompanionTheory.Ar.PB.CPts.isMultiHomog_rename_block hb hf
-
 theorem comp_mem_mcPts {Ω Ω' : Type} [Field Ω] [Field Ω'] (hv : IsBlockMap κ v)
     {x : (Σ k, ι k) → Ω} {x' : (Σ k, ι' k) → Ω'} (φ : Ω →+* Ω') (hx : ∀ q, x' (v q) = φ (x q))
     {z : (Σ k, ι' k) → ℂ} (hz : z ∈ mcPts (mCoordIdeal x')) : z ∘ v ∈ mcPts (mCoordIdeal x) :=
@@ -65,7 +61,7 @@ theorem regAt_pull {Ω Ω' : Type} [Field Ω] [Field Ω'] (hv : IsBlockMap κ v)
     {z : (Σ k, ι' k) → ℂ} {s : Ω} (hs : RegAt x (mCoordIdeal (z ∘ v)) s) :
     RegAt x' (mCoordIdeal z) (φ s) := by
   obtain ⟨d, g, h, hg, hh, hn, heq⟩ := hs
-  refine ⟨_, rename v g, rename v h, isMultiHomog_rename_block hv hg, isMultiHomog_rename_block hv hh,
+  refine ⟨_, rename v g, rename v h, GlobalTheory.CompanionTheory.Ar.PB.CPts.isMultiHomog_rename_block hv hg, GlobalTheory.CompanionTheory.Ar.PB.CPts.isMultiHomog_rename_block hv hh,
     fun hm => hn ((rename_mem_iff hv z h).1 hm), ?_⟩
   rw [aeval_rename_pull φ hx, aeval_rename_pull φ hx, heq, map_mul]
 
@@ -74,7 +70,7 @@ theorem isValueAt_pull {Ω Ω' : Type} [Field Ω] [Field Ω'] (hv : IsBlockMap �
     {z : (Σ k, ι' k) → ℂ} {s : Ω} {w : ℂ} (hs : IsValueAt x s (z ∘ v) w) : IsValueAt x' (φ s) z w := by
   obtain ⟨d, g, h, hg, hh, hy, heq, h0, rfl⟩ := hs
   have hpull := aeval_rename_pull (v := v) φ hx
-  refine ⟨_, rename v g, rename v h, isMultiHomog_rename_block hv hg, isMultiHomog_rename_block hv hh, ?_, ?_, ?_, ?_⟩
+  refine ⟨_, rename v g, rename v h, GlobalTheory.CompanionTheory.Ar.PB.CPts.isMultiHomog_rename_block hv hg, GlobalTheory.CompanionTheory.Ar.PB.CPts.isMultiHomog_rename_block hv hh, ?_, ?_, ?_, ?_⟩
   · rw [hpull]; exact (map_ne_zero φ).2 hy
   · rw [hpull, hpull, heq, map_mul]
   · rwa [eval_rename_eq]

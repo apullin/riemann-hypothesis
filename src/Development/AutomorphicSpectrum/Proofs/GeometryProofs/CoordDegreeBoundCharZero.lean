@@ -41,10 +41,6 @@ open LieTangent
 
 section SlopeTestRemainingChoices
 
-theorem dualMap_comp {R R' R'' : Type} [CommRing R] [CommRing R'] [CommRing R''] (φ : R →+* R') (ψ : R' →+* R'') :
-    (dualMap ψ).comp (dualMap φ) = dualMap (ψ.comp φ) := by
-  refine RingHom.ext fun a => TrivSqZeroExt.ext ?_ ?_ <;> simp [GlobalTheory.CompanionTheory.Ar.dualMap]
-
 variable {X : Scheme.{0}} {Ω : Type} [Field Ω] {G : Over X} [GrpObj G] {ξ : Sp Ω ⟶ X} {E : Type}
   [AddCommGroup E] [Module Ω E]
 

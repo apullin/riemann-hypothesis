@@ -853,8 +853,6 @@ namespace ResTop
 
 variable {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)]
 
-alias homog_mul := _root_.ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul
-
 theorem coord_ne_zero {Ω : Type} [Field Ω] (y : (Σ k, ι k) → Ω) (p : Σ k, ι k)
     (h : (X p : MRing ι) ∉ mCoordIdeal y) : y p ≠ 0 := by
   intro h0
@@ -921,7 +919,7 @@ theorem resExists_of_resK : ReciprocityTheory.ChartRestriction.G.Geo.ResK.ResKSt
       exact isAlgebraic_algebraMap (⟨t, ht⟩ : blockFnField y)
   obtain ⟨R, hR⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.isEmbedded_of_isSncModel (K ⊕ Unit) (joinIdx ι fun _ : Unit => Fin M) Ω (joinVec y y') e J₁
     harith hJ₁h hJ₁ hsnc
-  have hγ := homog_mul hβ hβ'
+  have hγ := ReciprocityTheory.ChartRestriction.G.ArakelovGeometry.isMultiHomog_mul hβ hβ'
   have hγP : β * β' ∉ mCoordIdeal y := fun h => (hprime.mem_or_mem h).elim hβP hβ'P
   have hmul : ∀ z : (Σ k, ι k) → ℂ, evC z (β * β') = evC z β * evC z β' := fun z => by
     simp only [evC, map_mul]

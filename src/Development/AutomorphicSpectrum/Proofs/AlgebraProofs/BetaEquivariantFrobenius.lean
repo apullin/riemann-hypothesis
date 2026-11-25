@@ -2,7 +2,7 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.GermComp1ZeroPointLeft
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.AlphaEquivariantFrobenius
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.FormalHermitianActionPairing
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.BilinearPartAx3
 public import Mathlib.LinearAlgebra.Matrix.DotProduct
 
 @[expose] public section
@@ -18,7 +18,7 @@ theorem beta_rhoH_eq : ∀ (R : Type) [CommRing R] (p : ℕ) [Fact p.Prime] [Cha
     beta B p (rhoH B a y) = ((rho B (star a)).transpose.map (· ^ p)).mulVec (beta B p y) := by
   intro R _ p _ _ d O _ _ B a y
   refine dotProduct_eq _ _ fun u => ?_
-  have hadj := (_root_.GlobalTheory.CompanionTheory.Ar.Conj.rhoH_hom_adjoint R d O B).2.2 (star a) (alpha B p u) y
+  have hadj := (PositivityTheory.HtPt.Ca.rhoH_hom R d O B).2.2 (star a) (alpha B p u) y
   rw [star_star] at hadj
   have htw := _root_.PositivityTheory.HtPt.Cb.alpha_act R p d O B (star a) u
   rw [dotProduct_comm, dotProduct_beta, ← hadj, ← htw, ← dotProduct_beta, dotProduct_comm _ (beta B p y),

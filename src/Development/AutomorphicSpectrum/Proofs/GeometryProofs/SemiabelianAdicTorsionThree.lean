@@ -12,7 +12,7 @@ public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.DualLatticeP
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsUniqueTangentDualNumber
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RelOfTorsion
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.DualOrder
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SemiabelianAdicTorsionOne
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.TwhopfMain
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.LieModel
 import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieModelFiniteBaseChange
 import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
@@ -297,7 +297,7 @@ theorem der_main : ∀ (p : ℕ) [Fact p.Prime] (C : Type) [Field C] [IsAlgClose
   haveI : Smooth G.hom := hG.smooth
   haveI : Finite (LevGrp La p n) := finite_levGrp' (Fact.out) n
   haveI : Module.Projective O L := (_root_.GlobalTheory.CompanionTheory.Ar.LieProj.lie_finite_projective_baseChange S G O y L M).2.1
-  obtain ⟨U, H, hfin, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HT.tw_hopf_main p C v O hv hp hO S G hG y La X
+  obtain ⟨U, H, hfin, -⟩ := PositivityTheory.HtPt.Twhopf.tw_hopf p C v O hv hp hO S G hG y La X
   have hex : ∃ j : (X.Γ n).G.left ⟶ Spec (CommRingCat.of ((X.Γ n).btOrder ⊤)),
       (X.Γ n).IsEmb ((X.Γ n).btOrder ⊤) j := by
     let Γ := X.Γ n

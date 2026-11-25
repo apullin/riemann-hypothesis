@@ -1047,8 +1047,6 @@ open scoped InnerProductSpace
 variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {a : ℕ}
   {μ : Measure (GA E a)} [μ.IsHaarMeasure] [μ.IsMulRightInvariant]
 
-alias continuous_infGL' := _root_.GlobalTheory.CompanionTheory.IsoTypes.continuous_infGL
-
 theorem map_closure_le {C S : Submodule ℂ (L2 (latticeGL E a) μ)} (hC : C = S.topologicalClosure)
     (T : L2 (latticeGL E a) μ →L[ℂ] L2 (latticeGL E a) μ) (h : ∀ F ∈ S, T F ∈ C) {v : L2 (latticeGL E a) μ}
     (hv : v ∈ C) : T v ∈ C := by
@@ -1079,7 +1077,7 @@ theorem R_curve_mem {W : Submodule ℂ (Sm E a)} (hs : _root_.GlobalTheory.CuspR
   obtain ⟨M, B, hb⟩ := _root_.GlobalTheory.CompanionTheory.AnalyticBound.factorial_bound E a μ W hs hW φ hφ X
   have hd : ∀ k t, HasDerivAt (F k) (F (k + 1) t) t := fun k t =>
     _root_.GlobalTheory.CompanionTheory.TransDeriv.hasDerivAt_R (GA E a) (latticeGL E a) μ (ψ k).1 (ψ (k + 1)).1 (hM k) (hM (k + 1)) (fun t => infGL E a (c t))
-      (hcont k) (hcont (k + 1)) (continuous_infGL'.comp hc) (by simp [h0]) (fun s t => by simp [hadd])
+      (hcont k) (hcont (k + 1)) (GlobalTheory.CompanionTheory.IsoTypes.continuous_infGL.comp hc) (by simp [h0]) (fun s t => by simp [hadd])
       (fun g => by
         have := hasDerivAt_curve (ψ k) g c X h0 hX
         rw [hψs]

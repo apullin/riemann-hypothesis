@@ -573,7 +573,7 @@ theorem sum_rootOnFund {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} (f g 
   have h1 : ∀ a, g a = ∑ r', fundOnRoot a r' • f r' := fun a => by rw [h, sum_fundOnRoot]
   simp only [h1, Finset.smul_sum, smul_smul]
   rw [Finset.sum_comm]
-  simp only [← Finset.sum_smul, (rootOnFund_mul_fundOnRoot_inverse Ψ N r _).1]
+  simp only [← Finset.sum_smul, (PositivityTheory.UnitarySelfGeneration.h_fundinv Ψ N r _).1]
   simp
 
 end GlobalTheory.CompanionTheory.Ar.TieOfOrigin

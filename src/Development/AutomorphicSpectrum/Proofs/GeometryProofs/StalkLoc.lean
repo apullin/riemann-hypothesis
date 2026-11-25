@@ -132,8 +132,8 @@ theorem lift_sec {X : Scheme.{0}} (G : Over X) [GrpObj G] [IsSeparated G.hom] {R
   have e1 : y ≫ i = y' ≫ c ≫ pullback.fst _ _ := by
     simp only [y', c, pullback.lift_fst, pullback.lift_fst_assoc]
   have e2 : y = y' ≫ pullback.fst _ _ := (pullback.lift_fst _ _ _).symm
-  refine (valAt_congr e1 W hyW (e1 ▸ hyW) f).trans ((valAt_comp _ _ _ _ _).trans ?_)
-  refine Eq.trans ?_ ((valAt_congr e2 ⊤ le_top le_top s).trans (valAt_comp _ _ _ _ _)).symm
+  refine (PositivityTheory.HtPt.Htat.Pull.valAt_congr e1 W hyW (e1 ▸ hyW) f).trans ((PositivityTheory.HtPt.Htat.Pull.valAt_comp _ _ _ _ _).trans ?_)
+  refine Eq.trans ?_ ((PositivityTheory.HtPt.Htat.Pull.valAt_congr e2 ⊤ le_top le_top s).trans (PositivityTheory.HtPt.Htat.Pull.valAt_comp _ _ _ _ _)).symm
   refine (congrArg (valAt y' _ _) hf).trans ?_
   exact valAt_res y' _ ⊤ le_top _ le_top _
 

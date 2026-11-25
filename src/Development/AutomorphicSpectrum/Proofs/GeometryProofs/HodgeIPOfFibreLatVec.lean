@@ -109,25 +109,10 @@ theorem analyticAt_eval {A : Type} {n : ℕ} {q : (Fin n → ℂ) → A → ℂ}
   apply GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh.analyticAt_eval <;> assumption
 
 
-open scoped ComplexOrder in
-theorem gram_det_pos {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type} [AddCommGroup Λ]
-    [Module (𝓞 E) Λ] (R : RiemLat E g Λ) {m : ℕ} (u : Fin m → Fin g → ℂ) (hu : LinearIndependent ℂ u) :
-    0 < (R.gram u).det.re := by
-  apply GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh.gram_det_pos <;> assumption
-
-theorem hodgeInnerProduct_of_fibreLatticeVector {E : Type} [Field E] [NumberField E] [IsCMField E] {H : Host E}
-    {X : Scheme.{0}} {t : SAB H X} {z : Sp ℂ ⟶ X} {g : ℕ} {Λ : Type} [AddCommGroup Λ] [Module (𝓞 E) Λ]
-    {R : RiemLat E g Λ} {A₀ : Type} {x : A₀ → Fin g → ℂ} {v : A₀ → (epsAt z ⟶ t.G)}
-    (h : FibreLatVec t z R x v) (tan : ∀ i, IsTanAt t.G z (v i)) (i j : A₀) :
-    HodgeIP t.G t.PP.L z (v i) (v j) (Real.pi * R.ip (x i) (x j)) :=
-  GlobalTheory.CompanionTheory.Ar.Cusp.MuPsh.hodgeInnerProduct_of_fibreLatticeVector h tan i j
-
 section Free
 
 variable {K : Type} [Fintype K] {J : K → Type} [∀ k, Fintype (J k)] {II : IntersectionSystem} {Ψ : Type} [Fintype Ψ]
   {Ω : Type} [Field Ω] [Algebra ℚ Ω] {W : Ψ → Type} [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)]
-
-alias isOpen_offBd := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.SncPiece.isOpen_offBd
 
 end Free
 

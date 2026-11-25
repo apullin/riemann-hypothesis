@@ -227,7 +227,7 @@ theorem hodgeLat_model : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   have hPow : PowFns Y.t := GlobalTheory.T.powFns_of_abelian_generic E H Y.X Y.t hred hLN (fun z hz => generic_mem_abLocus (O := O) Y z hz)
   haveI : CharZero Z.Ω := charZero_of_injective_ringHom Z.inc.injective
   obtain ⟨hcard, hfac⟩ := emb_factor (E := E) c Z.inc
-  have facts := fun τ' h => GlobalTheory.T.proper_normal_compactification E H D l Xo c O β Y U Z τ' hβ hfrac h
+  have facts := fun τ' h => PositivityTheory.Xgn.integral_model_facts E H D l Xo c O β Y U Z τ' hβ hfrac h
   have hτ₀ : ∃ τ₀ : E →+* ℂ, τ₀ (H.rt : E) = H.rt0 := (rt_cases τ).elim (fun h => ⟨τ, h⟩) fun h => ⟨_, h⟩
   obtain ⟨τ₀, hτ₀⟩ := hτ₀
   obtain ⟨hprop, -, hover, -, hfd, -, -⟩ := facts τ₀ hτ₀

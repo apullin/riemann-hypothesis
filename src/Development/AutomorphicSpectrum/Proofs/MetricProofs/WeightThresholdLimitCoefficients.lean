@@ -5,7 +5,8 @@ public import Development.AutomorphicSpectrum.Definitions.MetricPeriods.HasMulti
 public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.HeckeSectionsIsotropicCommutatorPairingPower
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RootModelArithIntersectionFormula
 public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RootModelCurveDegreeNef
-public import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RootModelLogIntegralFormula
+public import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.Birational
+public import Development.WeilBound.CoreStatements.FlagImmersions.RootModelPointsIntegral
 public import Development.WeilBound.CoreStatements.FlagImmersions.RootModelLineSemipositive
 import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.ArakelovGeometry.ProjDefs
 
@@ -25,17 +26,17 @@ theorem tower_seq : ∀ (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N : ℕ) (T :
   have hgeo : ∀ n, geomDeg (T.M B c).P (combLine ((T.M B c).line (scale (s n))) (m n)) (dimFl Ψ N) =
       (T.M B c).δ * (q n : ℝ) ^ dimFl Ψ N * T.mDeg B c u (s n) := by
     intro n
-    have := geoFun_comb_mixed II hII Ψ N (T.M B c) (scale (s n)) (fun _ => T.lamS u (s n)) (fun _ => s n) (q n)
+    have := RootFieldNumerics.root_model_points_integral II hII Ψ N (T.M B c) (scale (s n)) (fun _ => T.lamS u (s n)) (fun _ => s n) (q n)
       (fun _ => m n) (fun _ j => hm n j)
     rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin] at this
     exact this
   have har : ∀ n, II (T.M B c).K (T.M B c).ι (T.M B c).P (dimFl Ψ N + 1)
       (fun _ => combLine ((T.M B c).line (scale (s n))) (m n)) =
       (T.M B c).δ * (q n : ℝ) ^ (dimFl Ψ N + 1) * T.mbarTop II B c u (s n) := fun n =>
-    top_comb_eq_arFun II hII Ψ N (T.M B c) (scale (s n)) (T.lamS u (s n)) (s n) (q n) (m n) (hm n)
+    RootFieldNumerics.root_model_arithmetic_intersection II hII Ψ N (T.M B c) (scale (s n)) (T.lamS u (s n)) (s n) (q n) (m n) (hm n)
   refine ⟨?_, ?_, ?_, h4⟩
   · filter_upwards [hs'.eventually h1] with n hn
-    have a := (nefFib_integral_multiple Ψ N (T.M B c) (scale (s n)) (T.lamS u (s n)) (s n) (q n) (m n) (hm n)).2 hn.1
+    have a := (RootFieldNumerics.curveDeg_eq_and_nefOnFibres_of_coef Ψ N (T.M B c) (scale (s n)) (T.lamS u (s n)) (s n) (q n) (m n) (hm n)).2 hn.1
     have b := RootFieldNumerics.root_model_line_semipositive Ψ N (T.M B c) (scale (s n)) (T.lamS u (s n)) (s n) (q n) (m n) (hm n) hn.2
     exact ⟨⟨_, le_rfl, b.1⟩, b.2, a⟩
   · refine ((h3.comp hs').const_mul ((T.M B c).δ : ℝ)).congr fun n => ?_

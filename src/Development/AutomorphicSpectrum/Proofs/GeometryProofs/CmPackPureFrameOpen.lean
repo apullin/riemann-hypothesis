@@ -240,9 +240,9 @@ theorem GlobalTheory.CompanionTheory.Ar.Fl.CMValue.value_on_cmFrame : ∀ (E : T
     rw [← CMValue.range_comp f X.y]
     exact hmem P y' hP hy'u hy's
   have hF : IsFramed U τ X.β X.y v w := ⟨hfr0.1, hU, hfr0.2.2⟩
-  obtain ⟨⟨v', hv'⟩, hv⟩ := _root_.GlobalTheory.CompanionTheory.Relay.tangent_vectors_base_change E H Xo.X Xo.univ.t X.K ℂ f (under X.y) (under y')
+  obtain ⟨⟨v', hv'⟩, hv⟩ := PositivityTheory.Xgf.tangent_vectors_base_change E H Xo.X Xo.univ.t X.K ℂ f (under X.y) (under y')
     (X.β.comp (tauIn c τ)) D.p v hyu
-  obtain ⟨⟨w', hw'⟩, hw⟩ := _root_.GlobalTheory.CompanionTheory.Relay.tangent_vectors_base_change E H Xo.X Xo.univ.t X.K ℂ f (under X.y) (under y')
+  obtain ⟨⟨w', hw'⟩, hw⟩ := PositivityTheory.Xgf.tangent_vectors_base_change E H Xo.X Xo.univ.t X.K ℂ f (under X.y) (under y')
     (X.β.comp (tauIn c (ComplexEmbedding.conjugate τ))) D.q w hyu
   have hF' : IsFramed U τ (algebraMap c.F ℂ) y' v' w' := by
     refine ⟨hy's, ?_, ?_, ?_⟩

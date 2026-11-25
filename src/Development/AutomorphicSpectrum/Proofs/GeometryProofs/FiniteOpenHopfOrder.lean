@@ -4,7 +4,7 @@ public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.Tra
 public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.ExistsUnitFormLocalizationEtaleNbhd
 public import Mathlib.RingTheory.IntegralClosure.IntegrallyClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.ExistsDenominatorRegular
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.RegularFunctionIffSection
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.ValAtRestrict
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SectionEqZeroOfValues
 public import Mathlib.RingTheory.Finiteness.ModuleFinitePresentation
 import Mathlib.Tactic.Linter.HaveILetI
@@ -367,7 +367,7 @@ theorem hopfOrder_of_finOpenSub : ∀ (R : Type) [CommRing R] [IsDomain R] [IsIn
     have h1 : ∀ h : subH Γ hF, ∃ d : R, d ≠ 0 ∧ d • (Pi.single h 1 : subH Γ hF → R) ∈ Φ.range := by
       intro h
       obtain ⟨d, hd, hreg⟩ := exists_den Γ hc (fun t => if t = (h : T) then 1 else 0)
-      have hsection := (regularAt_forall_iff_exists_section R T Γ U _).1 hreg
+      have hsection := (PositivityTheory.HtPt.Unc.reg_iff R T Γ U _).1 hreg
       obtain ⟨s, hs⟩ := hsection
       refine ⟨d, hd, (hA _).2 ⟨s, fun t ht => ?_⟩⟩
       rw [hs t ht]

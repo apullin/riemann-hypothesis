@@ -88,9 +88,6 @@ theorem zpow_mem_regAt {X : Scheme.{0}} {Ω : Type} [Field Ω] {ξ : Spec (CommR
 theorem tens_isGenAt : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (I : Type) [Fintype I] (Λ : I → Lat ξ Ω) (a : I → ℤ) (p : Cpt ξ) (t : I → Ω), (∀ i, (Λ i).IsGenAt p (t i)) → (Lat.tens Λ a).IsGenAt p (∏ i, t i ^ a i) := by
   exact @_root_.GlobalTheory.CompanionTheory.Ar.FlagModel.tens_isGenAt
 
-theorem detLat_isGenAt : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (P : Type) [AddCommGroup P] [Module Ω P] (L : Lat ξ P) (r : ℕ) (s b : Fin r → P) (T : Matrix (Fin r) (Fin r) Ω) (p : Cpt ξ), LinearIndependent Ω s → L.IsFrameAt b p → (∀ k, b k = ∑ k', T k' k • s k') → (Cusp.detLat L s).IsGenAt p T.det := by
-  apply LevelTowerAlt.determinant_lattice_generator
-
 theorem exists_block_frame : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Spec (CommRingCat.of Ω) ⟶ X) (P Wv : Type) [AddCommGroup P] [Module Ω P] [AddCommGroup Wv] [Module Ω Wv] (i : Wv →ₗ[Ω] P) (A B : Lat ξ P) (Va Vb : Submodule Ω P) (N j : ℕ) (hj : j ≤ N), Function.Injective i → LinearMap.range i = Va ⊔ Vb → A.IsVB j Va → B.IsVB (N - j) Vb → (Lat.comap (fun p => A p ⊔ B p) i).IsVB N ⊤ → ∀ p : Cpt ξ, ∃ U : X.Opens, p.1 ∈ U ∧ ∃ b : Fin N → Wv, Submodule.span Ω (Set.range b) = ⊤ ∧ Submodule.span Ω (Set.range (b ∘ headIdx hj)) = Va.comap i ∧ (∀ a, i (b (tailIdx hj a)) ∈ Vb) ∧ ∀ q : Cpt ξ, q.1 ∈ U → (Lat.comap (fun p => A p ⊔ B p) i).IsFrameAt b q ∧ B.IsFrameAt (fun a => i (b (tailIdx hj a))) q := by
   intro X Ω _ ξ P Wv _ _ _ _ i A B Va Vb N j hj hinj hrange hA hB hL p
   obtain ⟨U1, hp1, b1, hs1, hf1⟩ := hA p trivial
@@ -261,7 +258,7 @@ theorem main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host 
       exact MultilinearMap.map_smul_univ _ _ _
     have hgen : ∀ p : Cpt 𝔐.ξ, InChart 𝔐.ξ (segreCoord Dc.y) c p → unitAt 𝔐.ξ p (f l) →
         (Lat.tens (fun τ => Cusp.detLat (𝔐.V (sm τ)) (s τ)) (fun _ => -1)).IsGenAt p (∏ τ, (T τ).det ^ (-1 : ℤ)) :=
-      fun p hp hu => tens_isGenAt 𝔐.X Ω 𝔐.ξ _ _ _ p _ fun τ => detLat_isGenAt 𝔐.X Ω 𝔐.ξ 𝔐.Li _ _ (s τ) _ (T τ) p (hsli τ)
+      fun p hp hu => tens_isGenAt 𝔐.X Ω 𝔐.ξ _ _ _ p _ fun τ => LevelTowerAlt.determinant_lattice_generator 𝔐.X Ω 𝔐.ξ 𝔐.Li _ _ (s τ) _ (T τ) p (hsli τ)
         (hfr τ p (hV p hp hu)).2 (hTs τ)
     have hu₀ : unitAt 𝔐.ξ p₀ (f l) := ⟨hfl, hreg₀ _, hreg₀ _⟩
     have ht₀ : (∏ τ, (T τ).det ^ (-1 : ℤ)) ≠ 0 := (hgen p₀ hp₀ hu₀).1

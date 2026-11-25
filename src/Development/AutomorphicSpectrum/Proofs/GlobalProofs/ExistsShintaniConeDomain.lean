@@ -619,12 +619,6 @@ theorem tile_family {F : Type} [Field F] [NumberField F] (P : Set F) (Q : Set F 
         · exact (Set.disjoint_left.mp hAB (hs₁ a' h') hx).elim
         · exact congrArg Sum.inr (hu b' h')
 
-theorem tile_family_closed : ∀ {F : Type} [Field F] [NumberField F] (P : Set F) (Q : Set F → Prop) (C : Set F), Tile P Q C → (0 : F) ∉ C →
-    ∃ (ι : Type) (_ : Fintype ι) (r : ι → ℕ) (v : ∀ c, Fin (r c) → F), (∀ c, 0 < r c) ∧
-      (∀ c, LinearIndependent ℚ (v c)) ∧ (∀ c i, v c i ∈ P) ∧ (∀ c, openCone (v c) ⊆ C) ∧
-      ∀ x ∈ C, ∃! c, x ∈ openCone (v c) :=
-  fun P Q C h => tile_family P Q C h
-
 end GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones
 end -- clump:auto
 end -- clump:auto
@@ -1371,7 +1365,7 @@ theorem exists_coneDomain : ∀ (F : Type) [Field F] [NumberField F] [IsTotallyR
     intro h
     have := hDpos 0 h.1 σ₁
     simp at this
-  obtain ⟨ι, hι, r, v, hr, hli, hvP, hsub, hun⟩ := _root_.GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.tile_family_closed _ _ E htile h0
+  obtain ⟨ι, hι, r, v, hr, hli, hvP, hsub, hun⟩ := GlobalTheory.CompanionTheory.Hypotheses₂.Shintani.Cones.tile_family _ _ E htile h0
   refine ⟨ι, hι, r, v, hr, hli, hvP, ?_⟩
   intro x hx
 

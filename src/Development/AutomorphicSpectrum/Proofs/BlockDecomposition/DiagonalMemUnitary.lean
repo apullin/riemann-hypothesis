@@ -1385,15 +1385,6 @@ theorem main_coef {n : ℕ} (lam : Fin n → ℤ) (hl : Antitone lam) (F : Finse
 
 end GlobalTheory.CompanionTheory.CoefId
 
-namespace GlobalTheory.CompanionTheory.CoefId
-
-theorem coef_harm : ∀ {n : ℕ} (lam : Fin n → ℤ), Antitone lam → ∀ (F : Finset (Fin n → ℤ)), (∀ ν ∈ F, Antitone ν) →
-    ∀ c : (Fin n → ℤ) → ℂ, (∀ z : Fin n → ℂ, (∀ a, ‖z a‖ = 1) → Function.Injective (fun a => z a ^ 2) →
-      ∑ ν ∈ F, c ν * weylChar ν z = (∏ a, ∏ b, (1 + z a / z b)) * weylChar lam (fun a => z a ^ 2)) →
-    ∀ μ ∈ harmZ lam, μ ∈ F ∧ c μ = 2 ^ n :=
-  fun lam hl F hF c hc μ hμ => main_coef lam hl F hF c hc μ hμ
-
-end GlobalTheory.CompanionTheory.CoefId
 end -- clump:auto
 end -- clump:auto
 end -- clump:auto
@@ -1676,7 +1667,7 @@ theorem dualtr {n : ℕ} (lam : Fin n → ℤ) (hl : Antitone lam) (E : KMod n) 
     ∀ μ ∈ harmZ lam, trOn (hwOf G (wtR μ)) (dualT E T : (E.V →L[ℂ] ℂ) →ₗ[ℂ] (E.V →L[ℂ] ℂ)) = 2 ^ n := by
   obtain ⟨F, hF, -, hch⟩ := _root_.GlobalTheory.CompanionTheory.RealCountG.CharDec.main E T hT.1 G hG
   intro μ hμ
-  refine (_root_.GlobalTheory.CompanionTheory.CoefId.coef_harm lam hl F hF (fun ν => trOn (hwOf G (wtR ν)) (dualT E T : (E.V →L[ℂ] ℂ) →ₗ[ℂ] (E.V →L[ℂ] ℂ)))
+  refine (GlobalTheory.CompanionTheory.CoefId.main_coef lam hl F hF (fun ν => trOn (hwOf G (wtR ν)) (dualT E T : (E.V →L[ℂ] ℂ) →ₗ[ℂ] (E.V →L[ℂ] ℂ)))
     (fun z hz hinj => ?_) μ hμ).2
   have hzi : Function.Injective z := fun a b h => hinj (by simp only [h])
   have h1 := hch ⟨diagonal z, diagonal_mem_unitary z hz⟩ z rfl hzi

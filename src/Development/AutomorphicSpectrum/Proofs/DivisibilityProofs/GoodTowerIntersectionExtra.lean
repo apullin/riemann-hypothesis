@@ -69,7 +69,7 @@ import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PVertFactorSmooth
 import Development.WeilBound.CoreStatements.VolumeEquality.DegPushTestA
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.WeilBound.CoreStatements.VolumeEquality.DegPushAsm, Development.WeilBound.CoreStatements.VolumeEquality.DegPushCentre, Development.WeilBound.CoreStatements.VolumeEquality.DegPushJoin, Development.WeilBound.CoreStatements.VolumeEquality.DegPushLat, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsCuspDataForTorusInvariant, Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericDegreeEqGeometricDegree, Development.WeilBound.CoreStatements.VolumeEquality.DegPushMass, Development.WeilBound.CoreStatements.VolumeEquality.DegPushMuLinkA, Development.WeilBound.CoreStatements.VolumeEquality.DegPushMuLink, Development.WeilBound.CoreStatements.VolumeEquality.DegPush, Development.WeilBound.CoreStatements.VolumeEquality.VolEqOfIsFullIntersectionSystem, Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerIntersectionExtra
+-- Members: Development.WeilBound.CoreStatements.VolumeEquality.DegPushAsm, Development.WeilBound.CoreStatements.VolumeEquality.DegPushCentre, Development.WeilBound.CoreStatements.VolumeEquality.DegPushJoin, Development.WeilBound.CoreStatements.VolumeEquality.DegPushLat, Development.AutomorphicSpectrum.Proofs.MetricProofs.ExistsCuspDataForTorusInvariant, Development.AutomorphicSpectrum.Proofs.MetricProofs.GenericDegreeEqGeometricDegree, Development.WeilBound.CoreStatements.VolumeEquality.DegPushMass, Development.WeilBound.CoreStatements.VolumeEquality.DegPushMuLinkA, Development.WeilBound.CoreStatements.VolumeEquality.DegPushMuLink, Development.WeilBound.CoreStatements.VolumeEquality.DegPush, Development.WeilBound.CoreStatements.VolumeEquality.VolEqOfIsFullIntersectionSystem
 
 -- ===== clump member: Development.WeilBound.CoreStatements.VolumeEquality.DegPushAsm =====
 -- clump-header: {"m": "Development.WeilBound.CoreStatements.VolumeEquality.DegPushAsm", "h": "module\n\npublic import Development.WeilBound.CoreStatements.VolumeEquality.DegPushDefs\npublic import Development.WeilBound.CoreStatements.VolumeEquality.BaseUnifEx2\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.TowerOrigin\npublic import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.CmHostRankBounds\npublic import Development.AutomorphicSpectrum.Statements.TowerExistence.GoodTowerExistsX\npublic import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerRealAgreement\npublic import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.RefLinked\npublic import Development.AutomorphicSpectrum.Statements.MetricStatements.AgreementIffGuarded\npublic import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.RealTowerProportional\npublic import Development.AutomorphicSpectrum.Definitions.DivisibilityTowers.HeckeSectionsIsotropicCommutatorPairingPower\npublic import Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.TestPolynomialShiftTotal\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
@@ -89,20 +89,6 @@ section
 variable {Ω : Type} [Field Ω] {K : Type} [Fintype K] {ι : K → Type} [∀ b, Fintype (ι b)]
   {K' : Type} [Fintype K'] {ι' : K' → Type} [∀ b, Fintype (ι' b)]
 
-theorem asm_vdeg_join_inl (O : ValuationSubring Ω) (y : (Σ b, ι b) → Ω) (y' : (Σ b, ι' b) → Ω) (a : K → ℤ) :
-    vdeg O (joinPt y y') (Sum.elim a (0 : K' → ℤ)) = vdeg O y a := by
-  unfold vdeg
-  rw [Fintype.prod_sum_type]
-  simp only [Sum.elim_inl, Sum.elim_inr, Pi.zero_apply, zpow_zero, Finset.prod_const_one, mul_one]
-  rfl
-
-theorem asm_vdeg_join_inr (O : ValuationSubring Ω) (y : (Σ b, ι b) → Ω) (y' : (Σ b, ι' b) → Ω) (a : K' → ℤ) :
-    vdeg O (joinPt y y') (Sum.elim (0 : K → ℤ) a) = vdeg O y' a := by
-  unfold vdeg
-  rw [Fintype.prod_sum_type]
-  simp only [Sum.elim_inl, Sum.elim_inr, Pi.zero_apply, zpow_zero, Finset.prod_const_one, one_mul]
-  rfl
-
 end
 
 theorem degPush_of (hEq : NumEq) (hPF : GeoPF) (hFib : FibNum) (hTr : TrdegU) (hRel : TestRelabel) (hTest : GeoTest)
@@ -119,7 +105,7 @@ theorem degPush_of (hEq : NumEq) (hPF : GeoPF) (hFib : FibNum) (hTr : TrdegU) (h
   have hIn : PB.Inputs := hG.2.2.2.2.2.2.2.2.2.1
   have : Nonempty (CMType H) := (_root_.GlobalTheory.CompanionTheory.Ar.Top.HostNumbers.host_numbers E H).2.1
   have hT : T.Proportional := _root_.GlobalTheory.CompanionTheory.Ar.Top.rootTower_proportional_of_unif hProp hIn II hII _ _ T _ (_root_.RootFieldNumerics.global_model_real_tower hG E H D Xo l c Y T o II hY hX hII hp hq)
-  have htd : 0 < Top.testDeg (CMType H) (D.p + D.q) D.p := (_root_.GlobalTheory.CompanionTheory.Ar.Top.testPoly_facts (CMType H) (D.p + D.q) D.p hp (by omega)).2.1
+  have htd : 0 < Top.testDeg (CMType H) (D.p + D.q) D.p := (RootFieldNumerics.test_polynomial_shift_values (CMType H) (D.p + D.q) D.p hp (by omega)).2.1
   have eg' : genPt Or.𝔐.ξ₀ = genPt (o.Or 2 a).𝔐.ξ₀ := by
     have g1 := congrArg (fun f => f (IsLocalRing.closedPoint _)) ((o.Or 2 a).g_over.symm.trans (o.Or 2 a).𝔐.fn_over)
     rw [eg]
@@ -164,9 +150,9 @@ theorem degPush_of (hEq : NumEq) (hPF : GeoPF) (hFib : FibNum) (hTr : TrdegU) (h
     (Fin.append (fun _ : Fin Dc.n => Sum.elim Hd.aMu (0 : M.K → ℤ)) fun j => Sum.elim (0 : K → ℤ) (fibDeg M.xdeg (ee j)))
     hM1 hJ1 fun j => by
       refine Fin.addCases (fun j => ?_) (fun j => ?_) j
-      · simpa only [Fin.append_left, ValEq, asm_vdeg_join_inl] using hμ
+      · simpa only [Fin.append_left, ValEq, SheetDecomposition.vdeg_join_inl] using hμ
       · refine ⟨1, one_ne_zero, fun O _ => ?_⟩
-        simp only [Fin.append_right, asm_vdeg_join_inr, map_one, one_mul]
+        simp only [Fin.append_right, SheetDecomposition.vdeg_join_inr, map_one, one_mul]
   have hG1 := (hMap Ω Ω (RingHom.id Ω) _ _ Dc.y Dc.n Dc.birational Dc.arith (by
     rw [show (RingHom.id Ω).fieldRange = ⊤ from RingHom.fieldRange_eq_top_iff.2 Function.surjective_id]
     have : Module.Finite (⊤ : Subfield Ω) Ω :=
@@ -1414,15 +1400,3 @@ theorem SheetDecomposition.volEq_of_isFullIntersectionSystem : GlobalTheory.Comp
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.VolumeEquality.VolEqOfIsFullIntersectionSystem =====
-
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerIntersectionExtra =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerIntersectionExtra", "h": "module\n\npublic import Development.AutomorphicSpectrum.Statements.TowerExistence.GoodTowerExistsX\npublic import Development.AutomorphicSpectrum.Statements.GeometryStatements.CmpSt\npublic import Development.WeilBound.CoreStatements.VolumeEquality.VolEqOfIsFullIntersectionSystem\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open AlgebraicGeometry CategoryTheory NumberField ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Top
-open GroundTheory.Heights₂.Heights.LowerBoundFree (ComponentData ComponentSetting degMu ArLimExists slX)
-
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.DivisibilityProofs.GoodTowerIntersectionExtra =====

@@ -79,7 +79,7 @@ theorem eigComp_eq (R : RiemLat E g Λ) (s : E →+* ℂ) (c : 𝓞 E →₀ ℂ
     (hc : ∀ s' : E →+* ℂ, ∑ a ∈ c.support, c a * s' (algebraMap (𝓞 E) E a) = if s' = s then 1 else 0)
     (u : Λ) :
     eigComp R.B (s.comp (algebraMap (𝓞 E) E)) (R.P u) = ∑ a ∈ c.support, c a • R.P (a • u) := by
-  obtain ⟨-, -, h3, h4, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h3, h4, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   have hy : ∀ a : 𝓞 E, R.P (a • u) = ∑ s' : E →+* ℂ, s' (algebraMap (𝓞 E) E a) •
       eigComp R.B (s'.comp (algebraMap (𝓞 E) E)) (R.P u) := by
     intro a

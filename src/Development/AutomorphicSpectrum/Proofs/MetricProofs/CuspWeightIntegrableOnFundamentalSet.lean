@@ -587,7 +587,7 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {g : ℕ} {Λ : Type
 
 theorem norm_act_le (R : RiemLat E g Λ) {a : 𝓞 E} {vr : ℝ} (hvr : 0 < vr)
     (ha : ∀ s : E →+* ℂ, ‖s (a : E)‖ ≤ vr) (x : Λ) : ‖per R (a • x)‖ ≤ vr * ‖per R x‖ := by
-  obtain ⟨-, -, h3, h4, h5⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h3, h4, h5⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   let u : (E →+* ℂ) → Tan R := fun s => eigComp R.B (s.comp (algebraMap (𝓞 E) E)) (R.P x)
   let w : (E →+* ℂ) → Tan R := fun s => eigComp R.B (s.comp (algebraMap (𝓞 E) E)) (R.B a (R.P x))
   have hu : ∑ s, u s = per R x := h4 (R.P x)
@@ -720,7 +720,7 @@ theorem exists_subspace (R : RiemLat E g Λ) {Ψ : Type} [Fintype Ψ] [Nonempty 
   have hv_ind : LinearIndependent (𝓞 E) v := hs1.comp e e.injective
   have hv_mem : ∀ i, v i ∈ Submodule.span (𝓞 E) T := fun i => Submodule.subset_span (e i : T).2
   have hC := (_root_.LevelTowerAlt.eigen_projection_conjugate_inner E g Λ Ψ R (Submodule.span (𝓞 E) T) (isIso_span R hI) (σ τ₀)).2 r v hv_mem hv_ind
-  have hmem := ((_root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Ψ R).2.2.1 (σ τ₀)).1
+  have hmem := ((LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Ψ R).2.2.1 (σ τ₀)).1
   have hr : r ≤ j' := by
     let w : Fin r → eigSp R.B (σ τ₀) := fun a => ⟨_, hmem (R.P (v a))⟩
     have hw : LinearIndependent ℂ w := LinearIndependent.of_comp (eigSp R.B (σ τ₀)).subtype hC
@@ -1282,11 +1282,6 @@ end Orbit
 section Ball
 
 
-open scoped ComplexOrder in
-theorem isPreconnected_ballDom {Ψ : Type} [Fintype Ψ] {j j' n : ℕ} (q : Ψ × Fin j × Fin j' ≃ Fin n) :
-    IsPreconnected (ballDom q) := by
-  apply SheetDecomposition.ballDom_preconnected
-
 alias measurable_ballDens := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.DictMeas.measurable_ballDens
 
 end Ball
@@ -1354,7 +1349,7 @@ theorem null_fixed (Δ : GroupDict F) (μ : Measure (archUnitary Δ.h 𝐯)) [μ
     (differentiableOn_pi.1 hA i).sub (differentiable_apply i).differentiableOn
   have hfa := GlobalTheory.SCV.analyticOnNhd_of_differentiableOn (BallInverse.isOpen_ballDom F.q) hfd
   have hz := ReciprocityTheory.AnForm.volume_zero_set_of_analyticOnNhd (BallInverse.isOpen_ballDom F.q)
-    (isPreconnected_ballDom F.q) hfa ⟨Δ.π a₀, pi_mem_ball Δ a₀, sub_ne_zero.2 hi⟩
+    (SheetDecomposition.ballDom_preconnected F.q) hfa ⟨Δ.π a₀, pi_mem_ball Δ a₀, sub_ne_zero.2 hi⟩
   set Zr := {z | z ∈ ballDom F.q ∧ A z i - z i = 0} with hZr
   have hν : (μ.map Δ.π) Zr = 0 := by
     rw [hc, Measure.smul_apply, smul_eq_mul]
@@ -1650,8 +1645,6 @@ section Card
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E]
 
-alias finrank_eq_two_mul := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.ShortVec.finrank_eq_two_mul
-
 theorem one_le_rd : 1 ≤ hostRd E := by
   unfold hostRd
   refine Real.one_le_rpow ?_ (by positivity)
@@ -1692,7 +1685,7 @@ theorem fund_set_mean_cuspW : ∀ (E : Type) [Field E] [NumberField E] [IsCMFiel
   classical
   intro E _ _ _ Ψ _ j j' n g Λ _ _ H F Γ FF hA hFS hj' hN
   obtain ⟨Δ⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Cusp.Dict.groupDict_nonempty E Ψ j j' n g Λ H F
-  have hcard := finrank_eq_two_mul F.cm
+  have hcard := GlobalTheory.CompanionTheory.Ar.Cusp.ShortVec.finrank_eq_two_mul F.cm
   have hrd : 1 ≤ hostRd E := one_le_rd
   have hf : 1 ≤ Fintype.card Ψ := by
     have : 0 < Module.finrank ℚ E := Module.finrank_pos

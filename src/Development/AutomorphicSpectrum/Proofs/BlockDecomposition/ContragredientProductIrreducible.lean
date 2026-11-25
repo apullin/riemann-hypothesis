@@ -10,7 +10,8 @@ public import Development.AbelianVarietyTheory.Proofs.SatakeParameters.Unitarisa
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.ContraAdmissibleTrace
 public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalisedInductionProductParabolicPiTensor
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.SchurAdmissibleAlt
-public import Development.AutomorphicSpectrum.Proofs.GlobalProofs.ParabolicInductionContragredient
+public import Development.AbelianVarietyTheory.PublishedTheorems.TwistedTraceFormula.HasFiniteLengthOfIsIrreducible
+public import Development.AbelianVarietyTheory.Proofs.TwistedOperators.InductionContragredient
 import Mathlib.LinearAlgebra.PiTensorProduct.Finite
 import Mathlib.Tactic.Linter.HaveILetI
 import Mathlib.Tactic.Linter.Style
@@ -181,7 +182,7 @@ theorem parInd_equiv_contra {α n : Type} {m : α → Type} [Fintype α] [Linear
     (hρ : IsSmooth ρ) (φ : Nonempty (σ.Equiv (contra ρ))) :
     Nonempty ((parInd e σ).Equiv (contra (parInd e ρ))) := by
   obtain ⟨φ⟩ := φ
-  obtain ⟨ψ⟩ := InductionContragredient.nonempty_equiv (GlobalTheory.CompanionTheory.Glob.inductionContragredient k) e hρ
+  obtain ⟨ψ⟩ := InductionContragredient.nonempty_equiv (GlobalTheory.SmGL.IndDual.inductionContragredient k) e hρ
   exact ⟨(parIndEquiv e φ).trans ψ⟩
 
 theorem contra_prodIrr_multiProd (hA : GlobalTheory.Published.IrreducibleAdmissibleGL) {h N : ℕ}

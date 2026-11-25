@@ -1156,19 +1156,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Jp.RedUnique
 
-theorem exists_pM_of_low_zero {k : Type} [Field k] {n : ℕ} (g : GL (Ix n) k)
-    (hg : g.1.toBlocks₂₁ = 0) :
-    ∃ (a d : GL (Fin n) k) (b : Matrix (Fin n) (Fin n) k), g = pM a d b := by
-  have hgb : g.1 = fromBlocks g.1.toBlocks₁₁ g.1.toBlocks₁₂ 0 g.1.toBlocks₂₂ := by
-    rw [← hg, fromBlocks_toBlocks]
-  have hdet : g.1.det ≠ 0 :=
-    ((Matrix.isUnit_iff_isUnit_det _).1 g.isUnit).ne_zero
-  rw [hgb, det_fromBlocks_zero₂₁] at hdet
-  refine ⟨GeneralLinearGroup.mkOfDetNeZero _ (left_ne_zero_of_mul hdet),
-    GeneralLinearGroup.mkOfDetNeZero _ (right_ne_zero_of_mul hdet), g.1.toBlocks₁₂, ?_⟩
-  apply Units.ext
-  exact hgb
-
 theorem low_inv_mul_pM {R : Type} [CommRing R] {n : ℕ} (a₁ d₁ a₂ d₂ : GL (Fin n) R)
     (b₁ b₂ : Matrix (Fin n) (Fin n) R) :
     (((pM a₂ d₂ b₂)⁻¹ * pM a₁ d₁ b₁ : GL (Ix n) R)).1.toBlocks₂₁ = 0 := by
@@ -1200,7 +1187,7 @@ theorem red_unique : ∀ (O L : Type) [CommRing O] [IsDomain O] [IsDiscreteValua
     ext i j
     change IsLocalRing.residue O (c.1 (Sum.inr i) (Sum.inl j)) = 0
     rw [hO, map_zero]
-  obtain ⟨a, d, b, hp⟩ := exists_pM_of_low_zero _ hk
+  obtain ⟨a, d, b, hp⟩ := GlobalTheory.CompanionTheory.Jp.Dbl.exists_pM _ hk
   refine ⟨a, d, b, ?_⟩
   rw [← hp, ← map_mul, hcd, inv_mul_cancel_right]
 

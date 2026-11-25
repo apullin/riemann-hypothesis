@@ -2,7 +2,7 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.TrivFlagMod
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.FlagMinor
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeFamiliesGlueToBundle
+public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.XBundleOfFamily
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.MemSpanOverOfMem
 import GroundTheory.HeightsAndTheta.Heights.DiscreteValuationNumbers.Objects
 
@@ -136,13 +136,13 @@ theorem locFree_pullFam (E : ChartBundle O (mseg x) N V) (bc : V →ₗ[Ω] V₁
     LocFree (chartRing O (mseg (bcCoord x z)) s) N (pullFam x z E bc s) := by
   classical
   exact LocFreeBC.locFree_baseChange _ _ (fun _ ha => map_mem_chartRing hs ha) bc hbc N _
-    (((BundleOfFamily.main O Ω K ι x N V).2 E).2 _ (first_ne_zero hs))
+    (((PositivityTheory.Xgn.t_bundle_of_family O Ω K ι x N V).2 E).2 _ (first_ne_zero hs))
 
 theorem exists_pullBC [IsDomain O] [IsDiscreteValuationRing O] (E : ChartBundle O (mseg x) N V)
     (bc : V →ₗ[Ω] V₁) (hbc : IsBaseChange Ω₁ bc) :
     ∃ EB : ChartBundle O (mseg (bcCoord x z)) N V₁, IsPullBC O x z bc E EB := by
   classical
-  obtain ⟨EB, hEB⟩ := (BundleOfFamily.main O Ω₁ (K ⊕ K') (Sum.elim ι ι') (bcCoord x z) N V₁).1
+  obtain ⟨EB, hEB⟩ := (PositivityTheory.Xgn.t_bundle_of_family O Ω₁ (K ⊕ K') (Sum.elim ι ι') (bcCoord x z) N V₁).1
     (pullFam x z E bc) (isLatFamily_pullFam E bc) (locFree_pullFam E bc hbc)
   refine ⟨EB, fun s hs => ?_⟩
   rw [hEB s hs]

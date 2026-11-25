@@ -277,9 +277,9 @@ theorem exists_onPart (g : GAd σ J) {Q : Matrix (Fin n) (Fin n) (AF F ⊗[F] E)
     (hc : (matHom _ σ J g).1 * Q = Q * (matHom _ σ J g).1) :
     ∃ m : GAd σ J, (matHom _ σ J m).1 = onPart Q (matHom _ σ J g).1 ∧
       (matHom _ σ J m⁻¹).1 = onPart Q (matHom _ σ J g⁻¹).1 :=
-  ⟨mkPt _ _ (onPart_inv hQ hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g))
-    (onPart_inv hQ (comm_inv hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g)) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) (mat_mul_inv g))
-    (onPart_unitary hQ hQJ hc (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g)), rfl, rfl⟩
+  ⟨mkPt _ _ (onPart_inv hQ hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g))
+    (onPart_inv hQ (comm_inv hc (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g)) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g) (mat_mul_inv g))
+    (onPart_unitary hQ hQJ hc (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g)), rfl, rfl⟩
 
 variable (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW : IsWittFrame σ J X Y)
 include h hJ hW
@@ -322,10 +322,10 @@ theorem isComm_of_mem_levi {T : Finset (Fin r)} {g : GAd σ J} (hg : g ∈ levi 
       (adMat F Y).submatrix id (Fin.castLE j.2) = 1 := by rw [cT_sub_mul, fxy, Matrix.submatrix_one _ inj]
   refine ⟨?_, ?_⟩
   · rw [prX_ind_le]
-    exact comm_of_frame h1 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) eB eC
+    exact comm_of_frame h1 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g) eB eC
   · change _ * prX _ _ (adMat F Y) (adMat F X) _ = prX _ _ (adMat F Y) (adMat F X) _ * _
     rw [prX_ind_le]
-    exact comm_of_frame h2 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.UCore.LeviU.mat_inv_mul g) eC eB
+    exact comm_of_frame h2 (mat_unitary g) (mat_mul_inv g) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g) eC eB
 
 theorem mem_levi_of_isComm {T : Finset (Fin r)} {m : GAd σ J}
     (hm : ∀ j ∈ T, IsComm (sigR (AF F) σ) (adMat F J) (adMat F X) (adMat F Y) (matHom _ σ J m).1 (ind {i | i ≤ j}))

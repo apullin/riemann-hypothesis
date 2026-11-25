@@ -578,19 +578,6 @@ section Abstract
 
 variable {R : Type} [CommRing R] {O : Subring R} {n : ℕ}
 
-theorem exists_common_denom (hden : ∀ a : R, ∃ s ∈ O, IsUnit s ∧ s * a ∈ O) {ι : Type} (T : Finset ι) (f : ι → R) :
-    ∃ w ∈ O, IsUnit w ∧ ∀ i ∈ T, w * f i ∈ O := by
-  classical
-  induction T using Finset.induction_on with
-  | empty => exact ⟨1, O.one_mem, isUnit_one, by simp⟩
-  | insert a T _ ih =>
-    obtain ⟨w, hw, hwu, h⟩ := ih
-    obtain ⟨s, hs, hsu, h'⟩ := hden (f a)
-    refine ⟨w * s, O.mul_mem hw hs, hwu.mul hsu, fun i hi => ?_⟩
-    rcases Finset.mem_insert.1 hi with rfl | hi
-    · rw [mul_assoc]; exact O.mul_mem hw h'
-    · rw [mul_right_comm]; exact O.mul_mem (h i hi) hs
-
 theorem smul_mem_of_mem {Λ : Submodule O (Fin n → R)} {a : R} {z : Fin n → R} (ha : a ∈ O) (hz : z ∈ Λ) :
     a • z ∈ Λ :=
   Λ.smul_of_tower_mem (⟨a, ha⟩ : O) hz
@@ -645,7 +632,7 @@ theorem exists_unit_outer (hden : ∀ a : R, ∃ s ∈ O, IsUnit s ∧ s * a ∈
     (hfg : Λ.FG) : ∃ w ∈ O, IsUnit w ∧ ∀ y ∈ Λ, ∀ i, w * y i ∈ O := by
   classical
   obtain ⟨T, rfl⟩ := hfg
-  obtain ⟨w, hw, hwu, h⟩ := exists_common_denom hden (T ×ˢ (Finset.univ : Finset (Fin n))) (fun p => p.1 p.2)
+  obtain ⟨w, hw, hwu, h⟩ := GlobalTheory.CompanionTheory.KFin.Adapted.common_denom hden (T ×ˢ (Finset.univ : Finset (Fin n))) (fun p => p.1 p.2)
   refine ⟨w, hw, hwu, fun y hy i => ?_⟩
   induction hy using Submodule.span_induction with
   | mem y hy => exact h (y, i) (Finset.mem_product.2 ⟨hy, Finset.mem_univ _⟩)
@@ -981,12 +968,6 @@ section Tensor
 variable {F E : Type} [Field F] [Field E] [Algebra F E] (R : Type) [CommRing R] [Algebra F R]
   (σ : E →ₐ[F] E) {n : ℕ} (J : Matrix (Fin n) (Fin n) E)
 
-theorem sigR_sigR_of_invol (hσ : ∀ x, σ (σ x) = x) (t : R ⊗[F] E) : sigR R σ (sigR R σ t) = t := by
-  induction t using TensorProduct.induction_on with
-  | zero => simp
-  | tmul r e => simp [Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.sigR, hσ]
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-
 theorem isUnit_det_JR (h : J.det ≠ 0) : IsUnit (JR (F := F) R J).det := by
   have h1 : (JR (F := F) R J).det = inclR (F := F) R J.det := by
     rw [RingHom.map_det]
@@ -1009,7 +990,7 @@ theorem isHerm_isPerfect_hR : ∀ {F E : Type} [Field F] [NumberField F] [Field 
     rw [hCM.2.2.2, hCM.2.2.2]
     exact star_star _
   have hc : ∀ a, sigR (Fv F v) σ (sigR (Fv F v) σ a) = a :=
-    HermForm.sigR_sigR_of_invol (Fv F v) σ hinv
+    PI.VolStabSW.sigR_invol (Fv F v) σ hinv
   have hM : ∀ i j, sigR (Fv F v) σ (JR (F := F) (Fv F v) J j i) = JR (F := F) (Fv F v) J i j := by
     intro i j
     simp only [Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.JR, Matrix.map_apply]

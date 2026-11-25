@@ -173,7 +173,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Br
 open GlobalTheory.CompanionTheory.Ar.Flat.RuleGlue GlobalTheory.CompanionTheory.Ar.Br.CvRule
 
 
-
 theorem exists_flat_sec : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (Z : Formalism.L2.Pj.Comp Xo c) (Z' : CptOver Y (Z : Set (Xo.XF c))) (τ : GlobalTheory.AllWt.Psi H) (φ : FrameFn Xo c), FlatOnModel Z' τ.1 φ → ∃ s s' : Formalism.L2.Pj.Rul Xo c, s ∈ GlobalTheory.AllWt.secZ Xo c (GlobalTheory.AllWt.exOf D (GlobalTheory.FlatLine.flatWt D τ) 0) ∧ s' ∈ GlobalTheory.AllWt.secZ Xo c (-GlobalTheory.AllWt.exOf D (GlobalTheory.FlatLine.flatWt D τ) 0) ∧ GlobalTheory.FlatLine.idem Z * s = s ∧ GlobalTheory.FlatLine.idem Z * s' = s' ∧ s * s' = GlobalTheory.FlatLine.idem Z ∧ Reads (Z : Set (Xo.XF c)) τ.1 s φ := by
   intro E _ _ _ H D l Xo c O _ β Y Z Z' τ φ hf
   have hτ := τ.2
@@ -845,10 +844,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 
 namespace PositivityTheory.Xgn.PlaceValuation
 
-theorem exists_place {K : Type} [Field K] [NumberField K] (p : Nat.Primes) (κ : K →+* ℂ_[p]) :
-    ∃ la : HeightOneSpectrum (𝓞 K), ∀ a : K, la.valuation K a ≤ 1 ↔ ‖κ a‖ ≤ 1 :=
-  _root_.Bl.KappaIntegralBound.goal1 p κ
-
 theorem place_unique {K : Type} [Field K] [NumberField K] {p : Nat.Primes} {κ : K →+* ℂ_[p]}
     {la la' : HeightOneSpectrum (𝓞 K)} (h : ∀ a : K, la.valuation K a ≤ 1 ↔ ‖κ a‖ ≤ 1)
     (h' : ∀ a : K, la'.valuation K a ≤ 1 ↔ ‖κ a‖ ≤ 1) : la = la' :=
@@ -870,7 +865,7 @@ end PositivityTheory.Xgn.PlaceValuation
 
 theorem PositivityTheory.Xgn.line_function_place_valuation : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) [NumberField c.F] (Z : Formalism.L2.Pj.Comp Xo c) (τ : GlobalTheory.AllWt.Psi H) (s : Formalism.L2.Pj.Rul Xo c) (φ : FrameFn Xo c) (ρ : HeightOneSpectrum (𝓞 c.F) → ℝ), IsLineFn (Z : Set (Xo.XF c)) τ.1 φ → Reads (Z : Set (Xo.XF c)) τ.1 s φ → (∀ (p : Nat.Primes) (κ : c.F →+* ℂ_[p]) (la : HeightOneSpectrum (𝓞 c.F)) (π : c.F), (∀ a : c.F, la.valuation c.F a ≤ 1 ↔ ‖κ a‖ ≤ 1) → la.valuation c.F π = WithZero.exp (-1 : ℤ) → HasFinNorm (Z : Set (Xo.XF c)) τ.1 φ p κ (ρ la * Real.log ‖κ π‖)) → ∀ la, ∀ v ∈ GlobalTheory.FlatLine.valOn Z la, v s = (ρ la : EReal) := by
   intro E _ _ _ H D l Xo c _ Z τ s φ ρ hφ hs hN la v hv
-  choose pl hpl using fun (p : Nat.Primes) (κ : c.F →+* ℂ_[p]) => PositivityTheory.Xgn.PlaceValuation.exists_place p κ
+  choose pl hpl using fun (p : Nat.Primes) (κ : c.F →+* ℂ_[p]) => Bl.KappaIntegralBound.goal1 p κ
   choose un hun using fun la : HeightOneSpectrum (𝓞 c.F) => la.valuation_exists_uniformizer c.F
   obtain ⟨⟨_, T, io, e, ho, y, hy, eta, -, rfl⟩, rfl⟩ := hv
   letI := io.toAlgebra
@@ -1188,10 +1183,6 @@ theorem exists_padicAlgCl_factor {K : Type} [Field K] [NumberField K] (κ : K �
             map_zero' := hjinj (by rw [hf, map_zero, map_zero])
             map_add' := fun a b => hjinj (by rw [hf, map_add (f := _), map_add (f := _), hf, hf]) }, fun a => hf a⟩
 
-theorem exists_rat_poly_approx (x y : PadicAlgCl p) (e : ℚ_[p][X]) {ε : ℝ} (hε : 0 < ε) :
-    ∃ u : ℚ[X], ‖aeval x u - aeval x e‖ < ε ∧ ‖aeval y u - aeval y e‖ < ε := by
-  apply UpperTheory.HF.LocStab.approx <;> assumption
-
 theorem norm_natCast_prime : ‖(p : PadicAlgCl p)‖ = (p : ℝ)⁻¹ := by
   rw [← map_natCast (algebraMap ℚ_[p] (PadicAlgCl p)) p, PadicAlgCl.norm_extends, Padic.norm_p]
 
@@ -1213,7 +1204,7 @@ theorem minpoly_eq_of_unit_ball {K : Type} [Field K] [NumberField K] (φ ψ : K 
     have hz : 0 < ‖aeval (ψ₁ θ) (minpoly ℚ_[p] (φ₁ θ))‖ := norm_pos_iff.mpr hne
     obtain ⟨j, hj⟩ := exists_pow_lt_of_lt_one (half_pos hz) (inv_lt_one_of_one_lt₀ hp1)
     have ht : 0 < (p : ℝ)⁻¹ ^ j := pow_pos (inv_pos.mpr (by linarith)) j
-    obtain ⟨u, hux, huy⟩ := exists_rat_poly_approx (φ₁ θ) (ψ₁ θ) (minpoly ℚ_[p] (φ₁ θ)) ht
+    obtain ⟨u, hux, huy⟩ := UpperTheory.HF.LocStab.approx (φ₁ θ) (ψ₁ θ) (minpoly ℚ_[p] (φ₁ θ)) ht
     rw [minpoly.aeval, sub_zero, hφ] at hux
     have h1 : ‖φ₁ (((p : K) ^ j)⁻¹ * aeval θ u)‖ ≤ 1 := by
       rw [map_mul, norm_mul, hnorm, inv_mul_le_iff₀ ht, mul_one]

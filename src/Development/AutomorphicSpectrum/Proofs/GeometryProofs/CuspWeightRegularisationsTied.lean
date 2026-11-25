@@ -783,8 +783,6 @@ theorem exists_factor {ψ : OpenPartialHomeomorph M.Xc (Fin D.n → ℂ)} (hψ :
   rw [(M.fibre _ ((D.chart a).mem _ hb) _ hm).2 ⟨c', hc', e'⟩,
     ← (M.fibre _ (hs _ h2).1 _ hm).2 ⟨_, fun k => inv_ne_zero (hc k), rfl⟩, (hs _ h2).2]
 
-alias isOpen_nz := _root_.GroundTheory.Heights₂.Heights.HilbertSamuel.G1.isOpen_blocksNonzero
-
 variable {ref : HermLine J} {w : ((Σ k, J k) → ℂ) → ℝ} (P : PotentialCharts M.atlas)
 
 
@@ -800,7 +798,7 @@ theorem relative_weight_bounded (hr : IsSmoothHerm ref) (hL : LogHom D ref.a w) 
     obtain ⟨ε, hε, C, hC⟩ := hB a _ hb
     have hm := (D.chart a).mem _ hb
     have hc : ContinuousAt (fun u => Real.log (ref.h ((D.chart a).γ (F u)))) (P.chart j x) :=
-      ((hr.continuousOn.continuousAt (isOpen_nz.mem_nhds hm.1)).comp (f := fun u => (D.chart a).γ (F u))
+      ((hr.continuousOn.continuousAt (GroundTheory.Heights₂.Heights.HilbertSamuel.G1.isOpen_blocksNonzero.mem_nhds hm.1)).comp (f := fun u => (D.chart a).γ (F u))
         (((D.chart a).analytic _ hb).continuousAt.comp hF.continuousAt)).log (ref.pos _ hm.1).ne'
     have h3 := (hev.and (hc.eventually (ball_mem_nhds _ one_pos))).and (hF.continuousAt.eventually (ball_mem_nhds _ hε))
     refine ⟨C + (|Real.log (ref.h ((D.chart a).γ (F (P.chart j x))))| + 1), ?_⟩
@@ -1350,7 +1348,6 @@ theorem GlobalTheory.CompanionTheory.Ar.Cusp.breg_margin_tendsto (C : ℝ) :
     tendsto_const_nhds.div_atTop (Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero)
   have h2 := h0.max (h1.add (h0.const_mul C))
   simpa using h2
-
 
 
 theorem _root_.GlobalTheory.CompanionTheory.Relay.exists_regularization_setting : ∀ (K : Type) [Fintype K] (J : K → Type) [∀ k, Fintype (J k)] (II : IntersectionSystem) (Ψ : Type) [Fintype Ψ] (Ω : Type) [Field Ω] [Algebra ℚ Ω] (W : Ψ → Type) [∀ τ, AddCommGroup (W τ)] [∀ τ, Module Ω (W τ)] (D : ComponentData II Ψ K J Ω W) (Hd : HodgeData D) (M : XModel D) (w : ((Σ k, J k) → ℂ) → ℝ), LogHom D Hd.aMu w → ChartPsh D w → ChartCont D w → ChartBdd D w → ConjOff D w → ∃ S' : BoundedRegularisationSetting M D.Xo Hd.aMu w, S'.IsTied ∧ ConjU S' := by

@@ -68,8 +68,6 @@ theorem two_le_jhMult_of_map {s N : ℕ} {d : Fin s → ℕ} (e : (Σ a, Fin (d 
   have h6 := ENat.one_le_iff_ne_zero.2 h4
   exact (by norm_num : (2 : ℕ∞) = 1 + 1).le.trans (add_le_add h5 h6)
 
-alias piTensor_eq_smul := _root_.GlobalTheory.BoundaryMaps.piTensor_scalar
-
 theorem smul_eq_of_isSubquotient {G V W : Type} [Group G] [AddCommGroup V] [Module ℂ V] [AddCommGroup W] [Module ℂ W]
     [Nontrivial W] {σ : Representation ℂ G W} {τ : Representation ℂ G V} (h : IsSubquotient σ τ) (g : G) (a b : ℂ)
     (hσ : ∀ v, σ g v = a • v) (hτ : ∀ v, τ g v = b • v) : a = b := by
@@ -99,9 +97,9 @@ theorem not_isSubquotient_dec (hA : GlobalTheory.Published.IrreducibleAdmissible
     let w : Fin 2 → kˣ := ![z, 1]
     let g : ∀ _ : Fin 2, GL (Fin ρ.1) k := fun a => Matrix.GeneralLinearGroup.scalar _ (w a)
     have h1 := smul_eq_of_isSubquotient h g _ _
-      (piTensor_eq_smul _ g (fun a => (((ω * absPow k (((Fin.rev a : Fin 2) : ℕ) : ℂ) ^ ρ.1) (w a) : ℂˣ) : ℂ))
+      (GlobalTheory.BoundaryMaps.piTensor_scalar _ g (fun a => (((ω * absPow k (((Fin.rev a : Fin 2) : ℕ) : ℂ) ^ ρ.1) (w a) : ℂˣ) : ℂ))
         fun a v => hc _ (w a) v)
-      (piTensor_eq_smul _ g (fun a => (((ω * absPow k ((a : ℕ) : ℂ) ^ ρ.1) (w a) : ℂˣ) : ℂ))
+      (GlobalTheory.BoundaryMaps.piTensor_scalar _ g (fun a => (((ω * absPow k ((a : ℕ) : ℂ) ^ ρ.1) (w a) : ℂˣ) : ℂ))
         fun a v => hc _ (w a) v)
     simp [Fin.prod_univ_two, w] at h1
     exact Units.ext (by simpa using h1)

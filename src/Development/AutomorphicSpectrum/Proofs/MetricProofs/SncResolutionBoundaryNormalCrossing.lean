@@ -720,8 +720,6 @@ theorem isMultiHomog_part (b : K → ℕ) (s : MvPolynomial (Σ k, ι k) ℂ) :
   refine hm (ite_eq_right fun h => hk ?_)
   exact congrFun h k
 
-alias isMultiHomog_mul := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Dict.isMultiHomog_mul
-
 theorem coeff_mul_eq_zero {r f : MvPolynomial (Σ k, ι k) ℂ} {b a : K → ℕ}
     (hr : ∀ m ∈ r.support, mdeg m ≠ b) (hf : IsMultiHomog f a) {m : (Σ k, ι k) →₀ ℕ}
     (hm : mdeg m = b + a) : AddMonoidAlgebra.coeff (r * f) m = 0 := by
@@ -760,7 +758,7 @@ theorem part_mul_mem [DecidableEq K] {I : Ideal (MvPolynomial (Σ k, ι k) ℂ)}
         fun h' => hm (funext fun k => h' k (Finset.mem_univ k))
       rw [ite_eq_right e]
       by_contra hne
-      exact hm (funext fun k => isMultiHomog_mul (isMultiHomog_part b s) hf m
+      exact hm (funext fun k => GlobalTheory.CompanionTheory.Ar.Cmp.SncRes.Dict.isMultiHomog_mul (isMultiHomog_part b s) hf m
         (mem_support_iff.2 (Ne.symm hne)) k)
   exact hgeq ▸ hgI
 

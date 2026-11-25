@@ -331,53 +331,6 @@ theorem mem_eigSp_iff' (ρ : O →+* Module.End k V) (σ : O →+* k) (x : V) :
     x ∈ eigSp ρ σ ↔ ∀ a, ρ a x = σ a • x := by
   simp [eigSp, Submodule.mem_iInf, LinearMap.mem_ker, sub_eq_zero]
 
-theorem eigSp_sum_eq_zero (ρ : O →+* Module.End k V) (s : Finset (O →+* k)) :
-    ∀ f : (O →+* k) → V, (∀ t ∈ s, f t ∈ eigSp ρ t) → ∑ t ∈ s, f t = 0 → ∀ t ∈ s, f t = 0 := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert t₀ s ht₀ ih =>
-    intro f hf hsum
-    have hf' : ∀ t ∈ s, f t ∈ eigSp ρ t := fun t ht => hf t (Finset.mem_insert_of_mem ht)
-    have hf₀ := (mem_eigSp_iff' ρ t₀ _).1 (hf t₀ (Finset.mem_insert_self _ _))
-    rw [Finset.sum_insert ht₀] at hsum
-    have hs : ∀ t ∈ s, f t = 0 := by
-      intro t ht
-      have hne : t ≠ t₀ := fun e => ht₀ (e ▸ ht)
-      obtain ⟨a, ha⟩ : ∃ a, t a ≠ t₀ a := by
-        by_contra hcon
-        push Not at hcon
-        exact hne (RingHom.ext hcon)
-      have hz : ∑ u ∈ s, (u a - t₀ a) • f u = 0 := by
-        have h1 : ρ a (f t₀ + ∑ u ∈ s, f u) - t₀ a • (f t₀ + ∑ u ∈ s, f u) = 0 := by
-          rw [hsum]; simp
-        have h2 : ρ a (∑ u ∈ s, f u) = ∑ u ∈ s, u a • f u := by
-
-          rw [map_sum]
-          exact Finset.sum_congr rfl fun u hu => (mem_eigSp_iff' ρ u _).1 (hf' u hu) a
-        rw [map_add (f := _), hf₀ a, h2, smul_add, Finset.smul_sum] at h1
-        simp only [sub_smul, Finset.sum_sub_distrib]
-        rw [← h1]
-        abel
-      have := ih (fun u => (u a - t₀ a) • f u)
-        (fun u hu => Submodule.smul_mem _ _ (hf' u hu)) hz t ht
-      exact (smul_eq_zero.1 this).resolve_left (sub_ne_zero.2 ha)
-    have h₀ : f t₀ = 0 := by
-      rw [Finset.sum_eq_zero hs, add_zero] at hsum
-      exact hsum
-    intro t ht
-    rcases Finset.mem_insert.1 ht with rfl | ht
-    · exact h₀
-    · exact hs t ht
-
-theorem iSupIndep_eigSp (ρ : O →+* Module.End k V) : iSupIndep (fun σ : O →+* k => eigSp ρ σ) :=
-  (iSupIndep_iff_finsetSum_eq_zero_imp_eq_zero _).2 fun s v hv h0 i hi =>
-    eigSp_sum_eq_zero ρ s v hv h0 i hi
-
-theorem eq_zero_of_mem_eigSp_of_mem_iSup (ρ : O →+* Module.End k V) (σ : O →+* k) {y : V}
-    (h₁ : y ∈ eigSp ρ σ) (h₂ : y ∈ ⨆ σ' ∈ {σ' : O →+* k | σ' ≠ σ}, eigSp ρ σ') : y = 0 :=
-  Submodule.disjoint_def.1 (iSupIndep_eigSp ρ σ) y h₁ (by simpa using h₂)
-
 end Indep
 
 theorem eigComp_map {k k' V V' O : Type} [Field k] [Field k'] [AddCommGroup V] [Module k V] [AddCommGroup V']
@@ -421,7 +374,7 @@ theorem eigComp_map {k k' V V' O : Type} [Field k] [Field k'] [AddCommGroup V] [
   have hq : eigComp ρ' (κ.comp σ) (j x) = h'.choose := by rw [eigComp, dite_eq_left h']
   obtain ⟨hq₁, hq₂⟩ := h'.choose_spec
   rw [← hq] at hq₁ hq₂
-  refine sub_eq_zero.1 (eq_zero_of_mem_eigSp_of_mem_iSup ρ' (κ.comp σ)
+  refine sub_eq_zero.1 (GlobalTheory.CompanionTheory.Ar.Cusp.Adapted.eq_zero_of_mem_iSup ρ' (κ.comp σ)
     (Submodule.sub_mem _ hq₁ (hmap σ _ hp₁)) ?_)
   have : eigComp ρ' (κ.comp σ) (j x) - j (eigComp ρ σ x) =
       (j x - j (eigComp ρ σ x)) - (j x - eigComp ρ' (κ.comp σ) (j x)) := by abel

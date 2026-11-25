@@ -638,7 +638,7 @@ theorem root_isometric : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
     have := _root_.GlobalTheory.CompanionTheory.Ar.JoinPts.aeval_eq_zero_of_mem y h
     rw [map_mul] at this
     exact (mul_ne_zero hF₀ hF₁) this
-  have hzc := _root_.GlobalTheory.CompanionTheory.Ar.Flat.nonvanishing_dense K J (mCoordIdeal y) _ (F₀ * F₁) hA hFne hz
+  have hzc := PositivityTheory.Xgn.nonvanishing_points_dense K J (mCoordIdeal y) _ (F₀ * F₁) hA hFne hz
   haveI hnb := mem_closure_iff_nhdsWithin_neBot.1 hzc
   have cont : ∀ {K₁ : Type} [Fintype K₁] {ι : K₁ → Type} [∀ k, Fintype (ι k)] (A : HermLine ι) (_ : IsSmoothHerm A)
       (u : (Σ k, ι k) → Σ k, J k), (∀ k, ∃ a, z (u ⟨k, a⟩) ≠ 0) →

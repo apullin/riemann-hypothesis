@@ -94,7 +94,7 @@ import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTopNPoly
 import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.PTpCuspIntegrable
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.ModelPointsIntegrableStatementHolds, Development.AutomorphicSpectrum.Proofs.MetricProofs.StokesLimitStatementHolds, Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionNumberTelescoping, Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedIntegralLimitOnModel, Development.AutomorphicSpectrum.Proofs.MetricProofs.PshDoublePositivePotential, Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedHodgeMetricFormula, Development.AutomorphicSpectrum.Proofs.MetricProofs.TopMixedLimitOfResolution, Development.WeilBound.CoreStatements.CommonZeroEvaluation.AbelianCmStokesIdentity, Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionFinalEstimate
+-- Members: Development.AutomorphicSpectrum.Proofs.MetricProofs.ModelPointsIntegrableStatementHolds, Development.AutomorphicSpectrum.Proofs.MetricProofs.StokesLimitStatementHolds, Development.AutomorphicSpectrum.Proofs.MetricProofs.IntersectionNumberTelescoping, Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedIntegralLimitOnModel, Development.AutomorphicSpectrum.Proofs.MetricProofs.PshDoublePositivePotential, Development.AutomorphicSpectrum.Proofs.MetricProofs.RegularizedHodgeMetricFormula, Development.AutomorphicSpectrum.Proofs.MetricProofs.TopMixedLimitOfResolution, Development.WeilBound.CoreStatements.CommonZeroEvaluation.AbelianCmStokesIdentity
 
 -- ===== clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.ModelPointsIntegrableStatementHolds =====
 -- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.MetricProofs.ModelPointsIntegrableStatementHolds", "h": "module\n\npublic import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsModelPtsIntegrable\npublic import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.FrameDefinitions.Weights\npublic import Development.AutomorphicSpectrum.Proofs.MetricProofs.LocalHolomorphicSectionOfPotential\npublic import GroundTheory.HeightsAndTheta.Heights.HodgeLowerBound.StatementsPtsBddConv\npublic import Development.AutomorphicSpectrum.Proofs.MetricProofs.MixedIntegralModelFormula\npublic import ReciprocityTheory.AnalyticForms.PotentialTheory.ContDiffAtOfIsPotential\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Separation.CompletelyRegular\nimport Mathlib.Topology.Sheaves.Init\nimport ReciprocityTheory.AnalyticForms.PotentialTheory.LocDens\n\n"}
@@ -318,7 +318,7 @@ theorem reHolAt_log_sections {M : CxModel P d} {U U' : Set M.Xc} {s s' : M.Xc �
       (reHolAt_log_norm hU (hs.2 _) hy (hi k))).const_mul _
   refine (ReHolAt.sum Finset.univ hR).congr ?_
   have hev : ∀ᶠ y in 𝓝 y₀, ∀ k, s y ⟨k, i k⟩ ≠ 0 := eventually_all.2 fun k =>
-    ((_root_.GlobalTheory.CompanionTheory.Ar.Giv.Push.DCont.holoOn_continuousOn (hs.2 ⟨k, i k⟩)).continuousAt (hU.mem_nhds hy)).eventually_ne (hi k)
+    ((GlobalTheory.CompanionTheory.Ar.Giv.SecPot.holoOn_continuousOn' (hs.2 ⟨k, i k⟩)).continuousAt (hU.mem_nhds hy)).eventually_ne (hi k)
   filter_upwards [hU.mem_nhds hy, hU'.mem_nhds hy', hev] with y h1 h2 h3
   have hm := (hs.1 y h1).1
   have hm' := (hs'.1 y h2).1
@@ -344,7 +344,7 @@ theorem reHolAt_log_vert (D : ComponentData II Ψ K ι Ω E) {p' : ℕ} (hp : p'
   obtain ⟨T, hTa, hT0, hTe⟩ :=
     GroundTheory.Heights₂.Heights.NineStatements.NbarLeviChartReg.vertFactor_local D hp (hs.1 y₀ hy).1
   obtain ⟨O, hOs, hOo, hzO⟩ := mem_nhds_iff.1 (hTa.eventually_analyticAt.and hTe)
-  have hsc : ContinuousOn s U := continuousOn_pi.2 fun p => _root_.GlobalTheory.CompanionTheory.Ar.Giv.Push.DCont.holoOn_continuousOn (hs.2 p)
+  have hsc : ContinuousOn s U := continuousOn_pi.2 fun p => GlobalTheory.CompanionTheory.Ar.Giv.SecPot.holoOn_continuousOn' (hs.2 p)
   have hW := hsc.isOpen_inter_preimage hU hOo
   have hf : M.atlas.HoloOn (U ∩ s ⁻¹' O) (fun y => T (s y)) := by
     intro j u hu
@@ -858,10 +858,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.Giv.Mix
 
-theorem continuous_of_atlasSmooth {e : ℕ} {X : Type} [TopologicalSpace X] {A : FinHolAtlas e X}
-    {f : X → ℝ} (hf : A.Smooth f) : Continuous f := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.FlatBound.continuous_of_smooth <;> assumption
-
 theorem tendsto_ptsIntegral_of_chart_conv : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (P : Ideal (MRing ι)) (n : ℕ) (M : CxModel P n) (R : GroundTheory.Heights₂.Heights.Regular.RegChartData M.atlas) (Θ : LocPot M.Xc) (Pp : Fin n → LocPot M.Xc) (f : Fin n → M.Xc → ℝ) (fT : Fin n → ℝ → M.Xc → ℝ) (G : M.Xc → ℝ) (GT : ℝ → M.Xc → ℝ) (C : ℝ) (L : ℝ → Fin n → HermLine ι) (g : ℝ → ((Σ k, ι k) → ℂ) → ℝ), IsArithVar P (n + 1) → IsPotential M.atlas Θ → IsPosPot M.atlas Θ → (∀ i, IsPotential M.atlas (Pp i)) → (∀ i, M.atlas.SmoothOn R.Yo (f i)) → (∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ i, M.atlas.Smooth (fT i t) ∧ IsPsh M.atlas (Pp i + LocPot.ofFun (fT i t) + Θ) ∧ ∀ x ∈ R.Yo, |fT i t x| ≤ C + C * Real.log (R.r x) ∧ fT i t x ≤ C) → (∀ i, ∀ j, ∀ K' ⊆ (M.atlas.chart j).target ∩ (M.atlas.chart j).symm ⁻¹' R.Yo, IsCompact K' → TendstoUniformlyOn (fun t => fT i t ∘ (M.atlas.chart j).symm) (f i ∘ (M.atlas.chart j).symm) (𝓝[>] 0) K' ∧ TendstoUniformlyOn (fun t => fderiv ℝ (fT i t ∘ (M.atlas.chart j).symm)) (fderiv ℝ (f i ∘ (M.atlas.chart j).symm)) (𝓝[>] 0) K' ∧ TendstoUniformlyOn (fun t => fderiv ℝ (fderiv ℝ (fT i t ∘ (M.atlas.chart j).symm))) (fderiv ℝ (fderiv ℝ (f i ∘ (M.atlas.chart j).symm))) (𝓝[>] 0) K') → (∀ᶠ t in 𝓝[>] (0 : ℝ), M.atlas.Smooth (GT t) ∧ ∀ x ∈ R.Yo, |GT t x| ≤ C + C * Real.log (R.r x)) → (∀ K' ⊆ R.Yo, IsCompact K' → TendstoUniformlyOn GT G (𝓝[>] 0) K') → (∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ i x, ∀ y₀ ∈ (Pp i + LocPot.ofFun (fT i t)).U x ∩ Set.univ, ∃ U : Set M.Xc, IsOpen U ∧ y₀ ∈ U ∧ U ⊆ (Pp i + LocPot.ofFun (fT i t)).U x ∩ Set.univ ∧ ∃ s : M.Xc → (Σ k, ι k) → ℂ, (∀ y' ∈ U, s y' ∈ mcPts P ∧ M.proj (s y') = y') ∧ (∀ p, M.atlas.HoloOn U fun y' => s y' p) ∧ ∃ G' : M.Xc → ℂ, M.atlas.HoloOn U G' ∧ ∀ y' ∈ U, (Pp i + LocPot.ofFun (fT i t)).φ x y' - Real.log ((L t i).h (s y')) = (G' y').re) → (∀ᶠ t in 𝓝[>] (0 : ℝ), ∀ z ∈ mcPts P, g t z = GT t (M.proj z)) → ∃ l : ℝ, Tendsto (fun t => ptsIntegral P (pot (L t)) (g t)) (𝓝[>] 0) (𝓝 l) := by
   intro K _ ι _ P n M R Θ Pp f fT G GT C L g hV hΘ hΘp hP hf hfT hconv hGT hGc hrel hg
   classical
@@ -873,7 +869,7 @@ theorem tendsto_ptsIntegral_of_chart_conv : ∀ (K : Type) [Fintype K] (ι : K �
       refine ⟨?_, ht.2⟩
       letI : MeasurableSpace M.Xc := borel M.Xc
       haveI : BorelSpace M.Xc := ⟨rfl⟩
-      exact (continuous_of_atlasSmooth ht.1).measurable.indicator hYo.measurableSet
+      exact (ReciprocityTheory.AnForm.M.PLAux.smooth_continuous ht.1).measurable.indicator hYo.measurableSet
     obtain ⟨-, hint, hlim⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Giv.mixed_integral_tendsto_of_C2_off_divisor n M.Xc M.atlas R Θ hΘ hΘp Pp f fT G GT C hP hf hfT hconv
       hmeas hGc
     refine ⟨_, hlim.congr' ?_⟩
@@ -1378,16 +1374,3 @@ end -- clump:auto
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.CommonZeroEvaluation.AbelianCmStokesIdentity =====
-
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionFinalEstimate =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionFinalEstimate", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.HasBaseDegreeSettingStrict\npublic import Development.AutomorphicSpectrum.Statements.GeometryStatements.NineGeoU\npublic import Development.WeilBound.CoreStatements.CommonZeroEvaluation.AbelianCmStokesIdentity\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open AlgebraicGeometry CategoryTheory Limits MonoidalCategory CartesianMonoidalCategory MonObj NumberField Matrix Filter Topology
-open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.Geo.Tor ReciprocityTheory.ChartRestriction.G.Semi
-open GroundTheory.Heights₂.Heights.LowerBoundFree GlobalTheory.CompanionTheory.Ar GlobalTheory.CompanionTheory.Ar.Cusp MeasureTheory
-
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.GeometryProofs.IntersectionFinalEstimate =====

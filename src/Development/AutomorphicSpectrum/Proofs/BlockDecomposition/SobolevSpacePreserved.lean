@@ -742,9 +742,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.PresSobA.RwCauchy
 
-theorem val_mem_GLs {n : ℕ} (y : G n) : y.val ∈ GLs n :=
-  (Matrix.isUnits_det_units y).ne_zero
-
 theorem Rw_sub_on {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V] {a b : Mat n → V}
     (ha : ContDiffOn ℝ ∞ a (GLs n)) (hb : ContDiffOn ℝ ∞ b (GLs n))
     (w : List (Bool × Fin n × Fin n)) :
@@ -785,7 +782,7 @@ theorem uniformCauchy : SobG → ∀ (n : ℕ) [MeasurableSpace (G n)] [BorelSpa
       refine cls_of_ae μ ?_
       filter_upwards [Lp.coeFn_sub (cls μ (Rw (w' ++ w) (g k))) (cls μ (Rw (w' ++ w) (g l))),
         coe_cls μ (hm k (w' ++ w)), coe_cls μ (hm l (w' ++ w))] with y h1 h2 h3
-      rw [h1, Pi.sub_apply, h2, h3, key w' _ (val_mem_GLs y)]
+      rw [h1, Pi.sub_apply, h2, h3, key w' _ (GlobalTheory.CompanionTheory.PresSobA.IntForm.val_mem_GLs y)]
     have := hsup V (Rw w (g k) - Rw w (g l)) (sk.sub sl) (fun w' => (hcl w').1) z hz
     simp only [hcl] at this
     exact this

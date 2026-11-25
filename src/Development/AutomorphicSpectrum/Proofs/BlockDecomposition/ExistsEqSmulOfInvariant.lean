@@ -151,9 +151,6 @@ theorem mx_facts (D : D7) (a b : ℕ) : LocallyCompactSpace (Mx D a b) ∧ Secon
     inferInstanceAs (T2Space (Fin a → Fin b → AE D)),
     inferInstanceAs (IsTopologicalAddGroup (Fin a → Fin b → AE D)), ⟨rfl⟩⟩
 
-theorem mt_one (V : HSp D) : Formalism.L2.Theta.mt V 1 = 1 := by
-  simp [Formalism.L2.Theta.mt, map_one]
-
 theorem smul_sub_one_mul {R : Type*} [CommRing R] {n : ℕ} (e : R) (A B : Matrix (Fin n) (Fin n) R)
     (hA : e • (A - 1) = A - 1) (hB : e • (B - 1) = B - 1) : e • (A * B - 1) = A * B - 1 := by
   have h : A * B - 1 = (A - 1) * B + (B - 1) := by
@@ -175,11 +172,11 @@ def gS (V : HSp D) (e : AE D) : Subgroup (GA D V) where
     exact smul_sub_one_mul e _ _ hg hh
   one_mem' := by
     change e • (Formalism.L2.Theta.mt V 1 - 1) = Formalism.L2.Theta.mt V 1 - 1
-    rw [mt_one, sub_self, smul_zero]
+    rw [GlobalTheory.BesselCompare.mt_one, sub_self, smul_zero]
   inv_mem' := by
     intro h hh
     change e • (Formalism.L2.Theta.mt V h⁻¹ - 1) = Formalism.L2.Theta.mt V h⁻¹ - 1
-    exact smul_sub_one_inv e (Formalism.L2.Theta.mt V h) _ (by rw [← GlobalTheory.BesselCompare.mt_mul, inv_mul_cancel, mt_one]) hh
+    exact smul_sub_one_inv e (Formalism.L2.Theta.mt V h) _ (by rw [← GlobalTheory.BesselCompare.mt_mul, inv_mul_cancel, GlobalTheory.BesselCompare.mt_one]) hh
 
 theorem isClosed_gS (V : HSp D) (e : AE D) : IsClosed (gS V e : Set (GA D V)) := by
   obtain ⟨h1, h2, h3, h4, h5⟩ := mx_facts D V.rank V.rank

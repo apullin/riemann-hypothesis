@@ -19,7 +19,7 @@ public import Development.AutomorphicSpectrum.Definitions.GlobalGeometry.EigLat
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.IsCompletedStrictHens
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.LieOmegaLatticeVectorBundle
-public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalCptIffNormalScheme
+public import Development.WeilBound.CoreStatements.HodgeTatePoints.MfBase
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.NormalIsoOfIntegrallyClosed
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.PrimitiveRootHodgeCpt
 public import Development.AutomorphicSpectrum.Proofs.GeometryProofs.SegreRefineLineBundles
@@ -283,9 +283,9 @@ theorem omP_pull [CharZero Ω] (hW : Out.WeilSt) {K' : Type} [Fintype K'] {J' : 
   have := ((_root_.GlobalTheory.CompanionTheory.Ar.CoordNoeth.noetherian_of_coordTie _ Ω 𝔐.ξ ℤ _ _ 𝔐.tie).2 𝔐.all).1
   have := ((_root_.GlobalTheory.CompanionTheory.Ar.CoordNoeth.noetherian_of_coordTie _ Ω A.ξ ℤ _ _ A.tie).2 A.all).1
   rw [hR] at he'
-  have key := (_root_.GlobalTheory.CompanionTheory.Ar.HtPull.main 𝔐.X Ω 𝔐.ξ 𝔐.tie.gen ((_root_.GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal _ Ω 𝔐.ξ 𝔐.tie.gen 𝔐.all).2.2 𝔐.normal) 𝔐.t.G 𝔐.t.semi
+  have key := (_root_.GlobalTheory.CompanionTheory.Ar.HtPull.main 𝔐.X Ω 𝔐.ξ 𝔐.tie.gen ((PositivityTheory.HtPt.Mf.xr_normal _ Ω 𝔐.ξ 𝔐.tie.gen 𝔐.all).2.2 𝔐.normal) 𝔐.t.G 𝔐.t.semi
     𝔐.t.PP.L _ (Nat.one_le_iff_ne_zero.2 hn) (𝔐.tors p hp) e he 𝔐.Li 𝔐.M A.X Ω A.ξ A.tie.gen
-    ((_root_.GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal _ Ω A.ξ A.tie.gen A.all).2.2 A.normal) g (RingHom.id Ω) hd A.t.G m.φ m.cart A.t.PP.L e' he' A.Li
+    ((PositivityTheory.HtPt.Mf.xr_normal _ Ω A.ξ A.tie.gen A.all).2.2 A.normal) g (RingHom.id Ω) hd A.t.G m.φ m.cart A.t.PP.L e' he' A.Li
     A.M φ.toLinearMap.toAddMonoidHom φ.symm.dualMap.toLinearMap.toAddMonoidHom hφ (fun w v => by simp)).1
   have h2 := isVBOn_pull hd φ.symm.dualMap.toLinearMap φ.symm.dualMap.injective
     (T := {q | InFibre 𝔐.ξ p q}) (T' := {q | InFibre A.ξ p q}) (fun q hq (hu : unitAt _ _ _) => hq ⟨hu.1, LatModel.dominates_regAt hd q _ hu.2.1,
@@ -317,7 +317,7 @@ theorem exists_flag_model : Out.WeilSt → ∀ (E : Type) [Field E] [NumberField
       exact ⟨c₀, h0, fun c' => LatModel.dominates_regAt hd p _ (h1 c')⟩) (fun a => a.elim)
   obtain ⟨A, e, j₁, m, he, hf, hm, hcst, hR, hext, hpt, hHT', hV⟩ := _root_.GlobalTheory.CompanionTheory.Ar.HcptPull.hodgeCpt_pull E H D l Xo c _ _ Y S Ω Ω
     (RingHom.id Ω) K K₁ J J₁ y y₁ 𝔐 y₀ M'.X M'.ξ f hy hS (fun p hp => (hHT p hp).2) M'.all htie
-    ((_root_.GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal _ Ω M'.ξ M'.tie.gen M'.all).2.1 hN) hd
+    ((PositivityTheory.HtPt.Mf.xr_normal _ Ω M'.ξ M'.tie.gen M'.all).2.1 hN) hd
   have hd' : GlobalTheory.CompanionTheory.Ar.Dominates A.ξ 𝔐.ξ (e.hom ≫ f) (RingHom.id Ω) :=
     dom_iff.2 (by rw [← Category.assoc, he, dom_iff.1 hd])
   obtain ⟨-, hsurj, hlat'⟩ := _root_.GlobalTheory.CompanionTheory.Ar.LiePull.main 𝔐.X A.X Ω Ω 𝔐.ξ A.ξ (e.hom ≫ f) (RingHom.id Ω) 𝔐.t.G A.t.G m.φ 𝔐.Li A.Li
@@ -387,7 +387,7 @@ theorem exists_flag_model : Out.WeilSt → ∀ (E : Type) [Field E] [NumberField
   · show (A.M.pt (j₁ (b s i))).left ≫ A.m.φ = _
     rw [hm, ← Category.assoc, hpt, Category.assoc]
   · refine isoAt_comp e he (_root_.GlobalTheory.CompanionTheory.Ar.NormAt.isoAt_of_integrallyClosed _ Ω 𝔐.ξ _ M'.ξ f q (hnorm q (fun a => a.elim) ?_)
-      ((_root_.GlobalTheory.CompanionTheory.Ar.XR.component_whole_isIntegral_and_normal _ Ω 𝔐.ξ 𝔐.tie.gen 𝔐.all).2.2 𝔐.normal q))
+      ((PositivityTheory.HtPt.Mf.xr_normal _ Ω 𝔐.ξ 𝔐.tie.gen 𝔐.all).2.2 𝔐.normal q))
     rintro ⟨s, _ | _⟩ n
     exacts [(quot_free 𝔐 b hb q hq hfq s n).2, (quot_free 𝔐 b hb q hq hfq s n).1]
 

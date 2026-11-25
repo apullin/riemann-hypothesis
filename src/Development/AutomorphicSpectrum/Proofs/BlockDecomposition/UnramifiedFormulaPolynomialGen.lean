@@ -25,10 +25,6 @@ open PositivityTheory.PfSWUS.Loc
 
 variable {R : Type} [CommRing R]
 
-theorem cT_mul (σ : R →+* R) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
-    cT σ (x * y) = cT σ y * cT σ x := by
-  simp [cT, Matrix.map_mul, Matrix.transpose_mul]
-
 theorem cT_add (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     cT σ (x + y) = cT σ x + cT σ y := by
   ext i j; simp [cT]
@@ -106,7 +102,7 @@ theorem gr_congr {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) (k : ℕ) {m n : �
 
 theorem gr_mul (σ : R →+* R) {m n : ℕ} (S : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R)
     (g : Matrix (Fin n) (Fin n) R) : gr σ S (x * g) = cT σ g * gr σ S x * g := by
-  simp only [gr, cT_mul, Matrix.mul_assoc]
+  simp only [gr, GlobalTheory.CompanionTheory.SiegCov.cT_mul, Matrix.mul_assoc]
 
 def sol (σ : R →+* R) (ϖ : R) {m n : ℕ} (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R) (k : ℕ) :
     Set (Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) :=
@@ -134,7 +130,7 @@ theorem solCount_congr {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) {m n : ℕ} 
       · have hx' : red ϖ k (gr σ S x) = red ϖ k (cT σ g * T * g) := hx
         show red ϖ k (gr σ S (x * h)) = red ϖ k T
         rw [gr_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul, hx', GlobalTheory.CompanionTheory.SiegCov.red_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul]
-        rw [cT_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul] at hc
+        rw [GlobalTheory.CompanionTheory.SiegCov.cT_mul, GlobalTheory.CompanionTheory.SiegCov.red_mul] at hc
         rw [GlobalTheory.CompanionTheory.SiegCov.red_mul] at hgh
         calc red ϖ k (cT σ h) * (red ϖ k (cT σ g) * red ϖ k T * red ϖ k g) * red ϖ k h
             = (red ϖ k (cT σ h) * red ϖ k (cT σ g)) * red ϖ k T * (red ϖ k g * red ϖ k h) := by
@@ -167,7 +163,7 @@ theorem twist {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) {n : ℕ} {T T' H : M
   refine ⟨_, h, hgh, hhg, ?_⟩
   have hs : σ t = 1 - t := by rw [← ht]; ring
   have hcg : cT σ (1 + ϖ • (ϖ ^ b * t) • (T' * H)) = 1 + (ϖ ^ (b + 1) * (1 - t)) • (H * cT σ T') := by
-    rw [cT_add, GlobalTheory.CompanionTheory.SiegCov.cT_one, cT_smul, cT_smul, cT_mul, hH, hσ, map_mul, map_pow, hσ, hs, smul_smul, pow_succ]
+    rw [cT_add, GlobalTheory.CompanionTheory.SiegCov.cT_one, cT_smul, cT_smul, GlobalTheory.CompanionTheory.SiegCov.cT_mul, hH, hσ, map_mul, map_pow, hσ, hs, smul_smul, pow_succ]
     congr 2
     ring
   have e1 : (1 + (ϖ ^ (b + 1) * (1 - t)) • (H * cT σ T')) * T
@@ -282,7 +278,7 @@ theorem mem_sol {σ : R →+* R} {ϖ : R} (hσ : σ ϖ = ϖ) {m n : ℕ} (S : Ma
 theorem gr_herm {σ : R →+* R} (hinv : ∀ a, σ (σ a) = a) {m n : ℕ} {S : Matrix (Fin m) (Fin m) R}
     (hS : cT σ S = S) (x : Matrix (Fin m) (Fin n) R) : cT σ (gr σ S x) = gr σ S x := by
   have : cT σ (cT σ x) = x := by ext i j; simp [cT, hinv]
-  rw [gr, cT_mul, cT_mul, this, hS, Matrix.mul_assoc]
+  rw [gr, GlobalTheory.CompanionTheory.SiegCov.cT_mul, GlobalTheory.CompanionTheory.SiegCov.cT_mul, this, hS, Matrix.mul_assoc]
 
 theorem dens_step {σ : R →+* R} {ϖ : R} (hfin : ∀ k, Finite (R ⧸ lev ϖ k)) (hinv : ∀ a, σ (σ a) = a)
     (hσ : σ ϖ = ϖ) {m n : ℕ} (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R) (k : ℕ)
@@ -361,26 +357,6 @@ namespace GlobalTheory.CompanionTheory.SiegLoc.HermOrth
 
 variable {R : Type} [CommRing R]
 
-theorem red_add' (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
-    red ϖ k (x + y) = red ϖ k x + red ϖ k y := by
-  ext i j
-  simp [red]
-
-theorem red_neg' (ϖ : R) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
-    red ϖ k (-x) = -red ϖ k x := by
-  ext i j
-  simp [red]
-
-theorem cT_add' (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
-    cT σ (x + y) = cT σ x + cT σ y := by
-  ext i j
-  simp [cT]
-
-theorem cT_neg' (σ : R →+* R) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
-    cT σ (-x) = -cT σ x := by
-  ext i j
-  simp [cT]
-
 theorem cT_single' (σ : R →+* R) {n : ℕ} (i j : Fin n) (c : R) :
     cT σ (Matrix.single i j c) = Matrix.single j i (σ c) := by
   simp only [PositivityTheory.PfSWUS.Loc.cT, Matrix.map_single, Matrix.transpose_single]
@@ -425,9 +401,9 @@ theorem hermMod_add {σ : R →+* R} {ϖ : R} {n k : ℕ}
   obtain ⟨b', hb', rfl⟩ := hb
   have ha'' : PositivityTheory.PfSWUS.Loc.cT σ a' = a' := ha'
   have hb'' : PositivityTheory.PfSWUS.Loc.cT σ b' = b' := hb'
-  refine ⟨a' + b', ?_, GlobalTheory.CompanionTheory.SiegLoc.HermOrth.red_add' _ _ _ _⟩
+  refine ⟨a' + b', ?_, GlobalTheory.CompanionTheory.LocalDens.red_add _ _ _ _⟩
   show PositivityTheory.PfSWUS.Loc.cT σ (a' + b') = a' + b'
-  rw [GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_add', ha'', hb'']
+  rw [GlobalTheory.CompanionTheory.LocalDens.cT_add, ha'', hb'']
 
 theorem hermMod_neg {σ : R →+* R} {ϖ : R} {n k : ℕ}
     (a : Matrix (Fin n) (Fin n) (R ⧸ lev ϖ k)) (ha : a ∈ hermMod σ ϖ n k) :
@@ -435,9 +411,9 @@ theorem hermMod_neg {σ : R →+* R} {ϖ : R} {n k : ℕ}
   unfold PositivityTheory.PfSWUS.Loc.hermMod at ha ⊢
   obtain ⟨a', ha', rfl⟩ := ha
   have ha'' : PositivityTheory.PfSWUS.Loc.cT σ a' = a' := ha'
-  refine ⟨-a', ?_, GlobalTheory.CompanionTheory.SiegLoc.HermOrth.red_neg' _ _ _⟩
+  refine ⟨-a', ?_, GlobalTheory.CompanionTheory.LocalDens.red_neg _ _ _⟩
   show PositivityTheory.PfSWUS.Loc.cT σ (-a') = -a'
-  rw [GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_neg', ha'']
+  rw [GlobalTheory.CompanionTheory.LocalDens.cT_neg, ha'']
 
 theorem red_eq_zero_of_trivial {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ}
     {ψ : ∀ k, AddChar (R ⧸ lev ϖ k) ℂ} (hR : IsUnrQuad R σ ϖ q ε) (hψ : IsLevelChars σ ϖ ψ)
@@ -456,7 +432,7 @@ theorem red_eq_zero_of_trivial {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ}
     simpa [PositivityTheory.PfSWUS.Loc.cT] using hentry
   have hb : PositivityTheory.PfSWUS.Loc.cT σ (Matrix.single j i t + Matrix.single i j (σ t)) =
       Matrix.single j i t + Matrix.single i j (σ t) := by
-    rw [GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_add', GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_single', GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_single',
+    rw [GlobalTheory.CompanionTheory.LocalDens.cT_add, GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_single', GlobalTheory.CompanionTheory.SiegLoc.HermOrth.cT_single',
       hσσ, add_comm]
   have htr := h _ hb
   rw [Matrix.add_mul, Matrix.trace_add, GlobalTheory.CompanionTheory.SiegLoc.HermOrth.trace_single_mul',
@@ -507,11 +483,6 @@ namespace GlobalTheory.CompanionTheory.SiegLoc.LevelId
 
 variable {R : Type} [CommRing R]
 
-theorem cT_mul (σ : R →+* R) {a b c : ℕ} (x : Matrix (Fin a) (Fin b) R) (y : Matrix (Fin b) (Fin c) R) :
-    cT σ (x * y) = cT σ y * cT σ x := by
-  unfold cT
-  rw [Matrix.map_mul, Matrix.transpose_mul]
-
 theorem cT_sub (σ : R →+* R) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) :
     cT σ (x - y) = cT σ x - cT σ y := by
   ext i j
@@ -521,18 +492,6 @@ theorem red_sub (ϖ : R) (k : ℕ) {a b : ℕ} (x y : Matrix (Fin a) (Fin b) R) 
     red ϖ k (x - y) = red ϖ k x - red ϖ k y := by
   ext i j
   exact map_sub (Ideal.Quotient.mk (lev ϖ k)) (x i j) (y i j)
-
-theorem red_neg (ϖ : R) (k : ℕ) {a b : ℕ} (x : Matrix (Fin a) (Fin b) R) :
-    red ϖ k (-x) = - red ϖ k x := by
-  ext i j
-  exact map_neg (Ideal.Quotient.mk (lev ϖ k)) (x i j)
-
-theorem red_surj (ϖ : R) (k : ℕ) {a b : ℕ} :
-    Function.Surjective (red ϖ k : Matrix (Fin a) (Fin b) R → _) := by
-  intro y
-  refine ⟨Matrix.of fun i j => (Ideal.Quotient.mk_surjective (y i j)).choose, ?_⟩
-  ext i j
-  exact (Ideal.Quotient.mk_surjective (y i j)).choose_spec
 
 theorem red_gram (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : ℕ}
     (S : Matrix (Fin m) (Fin m) R) (x : Matrix (Fin m) (Fin n) R) :
@@ -550,7 +509,7 @@ theorem image_sol (σ : R →+* R) (ϖ : R) (h : σ ϖ = ϖ) (k : ℕ) {m n : �
     rw [← red_gram σ ϖ h]
     exact hx
   · intro hy
-    obtain ⟨x, rfl⟩ := red_surj ϖ k y
+    obtain ⟨x, rfl⟩ := GlobalTheory.CompanionTheory.LocalDens.red_surj ϖ k y
     refine ⟨x, ?_, rfl⟩
     show red ϖ k (cT σ x * S * x) = red ϖ k T
     rw [red_gram σ ϖ h]
@@ -560,11 +519,11 @@ theorem gram_sub_mem (σ : R →+* R) (ϖ : R) (hinv : ∀ a, σ (σ a) = a) (h 
     (S : Matrix (Fin m) (Fin m) R) (T : Matrix (Fin n) (Fin n) R) (hS : cT σ S = S) (hT : cT σ T = T)
     (y : Matrix (Fin m) (Fin n) (R ⧸ lev ϖ k)) :
     cT (barσ σ ϖ h k) y * red ϖ k S * y - red ϖ k T ∈ hermMod σ ϖ n k := by
-  obtain ⟨x, rfl⟩ := red_surj ϖ k y
+  obtain ⟨x, rfl⟩ := GlobalTheory.CompanionTheory.LocalDens.red_surj ϖ k y
   unfold hermMod
   refine ⟨cT σ x * S * x - T, ?_, ?_⟩
   · show cT σ (cT σ x * S * x - T) = cT σ x * S * x - T
-    rw [cT_sub, cT_mul, cT_mul, GlobalTheory.CompanionTheory.SiegCov.cT_cT σ hinv, hS, hT, Matrix.mul_assoc]
+    rw [cT_sub, GlobalTheory.CompanionTheory.SiegCov.cT_mul, GlobalTheory.CompanionTheory.SiegCov.cT_mul, GlobalTheory.CompanionTheory.SiegCov.cT_cT σ hinv, hS, hT, Matrix.mul_assoc]
   · show red ϖ k (cT σ x * S * x - T) = _
     rw [red_sub, red_gram σ ϖ h]
 
@@ -572,7 +531,7 @@ theorem neg_mem_herm (σ : R →+* R) (ϖ : R) (n k : ℕ) {B : Matrix (Fin n) (
     (hB : B ∈ hermMod σ ϖ n k) : -B ∈ hermMod σ ϖ n k := by
   unfold hermMod at hB ⊢
   obtain ⟨h0, hh, rfl⟩ := hB
-  refine ⟨-h0, ?_, red_neg ϖ k h0⟩
+  refine ⟨-h0, ?_, GlobalTheory.CompanionTheory.LocalDens.red_neg ϖ k h0⟩
   show cT σ (-h0) = -h0
   have hh' : cT σ h0 = h0 := hh
   ext i j
@@ -715,7 +674,7 @@ theorem densAt_succ {σ : R →+* R} {ϖ : R} {q : ℕ} {ε : ℤ} (hU : IsUnrQu
     rw [Matrix.mul_smul, Matrix.mul_adjugate, smul_smul, hc]
   have h2 : cT σ (c • T.adjugate) * T = ϖ ^ 0 • (1 : Matrix (Fin n) (Fin n) R) := by
     have := congrArg (cT σ) h1
-    rw [cT_mul, hTc, cT_smul σ (ϖ ^ 0), GlobalTheory.CompanionTheory.SiegCov.cT_one, map_pow, hσ] at this
+    rw [GlobalTheory.CompanionTheory.SiegCov.cT_mul, hTc, cT_smul σ (ϖ ^ 0), GlobalTheory.CompanionTheory.SiegCov.cT_one, map_pow, hσ] at this
     exact this
   obtain ⟨t, ht⟩ : ∃ t, t + σ t = 1 := by
     obtain ⟨u, hu, -⟩ := hU.basis

@@ -607,7 +607,7 @@ theorem hhTestBound_hhFl : GroundTheory.Heights₂.Heights.LowerBoundFree.Grassm
       [Nonempty Ψ] (j : ℕ), 1 ≤ j → j < N → HhTestBound j (hhFl Ψ N II) := by
   intro hZ2 _ II hII Ψ _ _ N _ j hj hjN
   have hN : 2 ≤ N := by omega
-  obtain ⟨hT, hdeg, -, -⟩ := _root_.GlobalTheory.CompanionTheory.Ar.Top.testPoly_facts Ψ N j hj hjN
+  obtain ⟨hT, hdeg, -, -⟩ := RootFieldNumerics.test_polynomial_shift_values Ψ N j hj hjN
   have hA : IsArithVar (GroundTheory.Heights₂.Heights.LowerBoundFree.PFl Ψ N) (dimFl Ψ N + 1) := by
     have := (_root_.PositivityTheory.Xgp.t_fl_arith Ψ N hN).1
     rwa [GroundTheory.Heights₂.Heights.antisymDegree, Nat.choose_two_right] at this

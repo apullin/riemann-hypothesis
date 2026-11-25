@@ -370,8 +370,6 @@ end GlobalTheory.CompanionTheory.Ar.OrVert
 namespace GlobalTheory.CompanionTheory.Ar.OrVert
 open _root_.GlobalTheory.CompanionTheory.Ar.Top HodgeCpt
 
-alias spMap_comp' := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
-
 theorem dualMap_comp' {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (a : A →+* B) (b : B →+* C) :
     dualMap (b.comp a) = (dualMap b).comp (dualMap a) := by
   ext x <;> simp [dualMap]
@@ -396,14 +394,14 @@ theorem core (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D 
   obtain ⟨q, hqc, hq⟩ := _root_.GlobalTheory.CompanionTheory.Ar.OrVert.exists_domBy_chart M.K M.ι M.Ω M.Ω M.y o.𝔐.X o.𝔐.ξ o.𝔐.all o.𝔐.tie (RingHom.id _) W cM h1 h3
   obtain ⟨q₀, hqc₀, hq₀⟩ := _root_.GlobalTheory.CompanionTheory.Ar.OrVert.exists_domBy_chart R.K R.ι R.Ω M.Ω R.y o₀.𝔐.X o₀.𝔐.ξ o₀.𝔐.all o₀.𝔐.tie i W cR h2 h4
   have hξ : o.𝔐.ξ ≫ o.𝔐.f = spMap i ≫ o₀.𝔐.ξ ≫ o₀.𝔐.f := by
-    rw [o.g_over, o₀.g_over, ← hi, spMap_comp', Category.assoc]
+    rw [o.g_over, o₀.g_over, ← hi, ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc]
   have hy := _root_.GlobalTheory.CompanionTheory.Ar.OrVert.image_eq_of_domBy E H D l Xo c Y S ∅ M.Ω R.Ω M.K R.K M.ι R.ι M.y R.y o.𝔐 o₀.𝔐 i hξ W q q₀ hq hq₀
   obtain ⟨ι, hext, hspan, hpt, hW⟩ :=
     _root_.GlobalTheory.CompanionTheory.Ar.OrVert.LieCmp.lie_cmp E H D l Xo c Y S ∅ M.Ω R.Ω M.K R.K M.ι R.ι M.y R.y o.𝔐 o₀.𝔐 o₀.Fl i hξ
   have hsl := hext.1
   have hspanW := hW W.toSubring q q₀ hq.1 hq₀.1 hy
   have hFl : ∀ s j, o.Fl.b s j = ι (o₀.Fl.b s j) := fun s j => (hpt _ _).1 (by
-    rw [o.g_flag, o₀.g_flag, ← hi, dualMap_comp', spMap_comp', Category.assoc])
+    rw [o.g_flag, o₀.g_flag, ← hi, dualMap_comp', ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp, Category.assoc])
   have hWq : ∀ a ∈ regAt o.𝔐.ξ q, a ∈ W := hq.1
   obtain ⟨κ, hκ1, hκW, hκV⟩ : ∃ κ : M.Ω, (κ = 1 ∨ ∃ p ∈ S, HT.IsCp p κ) ∧ κ ∈ W ∧
       ∀ s, ∀ e ∈ o.𝔐.V s q, ((Dn : M.Ω) * κ) • e ∈ o.𝔐.M.lat q := by

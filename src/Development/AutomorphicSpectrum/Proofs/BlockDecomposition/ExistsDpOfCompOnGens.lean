@@ -53,31 +53,6 @@ open DividedPowers GlobalTheory.Cris GlobalTheory.PDA PositivityTheory.JLift
 
 namespace GlobalTheory.CompanionTheory.JLiftDP
 
-section Comp
-
-open MvPolynomial Finset
-
-def dpBas2 (p : ℕ × ℕ) : MvPolynomial (Fin 2) ℚ :=
-  ((p.1.factorial : ℚ)⁻¹ • X 0 ^ p.1) * ((p.2.factorial : ℚ)⁻¹ • X 1 ^ p.2)
-
-theorem preDP_eval_zero {B : Type} [CommRing B] {J : Ideal B} {γ : ℕ → B → B} (h : IsPreDP J γ)
-    {n : ℕ} (hn : n ≠ 0) : γ n 0 = 0 :=
-  h.eval_zero hn
-
-theorem preDP_comp_add {B : Type} [CommRing B] {J : Ideal B} {γ : ℕ → B → B} (h : IsPreDP J γ)
-    {x y : B} (hx : x ∈ J) (hy : y ∈ J)
-    (Px : ∀ m n : ℕ, n ≠ 0 → γ m (γ n x) = (m.uniformBell n : B) * γ (m * n) x)
-    (Py : ∀ m n : ℕ, n ≠ 0 → γ m (γ n y) = (m.uniformBell n : B) * γ (m * n) y)
-    (m n : ℕ) (hn : n ≠ 0) : γ m (γ n (x + y)) = (m.uniformBell n : B) * γ (m * n) (x + y) :=
-  h.comp_add hx hy Px Py m n hn
-
-theorem exists_dp_of_comp_on_gens :
-    ∀ (B : Type) [CommRing B] (J : Ideal B) (γ : ℕ → B → B) (s : Set B), IsPreDP J γ → J = Ideal.span s →
-      (∀ x ∈ s, ∀ m n : ℕ, n ≠ 0 → γ m (γ n x) = (m.uniformBell n : B) * γ (m * n) x) →
-      ∃ δ : DividedPowers J, δ.dpow = γ :=
-  GlobalTheory.PDA.exists_dividedPowers_of_comp_on_gens
-
-end Comp
 
 section Flat
 
@@ -138,11 +113,6 @@ theorem expS_sum_left {K : Type} (s : Finset K) (f : K → R) (hf : ∀ k ∈ s,
         (Ideal.sum_mem _ fun j hj ↦ hf j (Finset.mem_insert_of_mem hj)),
       ih fun j hj ↦ hf j (Finset.mem_insert_of_mem hj)]
 
-theorem prod_expS_eq_one [Module.Flat R A] (c : I →₀ A)
-    (hc : (c.sum fun i a ↦ a * algebraMap R A i) = 0) :
-    (c.prod fun i a ↦ PowerSeries.mk fun n ↦ a ^ n * algebraMap R A (κ.dpow n i)) = 1 := by
-  apply GlobalTheory.DPFlat.prod_expS_eq_one <;> assumption
-
 theorem dpFlat : DPFlat := by
   intro R A _ _ _ _ I κ
   let x : I → A := fun i ↦ algebraMap R A i
@@ -152,9 +122,9 @@ theorem dpFlat : DPFlat := by
     (fun i ↦ by simp [κ.dpow_zero i.2]) (fun i ↦ by simp [x, κ.dpow_one i.2])
     (fun i n hn ↦ Ideal.subset_span ⟨⟨κ.dpow n i, κ.dpow_mem hn i.2⟩, rfl⟩)
     (fun i m n ↦ by rw [← map_mul, κ.mul_dpow i.2, map_mul, map_natCast])
-    (prod_expS_eq_one κ)
+    (GlobalTheory.DPFlat.prod_expS_eq_one κ)
   rw [hspan] at hγ
-  obtain ⟨δ, hδ⟩ := exists_dp_of_comp_on_gens A _ γ (Set.range x) hγ hspan.symm (by
+  obtain ⟨δ, hδ⟩ := GlobalTheory.PDA.exists_dividedPowers_of_comp_on_gens A _ γ (Set.range x) hγ hspan.symm (by
     rintro _ ⟨i, rfl⟩ m n hn
     rw [hγx, show algebraMap R A (κ.dpow n i) = x ⟨κ.dpow n i, κ.dpow_mem hn i.2⟩ from rfl, hγx]
     simp only [κ.dpow_comp hn i.2, map_mul, map_natCast]

@@ -202,10 +202,6 @@ variable {W B : Type} [CommRing W] [CommRing B] [Algebra ℚ B] (f : W →+* B) 
 def T (r : ℕ) : AddSubgroup B :=
   AddSubgroup.closure {b | ∃ (w : W) (i : ℕ), r ≤ i ∧ b = f w * Lat.dpE f ξ l M i}
 
-theorem dpE_eq (i : ℕ) : Lat.dpE f ξ l M i =
-    (((i.factorial : ℚ))⁻¹ * (((l : ℚ) ^ M)⁻¹) ^ i) • f ξ ^ i := by
-  simp only [Lat.dpE, Lat.η, smul_pow, smul_smul]
-
 theorem mul_dpE (hl : l ≠ 0) (r : ℕ) : f ξ * Lat.dpE f ξ l M r =
     f ((l : W) ^ M * ((r + 1 : ℕ) : W)) * Lat.dpE f ξ l M (r + 1) := by
   have hl' : (l : ℚ) ≠ 0 := Nat.cast_ne_zero.2 hl
@@ -220,7 +216,7 @@ theorem mul_dpE (hl : l ≠ 0) (r : ℕ) : f ξ * Lat.dpE f ξ l M r =
     field_simp
     rw [pow_succ]
     linear_combination (-(u ^ r)) * hu
-  rw [dpE_eq, dpE_eq, key, Algebra.smul_def, Algebra.smul_def, map_mul, map_natCast]
+  rw [GlobalTheory.CompanionTheory.LatFG.dpE_eq, GlobalTheory.CompanionTheory.LatFG.dpE_eq, key, Algebra.smul_def, Algebra.smul_def, map_mul, map_natCast]
   simp only [map_mul, map_pow, map_natCast]
   push_cast
   ring
@@ -263,17 +259,15 @@ theorem xi_mul_mem (hl : l ≠ 0) (r : ℕ) (e : W) :
 
 variable {f ξ l M}
 
-theorem l_ne_zero {m : ℕ} (h : Lat.Hyp f ξ l m) : l ≠ 0 := fun h0 => h.l0 (by simp [h0])
-
 theorem dvd_of_mem {m r : ℕ} (h : Lat.Hyp f ξ l m) (hr : r < m) {c : W}
     (hc : f c * Lat.dpE f ξ l M r ∈ Ideal.span {f ξ ^ (r + 1)}) : ξ ∣ c := by
-  have hl : (l : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (l_ne_zero h)
+  have hl : (l : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (GlobalTheory.CompanionTheory.LatFG.l_ne h)
   obtain ⟨b, hb⟩ := Ideal.mem_span_singleton.1 hc
   set s : ℚ := ((r.factorial : ℚ))⁻¹ * (((l : ℚ) ^ M)⁻¹) ^ r with hs
   have hs0 : s ≠ 0 := by
     have : ((r.factorial : ℕ) : ℚ) ≠ 0 := Nat.cast_ne_zero.2 (Nat.factorial_ne_zero r)
     rw [hs]; positivity
-  rw [dpE_eq, ← hs] at hb
+  rw [GlobalTheory.CompanionTheory.LatFG.dpE_eq, ← hs] at hb
   refine h.gr r hr c (s⁻¹ • b) ?_
   have : s⁻¹ • (f c * s • f ξ ^ r) = s⁻¹ • (f ξ ^ (r + 1) * b) := by rw [hb]
   rwa [mul_smul_comm, smul_smul, inv_mul_cancel₀ hs0, one_smul, ← mul_smul_comm] at this
@@ -291,7 +285,7 @@ theorem T_of_span {m : ℕ} (h : Lat.Hyp f ξ l m) (r : ℕ) {b : B} (h0 : b ∈
         have := sub_mem hb (T_mem_span f ξ l M ht)
         rwa [add_sub_cancel_right] at this
       obtain ⟨e, rfl⟩ := dvd_of_mem h hrm hc
-      exact add_mem (xi_mul_mem f ξ l M (l_ne_zero h) r e) ht
+      exact add_mem (xi_mul_mem f ξ l M (GlobalTheory.CompanionTheory.LatFG.l_ne h) r e) ht
     · have hz : f ξ ^ (r + 1) = 0 := pow_eq_zero_of_le (by omega) h.nil
       rw [hz, Ideal.span_singleton_eq_bot.2 rfl, Ideal.mem_bot] at hb
       rw [hb]; exact zero_mem _
@@ -351,7 +345,7 @@ theorem closed_succ {m : ℕ} (h : Lat.Hyp f ξ l m) (hc : Lat.DPClosed (Lat.ι 
       exact ⟨Ideal.Quotient.mk _ d, by rw [heq, map_mul, map_pow, map_natCast]⟩
     obtain ⟨e, rfl⟩ := Ideal.mem_span_singleton.1 (Ideal.Quotient.eq_zero_iff_mem.1 hz)
     rw [E, Ideal.mem_comap, hcx]
-    exact T_mem_span f ξ l M (add_mem (xi_mul_mem f ξ l M (l_ne_zero h) r e) ht)
+    exact T_mem_span f ξ l M (add_mem (xi_mul_mem f ξ l M (GlobalTheory.CompanionTheory.LatFG.l_ne h) r e) ht)
   · have h0 : f ξ ^ r = 0 := pow_eq_zero_of_le (not_lt.1 hrm) h.nil
     rw [h0, Ideal.span_singleton_eq_bot.2 rfl, Ideal.mem_bot] at hxr'
     rw [E, Ideal.mem_comap, hxr']
@@ -599,12 +593,6 @@ def co (l M i : ℕ) : ℚ := ((i.factorial : ℚ))⁻¹ * (((l : ℚ) ^ M)⁻¹
 theorem dpE_eq (i : ℕ) : dpE f ξ l M i = co l M i • f ξ ^ i := by
   simp only [dpE, η, co, smul_pow, smul_smul]
 
-theorem co_ne {l : ℕ} (hl : l ≠ 0) (M i : ℕ) : co l M i ≠ 0 := by
-  have : (l : ℚ) ≠ 0 := by exact_mod_cast hl
-  have h2 : (i.factorial : ℚ) ≠ 0 := by exact_mod_cast i.factorial_ne_zero
-  unfold co
-  positivity
-
 theorem co_succ {l : ℕ} (hl : l ≠ 0) (M i : ℕ) :
     (((l ^ M * (i + 1) : ℕ) : ℚ)) * co l M (i + 1) = co l M i := by
   have h1 : (l : ℚ) ≠ 0 := by exact_mod_cast hl
@@ -662,21 +650,9 @@ theorem head (i : ℕ) {y : B} (hy : y ∈ S f ξ l M i) :
 
 variable {f ξ l}
 
-theorem l_ne {m : ℕ} (h : Hyp f ξ l m) : l ≠ 0 := by
-  rintro rfl
-  exact h.l0 Nat.cast_zero
-
-theorem dvd_of_mem {m : ℕ} (h : Hyp f ξ l m) {i : ℕ} (hi : i < m) {w : W}
-    (hw : f w * dpE f ξ l M i ∈ Ideal.span {f ξ ^ (i + 1)}) : ξ ∣ w := by
-  obtain ⟨b, hb⟩ := Ideal.mem_span_singleton'.1 hw
-  have hc := co_ne (l_ne h) M i
-  refine h.gr i hi w ((co l M i)⁻¹ • b) ?_
-  rw [dpE_eq, mul_smul_comm, mul_comm b] at hb
-  rw [mul_smul_comm, hb, smul_smul, inv_mul_cancel₀ hc, one_smul]
-
 theorem xi_mul {m : ℕ} (h : Hyp f ξ l m) (i : ℕ) :
     f ξ * dpE f ξ l M i = ((l ^ M * (i + 1) : ℕ) : B) * dpE f ξ l M (i + 1) := by
-  rw [dpE_eq, dpE_eq, mul_smul_comm, ← pow_succ', ← co_succ (l_ne h) M i, mul_smul,
+  rw [dpE_eq, dpE_eq, mul_smul_comm, ← pow_succ', ← co_succ (GlobalTheory.CompanionTheory.LatFG.l_ne h) M i, mul_smul,
     Nat.cast_smul_eq_nsmul ℚ, nsmul_eq_mul]
 
 theorem S_push {m : ℕ} (h : Hyp f ξ l m) {i : ℕ} (hi : i < m) {x : B} (hx : x ∈ S f ξ l M i)
@@ -685,7 +661,7 @@ theorem S_push {m : ℕ} (h : Hyp f ξ l m) {i : ℕ} (hi : i < m) {x : B} (hx :
   have h1 : f w * dpE f ξ l M i ∈ Ideal.span {f ξ ^ (i + 1)} := by
     have := Ideal.sub_mem _ hx' (S_le_span f ξ l M (i + 1) hw)
     rwa [sub_sub_cancel] at this
-  obtain ⟨d, rfl⟩ := dvd_of_mem M h hi h1
+  obtain ⟨d, rfl⟩ := GlobalTheory.CompanionTheory.LatFG.dvd_of_mem M h hi h1
   have h2 : f (ξ * d) * dpE f ξ l M i ∈ S f ξ l M (i + 1) := by
     refine AddSubgroup.subset_closure ⟨d * ((l ^ M * (i + 1) : ℕ) : W), i + 1, le_rfl, ?_⟩
     rw [map_mul, map_mul, map_natCast, mul_comm (f ξ), mul_assoc, xi_mul M h, mul_assoc]
@@ -722,7 +698,7 @@ theorem gA_succ {m : ℕ} (h : Hyp f ξ l m) {i : ℕ} (hi : i < m) (w : W) :
     gA f ξ l M i w ∈ F f ξ l M (i + 1) ↔ ξ ∣ w := by
   rw [mem_F, ι_gA]
   constructor
-  · exact dvd_of_mem M h hi
+  · exact GlobalTheory.CompanionTheory.LatFG.dvd_of_mem M h hi
   · rintro ⟨d, rfl⟩
     rw [map_mul, mul_comm (f ξ), mul_assoc, xi_mul M h]
     exact Ideal.mul_mem_left _ _ (Ideal.mul_mem_left _ _ (dpE_mem f ξ l M (i + 1)))

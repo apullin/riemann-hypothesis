@@ -349,7 +349,7 @@ theorem main : ∀ (O : Type) [CommRing O] [IsDomain O] [IsDiscreteValuationRing
     ⟨fun j i => b j i ∘ (Equiv.sumAssoc K K' K₁).symm, by
       funext j i k
       simp⟩
-  obtain ⟨-, f, g, hfp⟩ := _root_.GlobalTheory.CompanionTheory.Ar.FlagPairOfFrames.main O Ω _ _ (joinCoord (joinCoord x z) z₁)
+  obtain ⟨-, f, g, hfp⟩ := PositivityTheory.Xgn.t_flagpair_of_frames O Ω _ _ (joinCoord (joinCoord x z) z₁)
     ϖ hϖ d hM₁ N V (F 0) (F 1) hs₁ w w _ _ (hF 0).2 (hF 1).2 (fun i j hij => by
       simp [Finsupp.single_apply, hij.ne])
   have hσ := assocEquiv_fst ι ι' ι₁

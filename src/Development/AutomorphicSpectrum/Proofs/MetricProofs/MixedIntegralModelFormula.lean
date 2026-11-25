@@ -635,10 +635,6 @@ variable {e : ℕ} {X : Type} [TopologicalSpace X]
 def ReHolAt (A : FinHolAtlas e X) (f : X → ℝ) (y₀ : X) : Prop :=
   ∃ W : Set X, IsOpen W ∧ y₀ ∈ W ∧ ∃ G : X → ℂ, A.HoloOn W G ∧ ∀ z ∈ W, f z = (G z).re
 
-theorem holoOn_continuousOn {A : FinHolAtlas e X} {W : Set X} {f : X → ℂ} (h : A.HoloOn W f) :
-    ContinuousOn f W := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.Giv.SecPot.holoOn_continuousOn' <;> assumption
-
 theorem ReHolAt.congr {A : FinHolAtlas e X} {f g : X → ℝ} {y₀ : X} (hg : ReHolAt A g y₀)
     (h : f =ᶠ[𝓝 y₀] g) : ReHolAt A f y₀ := by
   obtain ⟨W, hW, hy, G, hG, hWG⟩ := hg
@@ -688,7 +684,7 @@ theorem reHolAt_log_norm {A : FinHolAtlas e X} {W : Set X} {f : X → ℂ} {y₀
     ReHolAt A (fun y => Real.log ‖f y‖) y₀ := by
   have hS : IsOpen {w : ℂ | w / f y₀ ∈ Complex.slitPlane} :=
     Complex.isOpen_slitPlane.preimage (continuous_id.div_const _)
-  have hW' := (holoOn_continuousOn hf).isOpen_inter_preimage hW hS
+  have hW' := (GlobalTheory.CompanionTheory.Ar.Giv.SecPot.holoOn_continuousOn' hf).isOpen_inter_preimage hW hS
   refine ⟨_, hW', ⟨hy, ?_⟩, fun z => Complex.log (f z / f y₀) + (Real.log ‖f y₀‖ : ℂ),
     fun j u hu => ?_, fun z hz => ?_⟩
   · show f y₀ / f y₀ ∈ Complex.slitPlane
@@ -733,7 +729,7 @@ theorem reHolAt_log_sections {M : CxModel P d} {U U' : Set M.Xc} {s s' : M.Xc �
       (reHolAt_log_norm hU (hs.2 _) hy (hi k))).const_mul _
   refine (ReHolAt.sum Finset.univ hR).congr ?_
   have hev : ∀ᶠ y in 𝓝 y₀, ∀ k, s y ⟨k, i k⟩ ≠ 0 := eventually_all.2 fun k =>
-    ((holoOn_continuousOn (hs.2 ⟨k, i k⟩)).continuousAt (hU.mem_nhds hy)).eventually_ne (hi k)
+    ((GlobalTheory.CompanionTheory.Ar.Giv.SecPot.holoOn_continuousOn' (hs.2 ⟨k, i k⟩)).continuousAt (hU.mem_nhds hy)).eventually_ne (hi k)
   filter_upwards [hU.mem_nhds hy, hU'.mem_nhds hy', hev] with y h1 h2 h3
   have hm := (hs.1 y h1).1
   have hm' := (hs'.1 y h2).1

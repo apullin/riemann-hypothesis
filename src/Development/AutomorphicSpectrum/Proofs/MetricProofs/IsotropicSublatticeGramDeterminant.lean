@@ -36,20 +36,13 @@ section Ip
 
 variable (R : RiemLat E g Λ)
 
-theorem ip_conj (x y : Fin g → ℂ) : starRingEnd ℂ (R.ip x y) = R.ip y x := by
-  show star (y ⬝ᵥ R.Hm *ᵥ star x) = x ⬝ᵥ R.Hm *ᵥ star y
-  rw [← star_dotProduct_star, star_mulVec, star_star, R.herm.eq, dotProduct_mulVec]
-
 def ipL (x : Fin g → ℂ) : (Fin g → ℂ) →ₗ[ℂ] ℂ where
   toFun := R.ip x
   map_add' := LevelTowerAlt.ip_add_right R x
   map_smul' c y := LevelTowerAlt.ip_smul_right R c x y
 
 theorem ip_add_left (x x' y : Fin g → ℂ) : R.ip (x + x') y = R.ip x y + R.ip x' y := by
-  rw [← ip_conj R y, LevelTowerAlt.ip_add_right, map_add (f := _), ip_conj, ip_conj]
-
-theorem ip_smul_left (c : ℂ) (x y : Fin g → ℂ) : R.ip (c • x) y = starRingEnd ℂ c * R.ip x y := by
-  rw [← ip_conj R y, LevelTowerAlt.ip_smul_right, map_mul, ip_conj]
+  rw [← LevelTowerAlt.ip_conj R y, LevelTowerAlt.ip_add_right, map_add (f := _), LevelTowerAlt.ip_conj, LevelTowerAlt.ip_conj]
 
 end Ip
 
@@ -108,7 +101,7 @@ theorem ip_act_act (R : RiemLat E g Λ) (ω ω' : 𝓞 E) (x y : Fin g → ℂ) 
       R.ip (eigComp R.B (s.comp (algebraMap (𝓞 E) E)) x) (eigComp R.B (s.comp (algebraMap (𝓞 E) E)) y) *
       s (algebraMap (𝓞 E) E ω') := by
   classical
-  obtain ⟨-, -, h3, h4, h5⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+  obtain ⟨-, -, h3, h4, h5⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
   have ex : ∀ (a : 𝓞 E) (x : Fin g → ℂ), R.B a x = ∑ s : E →+* ℂ,
       (s.comp (algebraMap (𝓞 E) E)) a • eigComp R.B (s.comp (algebraMap (𝓞 E) E)) x := fun a x => by
     conv_lhs => rw [← h4 (R.B a x)]
@@ -116,11 +109,11 @@ theorem ip_act_act (R : RiemLat E g Λ) (ω ω' : 𝓞 E) (x y : Fin g → ℂ) 
   rw [ex ω x, ex ω' y, LevelTowerAlt.ip_sum_left]
   refine Finset.sum_congr rfl fun s _ => ?_
   rw [LevelTowerAlt.ip_sum_right, Finset.sum_eq_single s]
-  · rw [ip_smul_left, LevelTowerAlt.ip_smul_right]
+  · rw [LevelTowerAlt.ip_smul_left, LevelTowerAlt.ip_smul_right]
     simp only [RingHom.comp_apply, Complex.star_def]
     ring
   · intro s' _ hs
-    rw [ip_smul_left, LevelTowerAlt.ip_smul_right, h5 _ _ (comp_ne hs.symm) _ ((h3 _).1 x) _ ((h3 _).1 y)]
+    rw [LevelTowerAlt.ip_smul_left, LevelTowerAlt.ip_smul_right, h5 _ _ (comp_ne hs.symm) _ ((h3 _).1 x) _ ((h3 _).1 y)]
     simp
   · simp
 
@@ -225,7 +218,7 @@ theorem prod_det_gram (R : RiemLat E g Λ) {σ : Ψ → (𝓞 E →+* ℂ)} (hσ
     exact (_root_.LevelTowerAlt.eigen_projection_conjugate_inner E g Λ Ψ R I hI (σ τ)).1 _ (hv a) _ (hv b)
   have htr : G.map (starRingEnd ℂ) = Gᵀ := by
     ext a b
-    exact ip_conj R _ _
+    exact LevelTowerAlt.ip_conj R _ _
   have hdet : starRingEnd ℂ G.det = G.det := by
     have h1 := RingHom.map_det (starRingEnd ℂ) G
     rw [RingHom.mapMatrix_apply, htr, det_transpose] at h1
@@ -377,7 +370,7 @@ theorem det_re_gram_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] 
   have hf := finrank_eq_two_card hσ
   have htf : ∀ (n : ℕ) (x : Λ), n ≠ 0 → n • x = 0 → x = 0 := by
     intro n x hn hx
-    obtain ⟨hinj, -⟩ := _root_.GlobalTheory.CompanionTheory.Relay.riemann_lattice_eigen_projection E g Λ Unit R
+    obtain ⟨hinj, -⟩ := LevelTowerAlt.riemann_lattice_eigen_projections E g Λ Unit R
     apply hinj
     have h1 : n • R.P x = 0 := by rw [← map_nsmul, hx, map_zero]
     rw [map_zero]

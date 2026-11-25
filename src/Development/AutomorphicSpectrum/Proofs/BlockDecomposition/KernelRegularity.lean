@@ -775,10 +775,6 @@ theorem mul_mem {x y : Mat n} (hx : x ∈ GLs n) (hy : y ∈ GLs n) : x * y ∈ 
   simp only [GLs, Set.mem_setOf_eq, Matrix.det_mul] at *
   exact mul_ne_zero hx hy
 
-theorem val_mem (x : G n) : x.val ∈ GLs n := by
-  have h := (Matrix.isUnit_iff_isUnit_det _).1 x.isUnit
-  exact h.ne_zero
-
 def mulL (a : Mat n) : Mat n →L[ℝ] Mat n :=
   LinearMap.toContinuousLinearMap
     { toFun := fun y => a * y
@@ -789,11 +785,11 @@ variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
 theorem contDiffOn_lTr (x : G n) {f : Mat n → V} (hf : ContDiffOn ℝ ∞ f (GLs n)) :
     ContDiffOn ℝ ∞ (lTr x f) (GLs n) :=
-  hf.comp (mulL x.val).contDiff.contDiffOn (fun _ hy => mul_mem (val_mem x) hy)
+  hf.comp (mulL x.val).contDiff.contDiffOn (fun _ hy => mul_mem (GlobalTheory.CompanionTheory.KerFc.sr_val_mem x) hy)
 
 theorem Rd_lTr (x : G n) {f : Mat n → V} (hf : ContDiffOn ℝ ∞ f (GLs n)) (X : Mat n)
     {g : Mat n} (hg : g ∈ GLs n) : Rd X (lTr x f) g = Rd X f (x.val * g) := by
-  have hxg : x.val * g ∈ GLs n := mul_mem (val_mem x) hg
+  have hxg : x.val * g ∈ GLs n := mul_mem (GlobalTheory.CompanionTheory.KerFc.sr_val_mem x) hg
   have hd : DifferentiableAt ℝ f (mulL x.val g) :=
     (hf.contDiffAt ((isOpen_GLs n).mem_nhds hxg)).differentiableAt (by simp)
   have hc : fderiv ℝ (f ∘ mulL x.val) g = (fderiv ℝ f (mulL x.val g)).comp (mulL x.val) :=
@@ -830,11 +826,11 @@ theorem ltSob : LtSob := by
   refine ⟨⟨contDiffOn_lTr x hf.1, fun w => ?_⟩, fun g hg => ?_⟩
   · have h := (hf.2 w).comp_measurePreserving (measurePreserving_mul_left μ x)
     have he : (fun y : G n => Rw w (lTr x f) y.val) = (fun y : G n => Rw w f y.val) ∘ (fun y => x * y) :=
-      funext fun y => Rw_lTr hR x hf.1 w y.val (val_mem y)
+      funext fun y => Rw_lTr hR x hf.1 w y.val (GlobalTheory.CompanionTheory.KerFc.sr_val_mem y)
     rw [he]
     exact h
   · have ht : ∀ s, gel s 2 (lTr x f) g = gel s 2 f (x.val * g) := fun s =>
-      (((hR n).1 V f hf.1).2.2.2 s 2 x.val (val_mem x) g hg).1
+      (((hR n).1 V f hf.1).2.2.2 s 2 x.val (GlobalTheory.CompanionTheory.KerFc.sr_val_mem x) g hg).1
     simp only [Om, Pi.smul_apply, Pi.add_apply, ht]
 
 end GlobalTheory.CompanionTheory.KerFc
@@ -1031,13 +1027,9 @@ theorem secondCountable_G (n : ℕ) : SecondCountableTopology (G n) := by
     MulOpposite.opHomeomorph.symm.isEmbedding.secondCountableTopology
   exact (Units.isEmbedding_embedProduct (M := Mat n)).secondCountableTopology
 
-theorem val_mem_GLs {n : ℕ} (y : G n) : y.val ∈ GLs n := by
-  have : IsUnit y.val.det := (Matrix.isUnit_iff_isUnit_det _).1 y.isUnit
-  exact this.ne_zero
-
 theorem continuous_lg (hL : LgFacts) {n : ℕ} : Continuous (fun y : G n => lg y.val) := by
   have h1 : ContinuousOn (lg (n := n)) (GLs n) := ((hL n).2.2.2.1).continuousOn
-  exact h1.comp_continuous Units.continuous_val val_mem_GLs
+  exact h1.comp_continuous Units.continuous_val GlobalTheory.CompanionTheory.KerFc.sr_val_mem
 
 theorem locallyCompact_G (hL : LgFacts) (n : ℕ) : LocallyCompactSpace (G n) := by
   haveI : WeaklyLocallyCompactSpace (G n) := ⟨fun x => ⟨{y : G n | lg y.val ≤ lg x.val + 1},
@@ -1148,9 +1140,9 @@ theorem waveInt : WaveInt := by
     have h1 : ContinuousOn (Function.uncurry U) (Set.univ ×ˢ GLs n) := hW.1.continuousOn
     exact h1.comp_continuous (f := fun p : ℝ × G n => (p.1, p.2.val))
       (continuous_fst.prodMk (Units.continuous_val.comp continuous_snd))
-      (fun p => ⟨trivial, val_mem_GLs _⟩)
+      (fun p => ⟨trivial, GlobalTheory.CompanionTheory.KerFc.sr_val_mem _⟩)
   have hfc : Continuous (fun y : G n => f' y.val) :=
-    hf'.1.continuousOn.comp_continuous Units.continuous_val val_mem_GLs
+    hf'.1.continuousOn.comp_continuous Units.continuous_val GlobalTheory.CompanionTheory.KerFc.sr_val_mem
   have hF₁ : Continuous (fun y : G n => ∫ t, γ t • U t y.val) := by
     have hc : Continuous (Function.uncurry fun (y : G n) (t : ℝ) => γ t • U t y.val) := by
       have h2 : Continuous (fun p : G n × ℝ => U p.2 p.1.val) :=
@@ -1311,23 +1303,18 @@ namespace Uniq
 
 variable {n : ℕ}
 
-theorem isOpen_GLs : IsOpen (GLs n) := by
-  have : GLs n = (fun g : Mat n => g.det) ⁻¹' {0}ᶜ := rfl
-  rw [this]
-  exact isOpen_compl_singleton.preimage (Continuous.matrix_det continuous_id)
-
 section Rd
 
 variable {V : Type} [NormedAddCommGroup V] [NormedSpace ℂ V]
 
 theorem rd_congr (X : Mat n) {f f' : Mat n → V} (h : ∀ y ∈ GLs n, f y = f' y) {g : Mat n} (hg : g ∈ GLs n) :
     Rd X f g = Rd X f' g := by
-  have e : f =ᶠ[𝓝 g] f' := Filter.eventuallyEq_of_mem (isOpen_GLs.mem_nhds hg) h
+  have e : f =ᶠ[𝓝 g] f' := Filter.eventuallyEq_of_mem (GlobalTheory.CompanionTheory.WaveFc.Asm.open_GLs.mem_nhds hg) h
   simp only [Rd, e.fderiv_eq]
 
 theorem rd_sub (X : Mat n) {f f' : Mat n → V} (hf : ContDiffOn ℝ ∞ f (GLs n)) (hf' : ContDiffOn ℝ ∞ f' (GLs n))
     {g : Mat n} (hg : g ∈ GLs n) : Rd X (f - f') g = Rd X f g - Rd X f' g := by
-  have ho := isOpen_GLs.mem_nhds hg
+  have ho := GlobalTheory.CompanionTheory.WaveFc.Asm.open_GLs.mem_nhds hg
   have d1 : DifferentiableAt ℝ f g := (hf.contDiffAt ho).differentiableAt (by simp)
   have d2 : DifferentiableAt ℝ f' g := (hf'.contDiffAt ho).differentiableAt (by simp)
   have e := (d1.hasFDerivAt.sub d2.hasFDerivAt).fderiv

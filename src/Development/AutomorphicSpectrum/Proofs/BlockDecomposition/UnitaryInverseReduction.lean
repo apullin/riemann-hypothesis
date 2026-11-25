@@ -1081,14 +1081,6 @@ theorem heis_mem_GU_iff (σ : L →+* L) {n : ℕ} {i j k : Fin n} (hij : i ≠ 
   · rintro ⟨h1, h2, h3⟩ s t
     rw [h1, h2, h3]
 
-theorem monomial_mul_apply {n : ℕ} {t : Equiv.Perm (Fin n)} {Y : GL (Fin n) L} (hY : IsWeylRep t Y)
-    (M : Matrix (Fin n) (Fin n) L) (i j : Fin n) :
-    ((Y : Matrix (Fin n) (Fin n) L) * M) i j = (Y : Matrix (Fin n) (Fin n) L) i (t⁻¹ i) * M (t⁻¹ i) j := by
-  rw [Matrix.mul_apply, Finset.sum_eq_single (t⁻¹ i)]
-  · intro l _ hl
-    rw [hY i l (fun h => hl (by rw [h]; simp)), zero_mul]
-  · simp
-
 theorem heisM_mul_opp {n : ℕ} {i j k : Fin n} (hij : i ≠ j) (hjk : j ≠ k) (hik : i ≠ k) (b d c y x z : L)
     (h1 : 1 + b * x + c * z = 0) (h2 : b + c * y = 0) (h3 : x + d * z = 0) (s t : Fin n) :
     (heisM i j k b d c * heisM k j i y x z) s t = (if s = t then 1 else 0) - (if i = s ∧ i = t then 1 else 0) +
@@ -1128,29 +1120,13 @@ theorem v_heisM_le {n : ℕ} (i j k : Fin n) {p q r : L} (hp : Valued.v p ≤ 1)
   refine Valuation.map_add_le _ (Valuation.map_add_le _ (Valuation.map_add_le _ ?_ ?_) ?_) ?_ <;>
     split_ifs <;> simp [*]
 
-theorem ordL_inv {x : L} (hx : x ≠ 0) : ordL x⁻¹ = -ordL x := by
-  have h := P.fIwasawa_ordL_mul x x⁻¹ hx (inv_ne_zero hx)
-  rw [mul_inv_cancel₀ hx, _root_.Formalism.UG.P.fSatake_ord_one] at h
-  omega
-
 theorem ordL_monomial_entry {n : ℕ} {t : Equiv.Perm (Fin n)} {Y : GL (Fin n) L} (hY : IsWeylRep t Y)
     (hYK : Y ∈ GLint (Fin n) (intL L)) (i : Fin n) :
     (Y : Matrix (Fin n) (Fin n) L) i (t⁻¹ i) ≠ 0 ∧ ordL ((Y : Matrix (Fin n) (Fin n) L) i (t⁻¹ i)) = 0 := by
   have h := congrFun (congrFun (Units.mul_inv Y) i) i
-  rw [monomial_mul_apply hY, Matrix.one_apply_eq] at h
+  rw [GlobalTheory.GKUnitaryRankOne.monomial_mul_apply hY, Matrix.one_apply_eq] at h
   exact ⟨left_ne_zero_of_mul_eq_one h, P.fIwasawa_ordL_unit _ _ (P.cartan_entries_of_mem _ Y hYK _ _)
     (P.cartan_entries_of_mem _ _ (inv_mem hYK) _ _) (by rw [mul_comm]; exact h)⟩
-
-theorem isBorelU_one (σ : L →+* L) (n : ℕ) : IsBorelU (1 : GU σ n) := by
-  intro i j h
-  simp [ne_of_gt h]
-
-theorem chiDeltaU_one (σ : L →+* L) (n m q : ℕ) (α : Fin m → ℂ) : chiDeltaU q α (1 : GU σ n) = 1 := by
-  unfold chiDeltaU
-  refine Finset.prod_eq_one fun i _ => ?_
-  split_ifs
-  · simp [_root_.Formalism.UG.P.fSatake_ord_one]
-  · rfl
 
 theorem v_sq_le {σ : L →+* L} (hσ : ∀ x, Valued.v (σ x) = Valued.v x) {b d c : L} (hb : σ b = -d)
     (hc : σ c = b * d - c) : Valued.v d = Valued.v b ∧ Valued.v b * Valued.v b ≤ Valued.v c := by
@@ -1222,14 +1198,14 @@ theorem value_point : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicati
       exact absurd (hvb.trans hv) (not_le.2 (one_lt_mul'' h h))
     have huK : u ∈ KU σ n := mem_KU_of_int hσ u fun s t => by
       rw [hU, heis_val]; exact v_heisM_le _ _ _ hb1 (hvd ▸ hb1) hv s t
-    have h := hφ 1 1 (y⁻¹ * u) (isBorelU_one σ n) (mul_mem (inv_mem hy) huK)
+    have h := hφ 1 1 (y⁻¹ * u) (GlobalTheory.GKUnitaryRankOne.isBorelU_one σ n) (mul_mem (inv_mem hy) huK)
     rw [one_mul, one_mul] at h
     have h0 : (-ordL c).toNat = 0 := by
       by_cases h0 : c = 0
       · rw [h0]; simp [ordL]
       · rw [GlobalTheory.BorelUMod.v_eq_exp h0, ← WithZero.exp_zero, WithZero.exp_le_exp] at hv
         omega
-    rw [h, chiDeltaU_one, hφ1, one_mul, h0, pow_zero]
+    rw [h, GlobalTheory.GKUnitaryRankOne.chiDeltaU_one, hφ1, one_mul, h0, pow_zero]
   push Not at hv
   have hc0 : c ≠ 0 := fun h => by rw [h, map_zero] at hv; exact not_lt_of_ge zero_le' hv
   have he0 : σ c ≠ 0 := (map_ne_zero σ).2 hc0
@@ -1268,7 +1244,7 @@ theorem value_point : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicati
         (((y : GL (Fin n) L)⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) * M := by
       rw [hPb, hMdef, ← heis_val ham hma' haa' b d c, ← heis_val hma'.symm ham.symm haa'.symm, ← hU]
       simp [Matrix.mul_assoc, κ]
-    rw [this, monomial_mul_apply hyiw, inv_inv, hs]
+    rw [this, GlobalTheory.GKUnitaryRankOne.monomial_mul_apply hyiw, inv_inv, hs]
   have hunit : ∀ i, (((y : GL (Fin n) L)⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i (Equiv.swap a a' i) ≠ 0 ∧
       ordL ((((y : GL (Fin n) L)⁻¹ : GL (Fin n) L) : Matrix (Fin n) (Fin n) L) i (Equiv.swap a a' i)) = 0 :=
     fun i => by
@@ -1312,7 +1288,7 @@ theorem value_point : ∀ (L : Type) [Field L] [Valued L (WithZero (Multiplicati
       rw [Equiv.swap_apply_left, hM]
       simp [haa', haa'.symm, ham.symm, hma']
     have h4 : ordL (σ c) = ordL c := by simp only [ordL, hσ]
-    rw [hP, h3, P.fIwasawa_ordL_mul _ _ h1 (inv_ne_zero he0), h2, ordL_inv he0, zero_add, h4]
+    rw [hP, h3, P.fIwasawa_ordL_mul _ _ h1 (inv_ne_zero he0), h2, GlobalTheory.GKUnitaryRankOne.ordL_inv he0, zero_add, h4]
   obtain ⟨D, hD⟩ : ∃ D : ℕ, -ordL c = D := by
     rw [GlobalTheory.BorelUMod.v_eq_exp hc0, ← WithZero.exp_zero, WithZero.exp_lt_exp] at hv
     exact Int.eq_ofNat_of_zero_le hv.le

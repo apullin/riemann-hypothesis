@@ -839,9 +839,6 @@ section Frame
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
   {σ : E →ₐ[F] E} {n : ℕ} {J : Matrix (Fin n) (Fin n) E} {r : ℕ} {X Y : Matrix (Fin n) (Fin r) E}
 
-theorem mat_inv_mul (g : GAd σ J) : (matHom _ σ J g⁻¹).1 * (matHom _ σ J g).1 = 1 := by
-  rw [← Units.val_mul, ← map_mul, inv_mul_cancel, map_one, Units.val_one]
-
 theorem adMat_mul_eq_one {a b : ℕ} {L : Matrix (Fin a) (Fin b) E} {C : Matrix (Fin b) (Fin a) E} (h : L * C = 1) :
     adMat F L * adMat F C = 1 := by
   rw [← Matrix.map_mul, h, Matrix.map_one _ (map_zero _) (map_one _)]
@@ -871,7 +868,7 @@ theorem exists_height_lower_bound (h : IsCMExt F E σ) (hJ : IsHermND σ J) (hW 
   have hl' := inv_mem hl
   simp only [levi, Subgroup.mem_iInf] at hl'
   obtain ⟨B, -, e⟩ := (Subgroup.mem_inf.1 (hl' k hkT)).2
-  have h2 := mul_eq_of_conj (A := adMat F J) (sigR (AF F) σ) (mat_inv_mul g) (g⁻¹).2 e
+  have h2 := mul_eq_of_conj (A := adMat F J) (sigR (AF F) σ) (GlobalTheory.CompanionTheory.Hypotheses₂.LeviPart.USplit.matHom_inv_mul g) (g⁻¹).2 e
   rw [cT_initCols_mul] at h2
   set L := (adMat F (cT (σ : E →+* E) Y * J)).submatrix (Fin.castLE k.2) id with hL
   have h3 : L *ᵥ (adMat F X)ᵀ j = 0 := by

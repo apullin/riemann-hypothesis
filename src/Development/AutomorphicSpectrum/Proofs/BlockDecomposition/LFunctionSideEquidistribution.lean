@@ -505,11 +505,6 @@ section Adelic
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [Algebra F E]
 
-theorem eventually_integral (c : F) :
-    ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite,
-      algebraMap F (Fv F v) c ∈ v.adicCompletionIntegers F := by
-  exact (algebraMap F (FiniteAdeleRing (𝓞 F) F) c).2
-
 theorem eventually_mul_closed {d : ℕ} (b : Module.Basis (Fin d) F E) :
     ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite, ∀ x y : Fv F v ⊗[F] E,
       (∀ k, (Algebra.TensorProduct.basis (Fv F v) b).repr x k ∈ v.adicCompletionIntegers F) →
@@ -520,7 +515,7 @@ theorem eventually_mul_closed {d : ℕ} (b : Module.Basis (Fin d) F E) :
   have h : ∀ᶠ v : HeightOneSpectrum (𝓞 F) in cofinite, ∀ i j k : Fin d,
       algebraMap F (Fv F v) (b.repr (b i * b j) k) ∈ v.adicCompletionIntegers F := by
     simp only [Filter.eventually_all]
-    exact fun i j k => eventually_integral _
+    exact fun i j k => GlobalTheory.CompanionTheory.SW.LatRat.eventually_integral _
   filter_upwards [h] with v hv x y hx hy k
   rw [repr_mul]
   exact sum_mem fun i _ => sum_mem fun j _ => mul_mem (mul_mem (hx i) (hy j)) (hv i j k)

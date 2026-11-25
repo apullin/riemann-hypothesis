@@ -407,7 +407,7 @@ theorem core (D : PPData H L) (th : Out.H0 D.t.PP.L 1) (m : ℕ) (hm : 1 ≤ m)
   refine ⟨s, t, nonZeroDivisors.ne_zero ht, ?_⟩
   intro F _ f y b xF yF N T T' hxF hyF hT hT'
 
-  have hbc := spMap_comp' f (algebraMap (𝓞 L') L')
+  have hbc := GlobalTheory.CompanionTheory.Ar.ChartDer.spMap_comp f (algebraMap (𝓞 L') L')
   obtain rfl : b = spMap (f.comp (algebraMap (𝓞 L') L')) ≫ spMap (algebraMap (𝓞 L) (𝓞 L')) := by
     have h1 : xF.left ≫ D.t.G.hom = b := Over.w xF
     have h2 : x.left ≫ D.t.G.hom = _ := Over.w x
@@ -649,7 +649,7 @@ theorem transl_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
     rfl
   have hbase : spMap (algebraMap (𝓞 L') L') ≫ spMap (algebraMap (𝓞 L) (𝓞 L')) =
       (spMap (algebraMap K' L') ≫ spMap (algebraMap K K')) ≫ spMap ((algebraMap L K).comp (algebraMap (𝓞 L) L)) := by
-    rw [← spMap_comp', hring, spMap_comp', spMap_comp', Category.assoc]
+    rw [← GlobalTheory.CompanionTheory.Ar.ChartDer.spMap_comp, hring, GlobalTheory.CompanionTheory.Ar.ChartDer.spMap_comp, GlobalTheory.CompanionTheory.Ar.ChartDer.spMap_comp, Category.assoc]
   let ρ : Over.mk (spMap (algebraMap (𝓞 L') L') ≫ spMap (algebraMap (𝓞 L) (𝓞 L'))) ⟶
       Over.mk (spMap ((algebraMap L K).comp (algebraMap (𝓞 L) L))) :=
     Over.homMk (spMap (algebraMap K' L') ≫ spMap (algebraMap K K')) hbase.symm
@@ -687,7 +687,7 @@ theorem transl_main : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   refine ⟨s, d, hd, fun F _ f y b xF yF N T T' hxF hyF hT hT' => ⟨1, le_rfl, ?_⟩⟩
   rw [pow_one, pow_one]
   refine Hs F f y b xF yF N T T' ?_ hyF hT hT'
-  rw [hxF, spMap_comp', spMap_comp', Category.assoc]
+  rw [hxF, GlobalTheory.CompanionTheory.Ar.ChartDer.spMap_comp, GlobalTheory.CompanionTheory.Ar.ChartDer.spMap_comp, Category.assoc]
   rfl
 
 end GlobalTheory.CompanionTheory.Ar.Sl.Transl

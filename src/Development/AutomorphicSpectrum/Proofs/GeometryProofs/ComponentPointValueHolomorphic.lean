@@ -341,7 +341,7 @@ theorem lieMult_at (y : Sp ℂ ⟶ Xo.XF c) (σ : c.F →+* ℂ) (τ : E →+* �
     apply Subtype.ext
     show starRingEnd ℂ (τ (H.rt : E)) = - H.rt0
     rw [hτ]
-    exact GlobalTheory.CompanionTheory.Ar.EigRank.rt0_conj_neg_ne_zero H.d_prime.pos H.sqrt_neg_disc_sq
+    exact UpperTheory.Reformulated.B.Ydc3.main H.d_prime.pos H.sqrt_neg_disc_sq
   refine ⟨(hdet _).1 ?_, (hdet _).2 ?_⟩
   · simp only [RingHom.comp_apply, e1]
     rfl

@@ -211,8 +211,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat.Conj
 
 open GroundTheory.Heights₂.Heights.Regular GlobalTheory.CompanionTheory.Ar.Flat.Link
 
-alias spMap_comp' := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
-
 theorem dualMap_conj_over :
     spMap (dualMap (starRingEnd ℂ)) ≫ spMap (algebraMap ℂ (DualNumber ℂ)) =
       spMap (algebraMap ℂ (DualNumber ℂ)) ≫ spMap (starRingEnd ℂ) := by
@@ -221,7 +219,7 @@ theorem dualMap_conj_over :
     ext c
     · simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
     · simp [dualMap, TrivSqZeroExt.algebraMap_eq_inl]
-  rw [← spMap_comp', ← spMap_comp', h]
+  rw [← GlobalTheory.Frames.NonzeroGenerates.spMap_comp', ← GlobalTheory.Frames.NonzeroGenerates.spMap_comp', h]
 
 def conjTan {S : Scheme.{0}} {G : Over S} {x x' : Sp ℂ ⟶ S} (h : x' = spMap (starRingEnd ℂ) ≫ x)
     (v : epsAt x ⟶ G) : epsAt x' ⟶ G :=
@@ -246,7 +244,7 @@ theorem isRiem_of_chart {Xo : Moduli D l} {σ : KA l →+* ℂ} {n a : ℕ} (C :
   intro m u v Γ hv
   have hψ : conjPts C.ψ (star z) = (starRingEnd ℂ).comp (C.ψ z) := by simp [conjPts]
   have hx : spMap (conjPts C.ψ (star z)) = spMap (starRingEnd ℂ) ≫ spMap (C.ψ z) := by
-    rw [hψ, spMap_comp']
+    rw [hψ, GlobalTheory.Frames.NonzeroGenerates.spMap_comp']
   have hx' : spMap (C.ψ z) = spMap (starRingEnd ℂ) ≫ spMap (conjPts C.ψ (star z)) := by
     rw [hx, ← Category.assoc, _root_.GlobalTheory.CompanionTheory.Ar.Flat.ConjExp.conj_conj_point, Category.id_comp]
   let v' : Fin m → (epsAt (spMap (conjPts C.ψ (star z))) ⟶ C.t.G) := fun i => conjTan hx (v i)

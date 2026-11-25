@@ -1045,7 +1045,7 @@ theorem arch_bound : ∀ (X : Scheme.{0}) (Ω : Type) [Field Ω] (ξ : Sp Ω ⟶
       IsCls b₀ i e t ∧ ValAt ξ z (t / gen y A.a e₀ c₀) u ∧ u ≠ 0 ∧ (gramAt h z v).det ≠ 0 ∧ x = Ex z w c₀ v ve u
   obtain ⟨C, hC⟩ := _root_.GlobalTheory.CompanionTheory.Ar.RootHt.bound_of_local_bounds_of_blockScale K J {w | ∃ z : Sp ℂ ⟶ X, CoordsAt ξ y z w} Bd
     (fun w ⟨z, hz⟩ k => (hz.1 k).imp fun c hc => hc.ne_zero)
-    (fun w hw hb => _root_.GlobalTheory.CompanionTheory.Ar.RootHt.ArchC.closed_coords' X Ω ξ K J y hall htie w hw hb)
+    (fun w hw hb => GlobalTheory.CompanionTheory.Ar.RootHt.ArchC.closed_coords X Ω ξ K J y hall htie w hw hb)
     (fun w x ⟨z, hz, _⟩ => ⟨z, hz⟩)
     (by
       rintro w x c hc ⟨z, hz, c₀, hc₀, f, e, v, ve, t, u, h1, h2, h3, h4, h5, h6, h7, h8, rfl⟩

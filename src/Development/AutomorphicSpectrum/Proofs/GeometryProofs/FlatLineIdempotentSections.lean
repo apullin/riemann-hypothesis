@@ -1418,11 +1418,9 @@ theorem exists_basic {R : Type} [CommRing R] (A : Set (PrimeSpectrum R)) (hA : I
   obtain ⟨_, ⟨g, rfl⟩, hg, hs⟩ := PrimeSpectrum.isTopologicalBasis_basic_opens.exists_subset_of_mem_open hq hA
   exact ⟨g, hg, fun t ht => hs ht⟩
 
-alias spMap_comp' := _root_.ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp
-
 theorem dualMap_spMap_comp {A B C : Type} [CommRing A] [CommRing B] [CommRing C] (f : A →+* B) (g : B →+* C) :
     spMap (Formalism.L2.Pj.dualMap g) ≫ spMap (Formalism.L2.Pj.dualMap f) = spMap (Formalism.L2.Pj.dualMap (g.comp f)) := by
-  rw [← spMap_comp']
+  rw [← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
   congr 1
   ext a <;> simp [Formalism.L2.Pj.dualMap]
 
@@ -1430,7 +1428,7 @@ def frPtF {S : Type} [CommRing S] [Algebra c.F S] (z : Formalism.L2.Pj.FrPt Xo c
   pullback.lift z.x (spMap (algebraMap c.F S)) (by
     rw [z.x_over]
     unfold Formalism.L2.Pj.sOf
-    rw [spMap_comp'])
+    rw [ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp])
 
 abbrev fpt {S : Type} [CommRing S] [Algebra c.F S] (z : Formalism.L2.Pj.FrPt Xo c S) {F : Type} [Field F] (ψ : S →+* F) :
     Sp F ⟶ Xo.XF c := spMap ψ ≫ frPtF z
@@ -1441,7 +1439,7 @@ theorem fpt_under {S : Type} [CommRing S] [Algebra c.F S] (z : Formalism.L2.Pj.F
 
 theorem fpt_snd {S : Type} [CommRing S] [Algebra c.F S] (z : Formalism.L2.Pj.FrPt Xo c S) {F : Type} [Field F]
     (ψ : S →+* F) : fpt z ψ ≫ pullback.snd _ _ = spMap (ψ.comp (algebraMap c.F S)) := by
-  rw [fpt, frPtF, Category.assoc, pullback.lift_snd, spMap_comp']
+  rw [fpt, frPtF, Category.assoc, pullback.lift_snd, ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
 
 theorem eq_fpt {S : Type} [CommRing S] [Algebra c.F S] (z : Formalism.L2.Pj.FrPt Xo c S) {F : Type} [Field F]
     (ψ : S →+* F) {y : Sp F ⟶ Xo.XF c} (h1 : under y = spMap ψ ≫ z.x)
@@ -1593,7 +1591,6 @@ namespace GlobalTheory.CompanionTheory.Ar.Flat
 open GlobalTheory.CompanionTheory.Ar.Flat.RuleGlue
 
 
-
 theorem exists_flat_rule : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Level H) (Xo : Moduli D l) (c : Coeff l) (U : Set (Xo.XF c)) (τ : E →+* ℂ) (O : Type) [CommRing O] (β : O →+* c.F) (Y : Model Xo c β) (Z : CptOver Y U) (φ : FrameFn Xo c), τ (H.rt : E) = H.rt0 → IsClopen U → IsLineFn U τ φ → FlatOnModel Z τ φ → ∃ s s' e : Formalism.L2.Pj.Rul Xo c, e ∈ Formalism.L2.Pj.sec Xo c 0 0 ∧ s * s' = e ∧ s * e = s ∧ s' * e = s' ∧ (∀ (a a' : (E →+* ℂ) × ℕ → ℕ) (n : ℕ) (f : Formalism.L2.Pj.Rul Xo c), (∀ x : (E →+* ℂ) × ℕ, x.2 < D.mult x.1 → (a' x : ℤ) = a x + Set.indicator {x : (E →+* ℂ) × ℕ | x.1 = ComplexEmbedding.conjugate τ} 1 x - Set.indicator {x : (E →+* ℂ) × ℕ | x.1 = τ} 1 x) → (f ∈ Formalism.L2.Pj.sec Xo c a n → f * s ∈ Formalism.L2.Pj.sec Xo c a' n) ∧ (f ∈ Formalism.L2.Pj.sec Xo c a' n → f * s' ∈ Formalism.L2.Pj.sec Xo c a n)) ∧ ∀ (p : Formalism.L2.Pj.TRing c.F) (z : Formalism.L2.Pj.FrPt Xo c p.R) (F : Type) [Field F] (ψ : p.R →+* F) (y : Sp F ⟶ Xo.XF c), under y = spMap ψ ≫ z.x → y ≫ pullback.snd _ _ = spMap (ψ.comp (algebraMap c.F p.R)) → (¬ Set.range y ⊆ U → ψ (e p z) = 0) ∧ (Set.range y ⊆ U → ψ (e p z) = 1 ∧ ∀ (v : Vecs y D.p) (w : Vecs y D.q) (hp : D.mult τ = D.p) (hq : D.mult (ComplexEmbedding.conjugate τ) = D.q), (∀ i, (v i).left = spMap (Formalism.L2.Pj.dualMap ψ) ≫ z.u τ (i.cast hp.symm)) → (∀ j, (w j).left = spMap (Formalism.L2.Pj.dualMap ψ) ≫ z.u (ComplexEmbedding.conjugate τ) (j.cast hq.symm)) → ψ (s p z) = φ F y v w) := by
   intro E _ _ _ H D l Xo c U τ O _ β Y Z φ hτ hU hl hf
   have hp : D.mult τ = D.p := by rw [Datum.mult, ite_eq_left hτ]
@@ -1658,7 +1655,7 @@ theorem exists_flat_rule : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E
       intro F _ ψ
       let ψ' : p.R →+* F := ψ.comp f.toRingHom
       have h1 : under (fpt z ψ) = spMap ψ' ≫ y.x := by
-        rw [fpt_under, h.1, ← Category.assoc, ← spMap_comp']
+        rw [fpt_under, h.1, ← Category.assoc, ← ReciprocityTheory.ChartRestriction.G.Geo.Tor.spMap_comp]
       have h2 : fpt z ψ ≫ pullback.snd _ _ = spMap (ψ'.comp (algebraMap c.F p.R)) := by
         rw [fpt_snd]
         congr 1

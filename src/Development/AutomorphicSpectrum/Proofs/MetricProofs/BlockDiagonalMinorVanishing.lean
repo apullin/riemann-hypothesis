@@ -140,8 +140,6 @@ theorem support_stepCols {N j : ℕ} {i : Fin N} (hj : j ≤ N) (bb : Matrix (Fi
     omega
   · exact absurd (by omega) hk
 
-alias isBlockDiag_mul := _root_.GlobalTheory.CompanionTheory.Ar.PB.IsBlockDiag.mul
-
 theorem support_wIdx {j : ℕ} {h : Matrix (Fin N) (Fin N) R} (hh : IsBlockDiag j h) (k c : Fin N)
     (hc : c ∈ wIdx N j) (hk : k ∉ wIdx N j) : h k c = 0 := by
   simp only [wIdx, Finset.mem_filter, Finset.mem_univ, true_and] at hc hk
@@ -191,6 +189,6 @@ theorem minors_main : ∀ (R : Type) [CommRing R] (N j : ℕ) (i : Fin N), j ≤
     rw [minorIJ_mul_of_support h bb I _ (support_stepCols hj bb hd ht),
       minorIJ_self_of_triangular bb ht]
   · intro T h hT hh
-    exact ⟨isBlockDiag_mul hT hh, detFac_mul i hh⟩
+    exact ⟨GlobalTheory.CompanionTheory.Ar.PB.IsBlockDiag.mul hT hh, detFac_mul i hh⟩
 
 end GlobalTheory.CompanionTheory.Ar.PB.MinorCalc

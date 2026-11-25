@@ -861,9 +861,6 @@ open scoped ContDiff
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.Flat
 
-theorem locExt_two_le : (2 : WithTop ℕ∞) ≤ ∞ := by
-  exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ ⊤)
-
 theorem locExt_isOpen_punct {n : ℕ} (R : ℝ) : IsOpen (punct (n := n) R) := by
   have h : punct (n := n) R = ⋂ i, ({z | z i ≠ 0} ∩ {z | ‖z i‖ < R}) := by
     ext z; simp [punct]
@@ -903,7 +900,7 @@ theorem locExt_core {n : ℕ} (c : Fin n → ℂ) (r : ℝ) (hr : 0 < r) (Q : Se
       (fun w hw => (hfsm w hw).contDiffWithinAt) ?_
     intro w hw v
     have hA : AnalyticAt ℂ (fun w : Fin n → ℂ => c + w) w := analyticAt_const.add analyticAt_id
-    have h2 : ContDiffAt ℝ 2 F (c + w) := (hsm _ (hmem w hw)).of_le locExt_two_le
+    have h2 : ContDiffAt ℝ 2 F (c + w) := (hsm _ (hmem w hw)).of_le ReciprocityTheory.AnForm.A.two_le_inf
     have := levi_comp (φ := F) (τ := fun w : Fin n → ℂ => c + w) (z := w) v hA h2
     calc levi f w v = levi (F ∘ fun w : Fin n → ℂ => c + w) w v := rfl
       _ = 0 := by rw [this]; exact hlevi _ (hmem w hw) _
@@ -973,7 +970,7 @@ theorem locExt : ∀ (e : ℕ) (X : Type) [TopologicalSpace X] (A : FinHolAtlas 
       hPn x j y hmemP w
     have hc2 : ContDiffAt ℝ 2 (g₀ ∘ (A.chart j).symm) y :=
       ((hsm0 j).contDiffAt (((A.chart j).isOpen_inter_preimage_symm hU').mem_nhds hy)).of_le
-        locExt_two_le
+        ReciprocityTheory.AnForm.A.two_le_inf
     have h3 := levi_add_smul (f := fun _ => (0 : ℝ)) (-1) contDiffAt_const hc2 w
     simp only [zero_add] at h3
     rw [h3] at h2

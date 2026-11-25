@@ -94,36 +94,12 @@ section Matrices
 
 variable {N j : ℕ} {ca cb : Fin N}
 
-theorem one_add_single_mul (hne : ca ≠ cb) (s t : ℂ) :
-    (1 + Matrix.single cb ca s : Matrix (Fin N) (Fin N) ℂ) * (1 + Matrix.single cb ca t) =
-      1 + Matrix.single cb ca (s + t) := by
-  have e : (Matrix.single cb ca s : Matrix (Fin N) (Fin N) ℂ) * Matrix.single cb ca t = 0 := by
-    ext r c
-    rw [Matrix.mul_apply, Matrix.zero_apply]
-    refine Finset.sum_eq_zero fun k _ => ?_
-    rw [Matrix.single_apply, Matrix.single_apply]
-    split_ifs with h1 h2
-    · exact absurd (h1.2.trans h2.1.symm) hne
-    · rw [mul_zero]
-    · rw [zero_mul]
-    · rw [zero_mul]
-  rw [mul_add, add_mul, add_mul, e, one_mul, one_mul, mul_one, Matrix.single_add]
-  abel
-
 theorem det_transvection_ne (hne : ca ≠ cb) (t : ℂ) :
     (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ).det ≠ 0 := by
   intro h
-  have e := congrArg Matrix.det (one_add_single_mul hne t (-t))
+  have e := congrArg Matrix.det (GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.LcFam.elem_mul_elem hne t (-t))
   rw [det_mul, h, zero_mul, add_neg_cancel, Matrix.single_zero, add_zero, det_one] at e
   exact zero_ne_one e
-
-theorem blockDiag_transvection (hb : ((cb : ℕ) < N - j ↔ (ca : ℕ) < N - j)) (t : ℂ) :
-    IsBlockDiag j (1 + Matrix.single cb ca t : Matrix (Fin N) (Fin N) ℂ) := by
-  intro r s h
-  have hrs : r ≠ s := fun e => h (by rw [e])
-  rw [Matrix.add_apply, Matrix.one_apply_ne hrs, zero_add, Matrix.single_apply, ite_eq_right]
-  rintro ⟨rfl, rfl⟩
-  exact h hb
 
 theorem same_block (hj : j ≤ N) {a b : Fin N} (hba : (b : ℕ) = a + 1) (hab : (b : ℕ) < j ∨ j ≤ (a : ℕ))
     (hca : (ca : ℕ) = lastCol N j a) (hcb : (cb : ℕ) = ca + 1) : ((cb : ℕ) < N - j ↔ (ca : ℕ) < N - j) := by
@@ -141,7 +117,7 @@ theorem flags_ok {Ψ : Type} [DecidableEq Ψ] {h : Ψ → Matrix (Fin N) (Fin N)
   by_cases e : τ' = τ
   · subst e
     rw [Function.update_self]
-    exact ⟨(hh _).1.mul (blockDiag_transvection hb t),
+    exact ⟨(hh _).1.mul (GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.LcFam.isBlockDiag_elem hb t),
       by rw [det_mul]; exact mul_ne_zero (hh _).2 (det_transvection_ne hne t)⟩
   · rw [Function.update_of_ne e]
     exact hh τ'
@@ -155,7 +131,7 @@ theorem hfam_update {Ψ : Type} [DecidableEq Ψ] {d : ℕ} (H : Ψ → (Fin d �
     Function.update (hfam H τ ca cb w s) τ (hfam H τ ca cb w s τ * (1 + Matrix.single cb ca t)) =
       hfam H τ ca cb w (s + t) := by
   unfold hfam
-  rw [Function.update_self, Function.update_idem, mul_assoc, one_add_single_mul hne]
+  rw [Function.update_self, Function.update_idem, mul_assoc, GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.LcFam.elem_mul_elem hne]
 
 end Matrices
 
@@ -684,10 +660,6 @@ theorem same_block {N j : ℕ} {a b ca cb : Fin N} (hj : j ≤ N) (hb : (b : ℕ
   unfold lastCol at hca
   split_ifs at hca <;> omega
 
-theorem blockDiag_transv {N j : ℕ} {ca cb : Fin N} (h : (cb : ℕ) < N - j ↔ (ca : ℕ) < N - j) (t : ℂ) :
-    IsBlockDiag j (1 + Matrix.single cb ca t) := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.blockDiag_transvection <;> assumption
-
 theorem lowerUni_transv {N : ℕ} {ca cb : Fin N} (h : ca < cb) (t : ℂ) :
     IsLowerUni (1 + Matrix.single cb ca t) := by
   refine ⟨fun r => ?_, fun r s hrs => ?_⟩
@@ -803,7 +775,7 @@ theorem GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.dens_w : ∀ (K : Type) [Finty
   · by_cases e : τ' = τ
     · subst e
       rw [Function.update_self]
-      exact (hh' τ').1.mul (FC.DensW.blockDiag_transv hsb t)
+      exact (hh' τ').1.mul (GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.LcFam.isBlockDiag_elem hsb t)
     · rw [Function.update_of_ne e]
       exact (hh' τ').1
   · have hm := (hmin τ' i hi).2
@@ -831,16 +803,6 @@ noncomputable section
 
 namespace GlobalTheory.CompanionTheory.Ar.PB.WSq.FC
 
-theorem sameOrbit_fstPt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (k₀ : K)
-    {z z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ} (h : SameOrbit z z') :
-    SameOrbit (fstPt k₀ z) (fstPt k₀ z') := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.Cell.orbit_fstPt <;> assumption
-
-theorem sameOrbit_sndPt {K : Type} [Fintype K] {ι : K → Type} [∀ k, Fintype (ι k)] (k₀ : K)
-    {z z' : (Σ o : Option K, ι (o.getD k₀)) → ℂ} (h : SameOrbit z z') :
-    SameOrbit (sndPt k₀ z) (sndPt k₀ z') := by
-  apply _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.snd_orbit <;> assumption
-
 theorem null_w : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (ι k)] (Φ : Type) [Field Φ] (y : (Σ k, ι k) → Φ) (Ψ : Type) [Fintype Ψ] [DecidableEq Ψ] (N j : ℕ) (M : FlagModel y Ψ N j) (n d : ℕ) (BM : BaseMetric M n) (FA : FlagAn BM d) (τ : Ψ) (a b : Fin N) (k₀ : K) (ca cb : Fin N), (b : ℕ) = a + 1 → ((b : ℕ) < j ∨ j ≤ (a : ℕ)) → M.blk (τ, a) = some k₀ → (ca : ℕ) = lastCol N j a → (cb : ℕ) = ca + 1 → ∀ (RW : AnLogRes (mCoordIdeal (M.wCo (τ, a) k₀ ca cb RatFunc.X)) ⊤ (d + 2)) (q : Fin 2 → RW.X → FA.S.X), (∀ i, HoloMap RW.A FA.S.A (q i)) → (∀ x x₀, FA.Re.π x₀ = q 0 x → SameOrbit (FA.Re.R.lift x₀ x₀) (fstPt k₀ (RW.lift x x))) → (∀ x x₀, FA.Re.π x₀ = q 1 x → SameOrbit (FA.Re.R.lift x₀ x₀) (sndPt k₀ (RW.lift x x))) → (Function.Injective fun w => (q 0 w, q 1 w)) → ∀ l : Fin BM.q, IsNull RW.A {x | FA.pr (q 0 x) ∈ BM.O l ∧ (FA.pr (q 0 x) ∈ bdry BM.s ∨ ∃ p, FC.plk M (BM.F l) (FC.bvec BM l (FA.pr (q 0 x))) (fstPt k₀ (RW.lift x x)) p = 0 ∨ FC.plk M (BM.F l) (FC.bvec BM l (FA.pr (q 0 x))) (sndPt k₀ (RW.lift x x)) p = 0)} := by
   intro K _ ι _ Φ _ y Ψ _ _ N j M n d BM FA τ a b k₀ ca cb hab hj hblk hca hcb RW q hq h0 h1 hinj l
   have hpr : HoloMap RW.A BM.Rb.A (FA.pr ∘ q 0) := Pr.holoMap_comp' (hq 0) FA.pr_holo
@@ -848,14 +810,14 @@ theorem null_w : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fintype (�
   have hn0 := _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.isNull_off_bigCell K ι Φ y Ψ N j M n BM (d + 2) RW.X RW.A RW.U
     (fun x y' => fstPt k₀ (RW.lift x y')) (FA.pr ∘ q 0) l hpr RW.isOpen_U RW.mem_U
     (fun x p => RW.holo x (v₀ k₀ p))
-    (fun x y' hy => sameOrbit_fstPt k₀ (RW.compat x y' y' ⟨hy, RW.mem_U y'⟩))
+    (fun x y' hy => GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.fst_orbit k₀ (RW.compat x y' y' ⟨hy, RW.mem_U y'⟩))
     (fun x hx V hV hxV => by
       obtain ⟨x', hx', hb, hp⟩ := hdens x hx V hV hxV
       exact ⟨x', hx', hb, fun p => (hp p).1⟩)
   have hn1 := _root_.GlobalTheory.CompanionTheory.Ar.PB.WSq.FC.isNull_off_bigCell K ι Φ y Ψ N j M n BM (d + 2) RW.X RW.A RW.U
     (fun x y' => sndPt k₀ (RW.lift x y')) (FA.pr ∘ q 0) l hpr RW.isOpen_U RW.mem_U
     (fun x p => RW.holo x (v₁ k₀ p))
-    (fun x y' hy => sameOrbit_sndPt k₀ (RW.compat x y' y' ⟨hy, RW.mem_U y'⟩))
+    (fun x y' hy => GlobalTheory.CompanionTheory.Ar.PB.WSq.FamCh.snd_orbit k₀ (RW.compat x y' y' ⟨hy, RW.mem_U y'⟩))
     (fun x hx V hV hxV => by
       obtain ⟨x', hx', hb, hp⟩ := hdens x hx V hV hxV
       exact ⟨x', hx', hb, fun p => (hp p).2⟩)

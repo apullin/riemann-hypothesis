@@ -39,8 +39,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.G
 
 namespace GlobalTheory.CompanionTheory.Ar.EigRank
 
-alias rt0_conj_neg_ne_zero := _root_.UpperTheory.Reformulated.B.Ydc3.main
-
 theorem labelEmb_rt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (l : Geo.Tor.Level H) (c : Coeff l) (τ : CMType H), labelEmb c (Sum.inl τ) H.rt = IntermediateField.inclusion c.le (baseKA l).ρ ∧ labelEmb c (Sum.inr τ) H.rt = -IntermediateField.inclusion c.le (baseKA l).ρ := by
   intro E _ _ _ H l c τ
   constructor
@@ -49,7 +47,7 @@ theorem labelEmb_rt : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H 
   · apply Subtype.ext
     show τ.1 (((H.bar H.rt : 𝓞 E)) : E) = - H.rt0
     rw [H.bar_eq, IsCMField.complexEmbedding_complexConj, τ.2]
-    exact rt0_conj_neg_ne_zero H.d_prime.pos H.sqrt_neg_disc_sq
+    exact UpperTheory.Reformulated.B.Ydc3.main H.d_prime.pos H.sqrt_neg_disc_sq
 
 theorem structure_of_model_point : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Host E) (D : Datum H) (l : Geo.Tor.Level H) (Xo : Moduli D l) (c : Coeff l) (Y : Model Xo c (algebraMap (𝓞 c.F) c.F)) (Ω : Type) [Field Ω] (y₀ : Sp Ω ⟶ Xo.XF c) (cst : c.F →+* Ω), y₀ ≫ Y.j ≫ Y.s = spMap (cst.comp (algebraMap (𝓞 c.F) c.F)) → y₀ ≫ pullback.fst Xo.s (spMap (IntermediateField.inclusion c.le).toRingHom) ≫ Xo.s = spMap (cst.comp (IntermediateField.inclusion c.le).toRingHom) := by
   intro E _ _ _ H D l Xo c Y Ω _ y₀ cst hy

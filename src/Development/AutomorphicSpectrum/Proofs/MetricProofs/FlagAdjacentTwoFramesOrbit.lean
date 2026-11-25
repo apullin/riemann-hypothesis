@@ -1127,17 +1127,6 @@ open GlobalTheory.CompanionTheory.Ar.PB.MinorCalc
 
 variable {N : ℕ}
 
-theorem minorIJ_one_of_ne {I S : Finset (Fin N)} (hI : I ≠ S) :
-    minorIJ (1 : Matrix (Fin N) (Fin N) ℂ) I S = 0 := by
-  by_cases e : I.card = S.card
-  · have hs : ¬ I ⊆ S := fun hs => hI (Finset.eq_of_subset_of_card_le hs e.ge)
-    obtain ⟨a, ha, has⟩ := Finset.not_subset.mp hs
-    exact minorIJ_eq_zero_of_row _ ha fun c hc => Matrix.one_apply_ne fun h => has (h ▸ hc)
-  · exact minorIJ_of_card_ne _ e
-
-theorem minorIJ_one_self' (S : Finset (Fin N)) : minorIJ (1 : Matrix (Fin N) (Fin N) ℂ) S S = 1 := by
-  rw [minorIJ_eq_det _ S S _ rfl rfl, Matrix.submatrix_one _ (S.orderEmbOfFin rfl).injective, Matrix.det_one]
-
 theorem det_submatrix_eq_zero (A : Matrix (Fin N) (Fin N) ℂ) (S : Finset (Fin N))
     (hA : ∀ I, I ≠ S → minorIJ A I S = 0) (f : Fin S.card → Fin N) (x : Fin S.card) (hx : f x ∉ S) :
     (A.submatrix f (S.orderEmbOfFin rfl)).det = 0 := by
@@ -1171,7 +1160,7 @@ theorem eq_zero_of_minors (B : Matrix (Fin N) (Fin N) ℂ) (hB : B.det ≠ 0) (S
   have hS : minorIJ B S S ≠ 0 := by
     intro h0
     have h1 := minorIJ_mul B⁻¹ B S S
-    rw [Matrix.nonsing_inv_mul _ hu, minorIJ_one_self',
+    rw [Matrix.nonsing_inv_mul _ hu, GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.minorIJ_one_same,
       Finset.sum_eq_single S (fun I _ hI => by rw [hA I hI, mul_zero]) (by simp), h0, mul_zero] at h1
     exact one_ne_zero h1
   rw [minorIJ_eq_det B S S _ rfl rfl] at hS
@@ -1214,7 +1203,7 @@ theorem triangular_of_minors_proportional : ∀ (N j : ℕ) (h g : Matrix (Fin N
         μ * minorIJ (h⁻¹ * h) I (stepCols N j i) := by
       rw [minorIJ_mul, minorIJ_mul, Finset.mul_sum]
       exact Finset.sum_congr rfl fun I' _ => by rw [hm I']; ring
-    rw [h1, Matrix.nonsing_inv_mul _ huh, minorIJ_one_of_ne hI, mul_zero]
+    rw [h1, Matrix.nonsing_inv_mul _ huh, GlobalTheory.CompanionTheory.Ar.PB.CovMap.LocImg.FV.minorIJ_one_ne hI, mul_zero]
   intro r s hrs
   have hsr : (s : ℕ) < r := hrs
   have hrN := r.2

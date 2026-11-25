@@ -27,7 +27,7 @@ theorem chart_points : ∀ (K : Type) [Fintype K] (ι : K → Type) [∀ k, Fint
     rw [upV_apply hbm.2.1]
     rfl
   refine ⟨fun τ => ⟨?_, ?_⟩, ?_, fun p k hk hp m => ?_⟩
-  · exact isBlockDiag_mul (hh τ).1 (WMan.Exact.lowMat_isBlockDiag _ _)
+  · exact GlobalTheory.CompanionTheory.Ar.PB.IsBlockDiag.mul (hh τ).1 (WMan.Exact.lowMat_isBlockDiag _ _)
   · rw [pH, Matrix.det_mul, pMat, WMan.Exact.lowMat_det, mul_one]
     exact (hh τ).2
   · funext q

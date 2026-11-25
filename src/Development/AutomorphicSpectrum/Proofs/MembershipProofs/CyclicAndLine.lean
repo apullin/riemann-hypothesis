@@ -618,14 +618,6 @@ open GlobalTheory.CompanionTheory.FinHeis
 
 variable {X M : Type} [AddCommGroup X] [AddCommGroup M] [Module ℂ M]
 
-theorem rho_comm (S : Sys X M) (x y : X) (v : M) :
-    S.rho x (S.rho y v) = S.c x y ^ 2 • S.rho y (S.rho x v) := by
-  rw [S.9 x y v, S.9 y x v, smul_smul, add_comm y x]
-  congr 1
-  have h := _root_.GlobalTheory.CompanionTheory.FinHeis.Sys.c_mul_c_swap S x y
-  calc S.c x y = S.c x y * (S.c x y * S.c y x) := by rw [h, mul_one]
-    _ = S.c x y ^ 2 * S.c y x := by ring
-
 theorem orth (S : Sys X M) (al : X → ℂ) (Γ : AddSubgroup X) (φ φ' : M) (x : X)
     (hΓ : SelfDual S Γ) (hal : IsSemi S al Γ) (hφ : Law S al Γ φ) (hφ' : Law S al Γ φ')
     (hx : x ∉ Γ) : S.B φ' (S.rho x φ) = 0 := by
@@ -638,7 +630,7 @@ theorem orth (S : Sys X M) (al : X → ℂ) (Γ : AddSubgroup X) (φ φ' : M) (x
   push Not at hnot
   obtain ⟨γ, hγ, hcx⟩ := hnot
   have hinv := S.12 γ φ' (S.rho x φ)
-  rw [hφ₀' γ hγ, GlobalTheory.CompanionTheory.FinHeis.LawLine.rho_comm S γ x φ, hφ₀ γ hγ] at hinv
+  rw [hφ₀' γ hγ, GlobalTheory.CompanionTheory.FinHeis.Irred.rho_comm S γ x φ, hφ₀ γ hγ] at hinv
   simp only [LinearMap.map_smulₛₗ₂, map_smul, smul_eq_mul] at hinv
   have hunit : (starRingEnd ℂ) (al γ)⁻¹ * (al γ)⁻¹ = 1 := by
     rcases hal₁ γ hγ with h1 | h1 <;> simp [h1]

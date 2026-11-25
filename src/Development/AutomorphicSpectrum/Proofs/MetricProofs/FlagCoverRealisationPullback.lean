@@ -54,7 +54,7 @@ import GroundTheory.HeightsAndTheta.Heights.HilbertSamuel.PAnResNullForm
 import GroundTheory.HeightsAndTheta.Heights.Intersections.ProjLineRankTwoPushforwardHypotheses
 
 -- This file was produced by scripts/clump.py from the modules listed below.
--- Members: Development.WeilBound.CoreStatements.PluriharmonicCharts.LognormOrbit, Development.WeilBound.CoreStatements.PluriharmonicCharts.ExistsPositivePeriodLine, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCWLine, Development.WeilBound.CoreStatements.PluriharmonicCharts.WCoZero, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCSwap, Development.WeilBound.CoreStatements.PluriharmonicCharts.IsMultiHomogMonoX, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCWSec, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCSqsys, Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverRealisationPullback
+-- Members: Development.WeilBound.CoreStatements.PluriharmonicCharts.LognormOrbit, Development.WeilBound.CoreStatements.PluriharmonicCharts.ExistsPositivePeriodLine, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCWLine, Development.WeilBound.CoreStatements.PluriharmonicCharts.WCoZero, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCSwap, Development.WeilBound.CoreStatements.PluriharmonicCharts.IsMultiHomogMonoX, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCWSec, Development.WeilBound.CoreStatements.PluriharmonicCharts.XCSqsys
 
 -- ===== clump member: Development.WeilBound.CoreStatements.PluriharmonicCharts.LognormOrbit =====
 -- clump-header: {"m": "Development.WeilBound.CoreStatements.PluriharmonicCharts.LognormOrbit", "h": "module\n\npublic import Development.WeilBound.CoreStatements.PluriharmonicCharts.LocalAnalyticSectionCoords\npublic import Development.AutomorphicSpectrum.Proofs.MetricProofs.MinorIJEqSubmatrix\npublic import Development.WeilBound.CoreStatements.PluriharmonicCharts.BlockFnFieldCompLe\npublic import Development.WeilBound.CoreStatements.PluriharmonicCharts.IsOpenHoloPreimage\nimport Development.AutomorphicSpectrum.Proofs.MetricProofs.BlockDiagonalMinorVanishing\nimport Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFifth\nimport Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverArithmeticFirst\nimport Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn\nimport Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverBasePointInPoints\nimport Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagModelBaseProjectionPoints\nimport Development.AutomorphicSpectrum.Definitions.MetricPeriods.GenericBlockMatrixIsBlockDiag\nimport Development.AutomorphicSpectrum.Proofs.MetricProofs.LogPeriodStatement\nimport Development.WeilBound.CoreStatements.PluriharmonicCharts.PullDegSome\nimport GroundTheory.HeightsAndTheta.Heights.HeightKernels.PCoordConeArithVar\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.RingTheory.WittVector.IsPoly\nimport Mathlib.Tactic.Basify\nimport Mathlib.Tactic.ENatToNat\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.Linter.Style\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Tactic.Polynomial.Basic\nimport Mathlib.Tactic.ReduceModChar\nimport Mathlib.Topology.Sheaves.Init\nimport ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.InterBridgeB\nimport Std.Tactic.BVDecide.Normalize.Prop\n\n"}
@@ -787,10 +787,6 @@ theorem exists_point (W : Ideal (MRing ι)) (hW : W.IsPrime) :
 
 def monoX (c : ∀ k, ι k) (d : K → ℕ) : MRing ι := ∏ k, X ⟨k, c k⟩ ^ d k
 
-private theorem isMultiHomog_mulZ {K : Type} {ι : K → Type} [∀ k, Fintype (ι k)] {g h : MRing ι} {a b : K → ℕ}
-    (hg : IsMultiHomog g a) (hh : IsMultiHomog h b) : IsMultiHomog (g * h) (a + b) :=
-  GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hg hh
-
 theorem isMultiHomog_monoX (c : ∀ k, ι k) (d : K → ℕ) : IsMultiHomog (monoX c d) d := by
   rw [← Bridge.isMultiHomog_iff]
   have := IsWeightedHomogeneous.prod (w := NumbersDVR.blockWeight ι) Finset.univ
@@ -829,9 +825,9 @@ theorem exists_rel {w : (Σ k, ι k) → Φ} {z : (Σ k, ι k) → L} (hz : IsPt
   · rw [map_mul]; exact mul_ne_zero h0 (aeval_monoX_ne hc _)
   · rw [map_mul, map_mul, e2, ← chartMono_mul hc he]; ring
   · have hd : IsMultiHomog (m * monoX c dh * g - n * monoX c dg * h) (d + dh + dg) := by
-      refine isMultiHomog_sub (isMultiHomog_mulZ (isMultiHomog_mulZ hm (isMultiHomog_monoX _ _)) hg) ?_
+      refine isMultiHomog_sub (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hm (isMultiHomog_monoX _ _)) hg) ?_
       rw [add_right_comm]
-      exact isMultiHomog_mulZ (isMultiHomog_mulZ hn (isMultiHomog_monoX _ _)) hh
+      exact GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hn (isMultiHomog_monoX _ _)) hh
     rw [mem_iff_of_homog hd]
     simp only [map_sub, map_mul, e1, hq, ← chartMono_mul hcw he]
     have := chartMono_ne hcw e
@@ -1033,8 +1029,8 @@ theorem sec_pen (h0 : ∀ k, ∃ i, y ⟨k, i⟩ ≠ 0)
   let dp : Option K → ℕ := fun o => (totDeg k₀ e o).toNat
   let dm : Option K → ℕ := fun o => (-totDeg k₀ e o).toNat
   have hpm : ∀ o, (dp o : ℤ) - dm o = totDeg k₀ e o := fun o => Int.toNat_sub_toNat_neg _
-  have hg := isMultiHomog_mulZ hn (isMultiHomog_monoX c dp)
-  have hh := isMultiHomog_mulZ hm (isMultiHomog_monoX c dm)
+  have hg := GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hn (isMultiHomog_monoX c dp)
+  have hh := GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hm (isMultiHomog_monoX c dm)
   have hdeg : ∀ o, ((d + dp) o : ℤ) - (d + dm) o = totDeg k₀ e o := fun o => by
     rw [← hpm]; simp
   have hhδ : aeval δ (m * monoX c dm) ≠ 0 := by rw [map_mul]; exact mul_ne_zero hm0 (aeval_monoX_ne hc _)
@@ -1099,10 +1095,10 @@ theorem sec_pen (h0 : ∀ k, ∃ i, y ⟨k, i⟩ ≠ 0)
       exact mul_ne_zero (mul_ne_zero hm0' (aeval_monoX_ne hc _)) hhδ this
     · have hd : IsMultiHomog (m' * monoX c (d + dp) * h * f - n' * monoX c a * monoX c (d + dm) * g)
           (d' + (d + dp) + (d + dm) + a) := by
-        refine isMultiHomog_sub (isMultiHomog_mulZ (isMultiHomog_mulZ
-          (isMultiHomog_mulZ hm' (isMultiHomog_monoX _ _)) hh) hf) ?_
+        refine isMultiHomog_sub (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul
+          (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hm' (isMultiHomog_monoX _ _)) hh) hf) ?_
         rw [show d' + (d + dp) + (d + dm) + a = d' + a + (d + dm) + (d + dp) by ring]
-        exact isMultiHomog_mulZ (isMultiHomog_mulZ (isMultiHomog_mulZ hn' (isMultiHomog_monoX _ _))
+        exact GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul (GroundTheory.Heights₂.Heights.LowerBoundFree.isMultiHomog_mul hn' (isMultiHomog_monoX _ _))
           (isMultiHomog_monoX _ _)) hg
       have hP : m' * monoX c (d + dp) * h * f - n' * monoX c a * monoX c (d + dm) * g ∈ mCoordIdeal w := by
         rw [mem_iff_of_homog hd]
@@ -1428,15 +1424,3 @@ end -- clump:auto
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.WeilBound.CoreStatements.PluriharmonicCharts.XCSqsys =====
-
--- ===== clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverRealisationPullback =====
--- clump-header: {"m": "Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverRealisationPullback", "h": "module\n\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.IsPeriodOn\npublic import Development.AutomorphicSpectrum.Definitions.MetricPeriods.GeometricAbelianConnected\npublic import Development.WeilBound.CoreStatements.PluriharmonicCharts.XCSqsys\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.Complex.UpperHalfPlane.Basic\nimport Mathlib.Analysis.Normed.Algebra.GelfandRadius\nimport Mathlib.Analysis.SpecialFunctions.Bernstein\nimport Mathlib.Analysis.SpecialFunctions.Gamma.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Data.Nat.Choose.Multinomial\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Parity\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\nimport Mathlib.Topology.Sheaves.Init\n\n"}
-section -- clump:auto
-@[expose] public section
-
-open MvPolynomial MeasureTheory Filter Topology Matrix ReciprocityTheory.AnForm ReciprocityTheory.AnForm.M ReciprocityTheory.AnForm.P ReciprocityTheory.ChartRestriction.G.Geo ReciprocityTheory.ChartRestriction.G.AI.I1 ReciprocityTheory.ChartRestriction.G.AI.I2 ReciprocityTheory.ChartRestriction.G.AI.I4 GlobalTheory.CompanionTheory.Ar.PB GroundTheory.Heights₂.Heights GroundTheory.Heights₂.Heights.LowerBoundFree
-open scoped ComplexOrder Classical
-
-end -- clump:auto
-end -- clump:auto
--- ===== end clump member: Development.AutomorphicSpectrum.Proofs.MetricProofs.FlagCoverRealisationPullback =====

@@ -61,20 +61,16 @@ theorem form_natCast_mul {f : MRing ι} {a : K → ℕ} (hf : IsMultiHomog f a) 
     rw [Nat.cast_succ, mul_add, mul_one]
     exact form_add ih hf
 
-theorem cone_form (y : (Σ k, ι k) → Ω) {h : MRing ι} {d : K → ℕ} (hh : IsMultiHomog h d) :
-    mConeMap y h = MvPolynomial.C (aeval y h) * ∏ k, (X k : MvPolynomial K Ω) ^ d k := by
-  apply GroundTheory.Heights₂.Heights.HilbertSamuel.SectionBounded.mConeMap_homog <;> assumption
-
 theorem mem_of_aeval_eq_zero {y : (Σ k, ι k) → Ω} {h : MRing ι} {d : K → ℕ} (hh : IsMultiHomog h d)
     (h0 : aeval y h = 0) : h ∈ mCoordIdeal y := by
   show h ∈ RingHom.ker (mConeMap y)
-  rw [RingHom.mem_ker, cone_form y hh, h0, map_zero, zero_mul]
+  rw [RingHom.mem_ker, GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.mConeMap_eq_of_isMultiHomog y hh, h0, map_zero, zero_mul]
 
 theorem notMem_of_aeval_ne_zero {y : (Σ k, ι k) → Ω} {h : MRing ι} {d : K → ℕ} (hh : IsMultiHomog h d)
     (h0 : aeval y h ≠ 0) : h ∉ mCoordIdeal y := by
   intro hmem
   change h ∈ RingHom.ker (mConeMap y) at hmem
-  rw [RingHom.mem_ker, cone_form y hh] at hmem
+  rw [RingHom.mem_ker, GroundTheory.Heights₂.Heights.HilbertSamuel.ProjLine.mConeMap_eq_of_isMultiHomog y hh] at hmem
   rcases mul_eq_zero.1 hmem with h1 | h1
   · exact h0 (MvPolynomial.C_eq_zero.1 h1)
   · exact (Finset.prod_ne_zero_iff.2 fun k _ => pow_ne_zero _ (MvPolynomial.X_ne_zero k)) h1

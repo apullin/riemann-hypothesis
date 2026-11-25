@@ -2,7 +2,7 @@ module
 
 public import Development.AutomorphicSpectrum.Definitions.CommutativeAlgebra.LieLatticeData
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.Imports
-public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LatticeGoodBaseChange
+public import Development.WeilBound.CoreStatements.TorusUniformisation.ChowMahlerFamilies.FirstLatticeBaseChange
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocFreeMapMkQIff
 public import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.LocallyFreeSummandCriterion
 import Development.AutomorphicSpectrum.Proofs.AlgebraProofs.SumMemLoc
@@ -161,7 +161,7 @@ theorem main : ∀ {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω] {F : Typ
     intro h
     apply hC.1
     rw [hc, h, mul_zero]
-  obtain ⟨-, fH, hle, -⟩ := (_root_.GlobalTheory.CompanionTheory.Ar.Num.LatticeGoodBaseChange.main D R p w χ hC hB hG₁).1 τ
+  obtain ⟨-, fH, hle, -⟩ := (PositivityTheory.Xgn.good_lattice_base_change D R p w χ hC hB hG₁).1 τ
   obtain ⟨-, fW, -, fO⟩ := hB.free τ
   obtain ⟨g1, g2, g3⟩ := hB.gam τ
   obtain ⟨d1, -, d3, d4⟩ := hB.del τ

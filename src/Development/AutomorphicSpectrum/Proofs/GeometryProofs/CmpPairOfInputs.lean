@@ -127,7 +127,7 @@ theorem degComb {Ψ : Type} [Fintype Ψ] [DecidableEq Ψ] {N : ℕ} {K : Type} [
     [∀ k, Fintype (ι k)] (sing ref line : Ψ × Fin N → HermLine ι) (hl : ∀ a, (line a).a = (ref a).a)
     (hr : ∀ a, (ref a).a = (Top.combLine sing (fundOnRoot a)).a) (r : Ψ × Fin N) :
     (Top.combLine line (rootOnFund r)).a = (sing r).a := by
-  have hfi := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.rootOnFund_mul_fundOnRoot_inverse Ψ N
+  have hfi := PositivityTheory.UnitarySelfGeneration.h_fundinv Ψ N
   simp only [Top.combLine] at hr ⊢
   simp_rw [hl, hr, Finset.smul_sum, smul_smul]
   rw [Finset.sum_comm]
@@ -161,7 +161,7 @@ theorem cmpPair : PB.Inputs → CmpSt → HodgeComparisonCompatibility → Theta
   intro hIn hC hT hU II hII E _ _ _ H D l Xo c O _ β Y g Φ hΦ π S n M M' T T' hβ hs hπ hA hR w
   classical
   obtain ⟨K, hK, ι, hι, κ, v, κ', v', Ω, hΩ, hΩ0, y, b, d, hbv, hbv', hP, hP', harith, hmh, hb, hne, hdeg, hiso⟩ :=
-    _root_.GlobalTheory.CompanionTheory.Relay.twisted_hodge_tie_compare hT hU E H D l Xo c O β Y g Φ hΦ π S n M M' T T' hβ hs hπ hA hR
+    PositivityTheory.UnitarySelfGeneration.pair_iso hT hU E H D l Xo c O β Y g Φ hΦ π S n M M' T T' hβ hs hπ hA hR
   have hJ := _root_.PositivityTheory.UnitarySelfGeneration.j_pull M.K M.ι K ι κ v hbv
   have hJ' := _root_.PositivityTheory.UnitarySelfGeneration.j_pull M'.K M'.ι K ι κ' v' hbv'
   have hmpp : IsMultiProjPrime (mCoordIdeal y) := harith.2.1
@@ -172,7 +172,7 @@ theorem cmpPair : PB.Inputs → CmpSt → HodgeComparisonCompatibility → Theta
   let Lr' : CMType H × Fin (D.p + D.q) → HermLine ι := fun r => (hJ'.1 (T'.sing (f r))).exists.choose
   have hLr : ∀ r, IsPullHerm κ v (T.sing r) (Lr r) := fun r => (hJ.1 (T.sing r)).exists.choose_spec
   have hLr' : ∀ r, IsPullHerm κ' v' (T'.sing (f r)) (Lr' r) := fun r => (hJ'.1 (T'.sing (f r))).exists.choose_spec
-  have hfi := _root_.GlobalTheory.CompanionTheory.Ar.Cmp.rootOnFund_mul_fundOnRoot_inverse (CMType H) (D.p + D.q)
+  have hfi := PositivityTheory.UnitarySelfGeneration.h_fundinv (CMType H) (D.p + D.q)
   have hfun : ∀ a, fundOnRoot (f a) ∘ f = fundOnRoot a := fun a => funext fun r => ((hfi a r).2 π).2
   have hsame : ∀ a, SameSing T.Re (T'.Re.comap f) (mCoordIdeal y) κ v κ' v' b a a := by
     intro a
