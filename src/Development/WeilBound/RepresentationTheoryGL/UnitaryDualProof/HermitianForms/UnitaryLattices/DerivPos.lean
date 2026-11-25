@@ -4,11 +4,14 @@ public import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Bern
 import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
 import Development.AbelianVarietyTheory.Proofs.DivisorProofs.FiniteDimensionalFixedPiTensor
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdmissibleOfFiniteLengthSubquotients
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.CompactOpenSubgroupsBasisStatement
+import Mathlib.NumberTheory.LocalField.Basic
+import Mathlib.Topology.Instances.Matrix
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactOpenSubgroupsBasis
+import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirabolicTwistedKernelDerivativeZero
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.RestrictionMirabolicTwistedKernel
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.IsSmoothIterPhi
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.MirProjEqOneOfMem
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.MirabolicTwistedKernelDerivativeZeroStatement
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.RestrictionMirabolicTwistedKernelStatement
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedJacquetPhiMinusEquiv
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.BernsteinZelevinskyGL.TopAdm
 import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.ColMatMulGlEmbMat
@@ -447,7 +450,7 @@ theorem ker_qIter (ψ : Ch k) {n : ℕ} :
     ∀ (j : ℕ) (τ : MRep k (n + j)),
       ker ((twKer (iterPhi k ψ j τ).ρ (MirUin k n) 1).mkQ ∘ₗ qIter ψ j τ) =
         twKer τ.ρ (derUnipM k (n + j) n) (derCharM k ψ (n + j) n)
-  | 0, τ => (Submodule.ker_mkQ _).trans (GlobalTheory.T.mirabolic_twisted_kernel_derivative_zero k ψ n τ.V τ.ρ)
+  | 0, τ => (Submodule.ker_mkQ _).trans (GlobalTheory.CompanionTheory.BZMir.twKer_MirUin_eq_derUnipM k ψ n τ.V τ.ρ)
   | j + 1, τ => by
     let K := twKer τ.ρ (MirUin k (n + j + 1)) (mirChar k ψ (n + j))
     let L := twKer τ.ρ (derUnipM k (n + j + 1) n) (derCharM k ψ (n + j + 1) n)
@@ -466,7 +469,7 @@ theorem derDict (ψ : Ch k) (n j : ℕ) {V : Type} [AddCommGroup V] [Module ℂ 
       ker q = dK ψ π n ∧ ∀ g v, q (π (blkAt k n (n + j + 1) (by omega) g) v) = deriv k ψ j π g (q v) :=
   ⟨(twKer (iterPhi k ψ j (resM k π)).ρ (MirUin k n) 1).mkQ ∘ₗ qIter ψ j (resM k π),
     (mkQ_surjective _).comp (qIter_surj ψ j _),
-    (ker_qIter ψ j (resM k π)).trans (GlobalTheory.T.restriction_mirabolic_twisted_kernel k ψ (n + j) n V π),
+    (ker_qIter ψ j (resM k π)).trans (GlobalTheory.CompanionTheory.BZMirDer.twKer_resM_derUnipM k ψ (n + j) n V π),
     fun g v => by
       rw [← emb_levi n j g]
       show (twKer (iterPhi k ψ j (resM k π)).ρ (MirUin k n) 1).mkQ
@@ -674,7 +677,7 @@ theorem top_core {n N : ℕ} (h : n ≤ N) {V D : Type} [AddCommGroup V] [Module
   have hBe : ∀ g x y, Bt (ρ g x) (ρ g y) = ((nabs k (det g) ^ s : ℝ) : ℂ) * Bt x y := fun g x y => by
     obtain ⟨v, rfl⟩ := hqs x; obtain ⟨w, rfl⟩ := hqs y; rw [← hqe, ← hqe, hdesc, hdesc, hE4]
   refine ⟨twist_irr ρ _ ?_, ⟨Bt, hBh, hBp, fun g x y => ?_⟩⟩
-  · obtain ⟨K₁, hK₁o, hK₁c, -⟩ := GlobalTheory.T.compact_open_subgroups_basis k n Set.univ Filter.univ_mem
+  · obtain ⟨K₁, hK₁o, hK₁c, -⟩ := GlobalTheory.CompanionTheory.SmGL.exists_compact_open_subgroup_subset k n Set.univ Filter.univ_mem
     refine irr_of_forms ρ hadm K₁ hK₁o hK₁c (fun g => nabs k (det g) ^ s) Bt hBh hBp hBe
       fun Ct hCh hCp hCle hCe => ?_
     obtain ⟨c, hc⟩ := hLift ((Ct ∘ₗ q).compl₂ q) ⟨fun _ _ => hCh _ _, fun _ => hCp _⟩

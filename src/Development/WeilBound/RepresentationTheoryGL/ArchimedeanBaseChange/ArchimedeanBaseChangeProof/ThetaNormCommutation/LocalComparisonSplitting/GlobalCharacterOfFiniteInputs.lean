@@ -646,16 +646,8 @@ local notation "θ" => thetaR (starRingEnd ℂ) _
 
 variable {n : ℕ}
 
-theorem th_val (g : GL (Fin n) ℂ) : (θ g).val = ((g⁻¹ : GL (Fin n) ℂ).val)ᴴ := by
-  ext i j
-  simp [thetaR_val, Matrix.conjTranspose_apply]
-
 theorem th_inv_val (g : GL (Fin n) ℂ) : ((θ g)⁻¹ : GL (Fin n) ℂ).val = (g.val)ᴴ := by
-  rw [← map_inv, th_val, inv_inv]
-
-theorem th_th (g : GL (Fin n) ℂ) : θ (θ g) = g := by
-  apply Units.ext
-  rw [th_val, th_inv_val, Matrix.conjTranspose_conjTranspose]
+  rw [← map_inv, GlobalTheory.CompanionTheory.EllipticTwist.theta_val, inv_inv]
 
 theorem th_diag {d : GL (Fin n) ℂ} {z : Fin n → ℂ} (hd : d.val = diagonal z) (hz : ∀ i, ‖z i‖ = 1) :
     θ d = d := by
@@ -673,7 +665,7 @@ theorem continuous_th : Continuous (fun g : GL (Fin n) ℂ => θ g) := by
   rw [Units.continuous_iff]
   constructor
   · have : (Units.val ∘ fun g : GL (Fin n) ℂ => θ g) = fun g => ((g⁻¹ : GL (Fin n) ℂ).val)ᴴ := by
-      funext g; exact th_val g
+      funext g; exact GlobalTheory.CompanionTheory.EllipticTwist.theta_val g
     rw [this]
     exact (Units.continuous_coe_inv).matrix_conjTranspose
   · have : (fun g : GL (Fin n) ℂ => ((θ g)⁻¹ : GL (Fin n) ℂ).val) = fun g => (g.val)ᴴ := by
@@ -716,7 +708,7 @@ theorem tr_eq {d : GL (Fin n) ℂ} {z : Fin n → ℂ} (hd : d.val = diagonal z)
     tr z i (p * d * θ p⁻¹) = z i * ((∑ k, ‖p.val k i‖ ^ 2 : ℝ) : ℂ) := by
   have hθd := th_diag hd hz
   have hy2 : (p * d * θ p⁻¹) * θ (p * d * θ p⁻¹) = p * (d * d) * p⁻¹ := by
-    simp only [map_mul, th_th, hθd, map_inv]
+    simp only [map_mul, GlobalTheory.CompanionTheory.EllipticTwist.theta_theta, hθd, map_inv]
     group
   have hdd : (d * d).val = diagonal fun k => z k ^ 2 := by
     rw [Units.val_mul, hd, Matrix.diagonal_mul_diagonal]
@@ -736,7 +728,7 @@ theorem tr_eq {d : GL (Fin n) ℂ} {z : Fin n → ℂ} (hd : d.val = diagonal z)
       p.val * diagonal (Pi.single i 1) * (p⁻¹ : GL (Fin n) ℂ).val := by
     rw [hy2, Units.val_mul, Units.val_mul, hdd, aeval_conj, aeval_diag, hL]
   have hyv : (p * d * θ p⁻¹).val = p.val * diagonal z * (p.val)ᴴ := by
-    rw [Units.val_mul, Units.val_mul, hd, th_val, inv_inv]
+    rw [Units.val_mul, Units.val_mul, hd, GlobalTheory.CompanionTheory.EllipticTwist.theta_val, inv_inv]
   have hpp : (p⁻¹ : GL (Fin n) ℂ).val * p.val = 1 := by
     rw [← Units.val_mul]; simp
   unfold tr
@@ -805,10 +797,10 @@ theorem diagProper : DiagProper := by
   ·
     have hy : twy x d ∈ C := hx
     have e : θ (twy x d) = (θ x⁻¹) * d * θ (θ x⁻¹)⁻¹ := by
-      simp only [twy, map_mul, map_inv, th_th, hθd, inv_inv]
+      simp only [twy, map_mul, map_inv, GlobalTheory.CompanionTheory.EllipticTwist.theta_theta, hθd, inv_inv]
     have := col_bound hd hz hinj (θ x⁻¹) (B := B) (by
       rw [← e]; exact hB' _ (Or.inr ⟨_, hy, rfl⟩)) j i
-    rw [th_val, inv_inv, Matrix.conjTranspose_apply, norm_star] at this
+    rw [GlobalTheory.CompanionTheory.EllipticTwist.theta_val, inv_inv, Matrix.conjTranspose_apply, norm_star] at this
     exact this
   · have hy : twy x d ∈ C := hx
     have e : twy x d = x⁻¹ * d * θ (x⁻¹)⁻¹ := by simp [twy]
@@ -1222,9 +1214,6 @@ theorem tw_eq (x d : GL (Fin n) ℂ) : PositivityTheory.RgTw.tw x d = twConj (θ
     rfl
   simp only [PositivityTheory.RgTw.tw, twConj, h]
 
-theorem theta_theta (g : GL (Fin n) ℂ) : θ n (θ n g) = g := by
-  apply _root_.GlobalTheory.CompanionTheory.DiagProperProof.th_th <;> assumption
-
 theorem twConj_twConj (g x d : GL (Fin n) ℂ) :
     twConj (θ n) x (twConj (θ n) g d) = twConj (θ n) (g * x) d := by
   simp only [twConj, map_mul]
@@ -1250,7 +1239,7 @@ theorem theta_diag (d : GL (Fin n) ℂ) (z : Fin n → ℂ) (hd : d.val = diagon
 theorem charpoly_norm (g d : GL (Fin n) ℂ) (z : Fin n → ℂ) (hd : d.val = diagonal z) (hz : ∀ i, ‖z i‖ = 1) :
     (twConj (θ n) g d * θ n (twConj (θ n) g d)).val.charpoly = (diagonal fun i => z i ^ 2).charpoly := by
   have h : twConj (θ n) g d * θ n (twConj (θ n) g d) = g⁻¹ * (d * θ n d) * g := by
-    simp only [twConj, map_mul, map_inv, theta_theta]
+    simp only [twConj, map_mul, map_inv, GlobalTheory.CompanionTheory.EllipticTwist.theta_theta]
     group
   have h2 : (d * θ n d).val = diagonal fun i => z i ^ 2 := by
     rw [Units.val_mul, theta_diag d z hd hz, hd, diagonal_mul_diagonal]

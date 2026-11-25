@@ -22,8 +22,6 @@ open scoped Matrix.Norms.Elementwise
 
 variable {n : ℕ}
 
-theorem JJ_mul_self : JJ n * JJ n = -1 := PositivityTheory.Rg.Sw.LVs.HolB.JJ_sq
-
 theorem JJ_inv : (JJ n)⁻¹ = -JJ n :=
   Matrix.inv_eq_right_inv (by rw [mul_neg, _root_.PositivityTheory.Rg.Sw.AbsSt.IwaPf.JJ_mul_self, neg_neg])
 
@@ -59,8 +57,8 @@ theorem lie_dir (Z : M2 n) (b : Bool) : IsLie (if b then dir1 Z else dir2 Z) := 
 def Ju (n : ℕ) : (M2 n)ˣ where
   val := JJ n
   inv := -JJ n
-  val_inv := by rw [mul_neg, JJ_mul_self, neg_neg]
-  inv_val := by rw [neg_mul, JJ_mul_self, neg_neg]
+  val_inv := by rw [mul_neg, PositivityTheory.Rg.Sw.AbsSt.IwaPf.JJ_mul_self, neg_neg]
+  inv_val := by rw [neg_mul, PositivityTheory.Rg.Sw.AbsSt.IwaPf.JJ_mul_self, neg_neg]
 
 theorem cE_conjTranspose {X : M2 n} (hX : IsLie X) (s : ℝ) : (cE X s)ᴴ = JJ n * cE X (-s) * -JJ n := by
   unfold cE

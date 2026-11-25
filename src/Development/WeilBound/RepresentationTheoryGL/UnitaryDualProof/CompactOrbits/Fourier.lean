@@ -303,12 +303,9 @@ variable {k : Type} [Field k] {n : ℕ} {Z : SubM k n}
 
 theorem inv_mem_Gz {g : GLn k n} (hg : g ∈ Gz Z) : g⁻¹ ∈ Gz Z := Gz_inv_mem hg
 
-theorem conj_mem_Bz {g : GLn k n} (hg : g ∈ Gz Z) {w : Mat k n} (hw : w ∈ Bz Z) :
-    g.val * w * g⁻¹.val ∈ Bz Z := conj_mem_Bz_shared hg hw
-
 theorem conj_mem_B0 {g : GLn k n} (hg : g ∈ Gz Z) {w : Mat k n} (hw : w ∈ B0 Z) :
     g.val * w * g⁻¹.val ∈ B0 Z :=
-  ⟨conj_mem_Bz hg hw.1, by show qZ Z (g.val * w * g⁻¹.val) = 0; rw [PositivityTheory.RgUd.T.Nil.qZ_conj_s Z hg w]; exact hw.2⟩
+  ⟨PositivityTheory.RgUd.T.conj_mem_Bz_shared hg hw.1, by show qZ Z (g.val * w * g⁻¹.val) = 0; rw [PositivityTheory.RgUd.T.Nil.qZ_conj_s Z hg w]; exact hw.2⟩
 
 private theorem tr_conj (A P g g' : Mat k n) : trace (A * (g * P * g')) = trace (g' * A * g * P) := by
   rw [← Matrix.mul_assoc, Matrix.trace_mul_comm]; simp only [Matrix.mul_assoc]

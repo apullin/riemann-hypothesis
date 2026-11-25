@@ -55,18 +55,10 @@ open PositivityTheory.Rg.BcB.F.U (lpow lone)
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-theorem L_open_le (d : LocData E n) (hd : d.Ok) {a : ℕ} (ha : a ≤ n) {w : Pl E} (hw : w ∈ d.S₀ ∪ d.Bad) :
-    IsOpen (d.L a w : Set (GLw a w × GLw (n - a) w)) ∧ d.L a w ≤ K2 a (n - a) w := by
-  obtain ⟨L₁, L₂, e, h₁, h₂⟩ := hd.L a ha w hw
-  rw [e]
-  refine ⟨?_, Subgroup.prod_mono h₁.2.1 h₂.2.1⟩
-  rw [Subgroup.coe_prod]
-  exact h₁.1.prod h₂.1
-
 theorem stabilizerDilationWeights_dualIsotropicVector (d : LocData E n) (hd : d.Ok) {a : ℕ} (ha : a ≤ n) {w : Pl E} (hT : w ∉ d.T) (hw : w ∈ d.S₀ ∪ d.Bad)
     (m : ℕ) : (pw (d.betaL a ha) m).s w = idem (d.L a w) := by
   have hl : d.lev a w = d.L a w := by simp [LocData.lev, hT, hw]
-  obtain ⟨ho, hle⟩ := L_open_le d hd ha hw
+  obtain ⟨ho, hle⟩ := PositivityTheory.Rg.BcB.F.PSeen.L_ok d hd ha hw
   induction m with
   | zero => show idem (d.lev a w) = _; rw [hl]
   | succ m ih =>
@@ -80,7 +72,7 @@ theorem tr_bad (d : LocData E n) (hd : d.Ok) {a : ℕ} (ha : a ≤ n) {w : Pl E}
   have hS : w ∉ d.S₀ := fun h => Finset.disjoint_left.1 hd.disj.2.2 h hw
   have hP : w ∉ d.P := by simp [LocData.P, hT, hS]
   have hw' : w ∈ d.S₀ ∪ d.Bad := Finset.mem_union_right _ hw
-  obtain ⟨ho, hle⟩ := L_open_le d hd ha hw'
+  obtain ⟨ho, hle⟩ := PositivityTheory.Rg.BcB.F.PSeen.L_ok d hd ha hw'
   have e : ((d.fixL a).mul (pw (d.betaL a ha) m)).tr d.P d.one w =
       PositivityTheory.Rg.BcN.F2.mconv (d.fix a w) ((pw (d.betaL a ha) m).s w) := by
     unfold LM.tr
@@ -162,12 +154,6 @@ theorem sum_over_index_set_S0 (hT : w ∉ d.T) (hS : w ∈ d.S₀) {M : Type} [A
   rw [this, index_set_at_S0 d hT hS, Finset.sum_product]
   simp
 
-theorem mem_X (hT : w ∉ d.T) (hS : w ∈ d.S₀) (x : d.kap w) : x.1.2 ∈ d.X w := by
-  have h : ∀ p ∈ d.idx w, p.2 ∈ d.X w := by
-    rw [index_set_at_S0 d hT hS]
-    exact fun p hp => (Finset.mem_product.1 hp).2
-  exact h _ x.2
-
 theorem mackey_matrix_at_S0 (hT : w ∉ d.T) (x y : d.kap w) :
     (d.betaL a ha).m w x y = fun m => ((d.X w).card : ℂ)⁻¹ *
       (chi d a w m * phi3 (Nat.add_sub_of_le ha) w (d.e w) x.1.2 y.1.2 m) := by
@@ -234,7 +220,7 @@ theorem trace_at_S0_matches (hd : d.Ok) (hT : w ∉ d.T) (hS : w ∈ d.S₀) (m 
   have hP : w ∈ d.P := by simp [LocData.P, hS]
   have hw' : w ∈ d.S₀ ∪ d.Bad := Finset.mem_union_left _ hS
   have hl : d.lev a w = d.L a w := by simp [LocData.lev, hT, hw']
-  obtain ⟨ho, hle⟩ := L_open_le d hd ha hw'
+  obtain ⟨ho, hle⟩ := PositivityTheory.Rg.BcB.F.PSeen.L_ok d hd ha hw'
   have hent : ∀ x : d.kap w, ((d.fixL a).mul (pw (d.betaL a ha) m)).m w x x =
       fun y => d.sgn a w * (((d.X w).card : ℂ)⁻¹ * (chi d a w y *
         MS.mpow (d.X w) (phi3 (Nat.add_sub_of_le ha) w (d.e w)) m x.1.2 x.1.2 y)) := fun x => by
@@ -258,7 +244,7 @@ theorem trace_at_S0_matches (hd : d.Ok) (hT : w ∉ d.T) (hS : w ∈ d.S₀) (m 
         rfl
       rw [mackey_powers_at_S0 d ha hT hS]
       show ((d.X w).card : ℂ)⁻¹ * (chi d a w (u * g) * _) = ((d.X w).card : ℂ)⁻¹ * (chi d a w g * _)
-      rw [chi_mul, hc, one_mul, mpow_left d ha hd hS m (mem_X d hT hS x) (mem_X d hT hS x) hu'.1]
+      rw [chi_mul, hc, one_mul, mpow_left d ha hd hS m (PositivityTheory.Rg.BcB.F.LocOk.kap_X d hT hS x) (PositivityTheory.Rg.BcB.F.LocOk.kap_X d hT hS x) hu'.1]
     have e3 : mconv (idem (d.L a w)) ((pw (d.betaL a ha) m).m w x x) = (pw (d.betaL a ha) m).m w x x :=
       GlobalTheory.CompanionTheory.FmPowP.mconv_idem_left ho hle _ hinv
     rw [e1, e2, e3]
@@ -322,15 +308,6 @@ section T
 
 variable (d : LocData E n) {a : ℕ} (ha : a ≤ n) {w : Pl E}
 
-theorem index_set_at_T (hT : w ∈ d.T) : d.idx w = Finset.univ ×ˢ {1} := by
-  simp [LocData.idx, hT]
-
-theorem sum_kap_alt (hT : w ∈ d.T) {M : Type} [AddCommMonoid M] (F : Finset (Fin (n / 2)) → M) :
-    ∑ x : d.kap w, F x.1.1 = ∑ s, F s := by
-  have := Finset.sum_coe_sort (d.idx w) (fun p => F p.1)
-  rw [this, index_set_at_T d hT, Finset.sum_product]
-  simp
-
 abbrev cc (d : LocData E n) (w : Pl E) : ↥(d.c w).support → ℂ := fun j => d.c w j.1
 
 abbrev xx (d : LocData E n) (w : Pl E) : ↥(d.c w).support → Fin n → ℤ := fun j => j.1
@@ -338,14 +315,6 @@ abbrev xx (d : LocData E n) (w : Pl E) : ↥(d.c w).support → Fin n → ℤ :=
 theorem qT_hecke (s : Finset (Fin (n / 2))) : IsHecke (Tail.I2 a (n - a) w) (d.qT a w s) := by
   rw [GlobalTheory.CompanionTheory.MatchLMPlaces.qT_eq]
   exact GlobalTheory.CompanionTheory.MatchPow.isHecke_const_mul _ (GlobalTheory.CompanionTheory.MatchPow.entT_hecke n w _ a _ _ s)
-
-theorem beta_m_alt (hT : w ∈ d.T) : (d.betaL a ha).m w = d.diag (fun x => d.qT a w x.1.1) := by
-  funext x y
-  simp [LocData.betaL, hT]
-
-theorem powers_diagonal_at_T (hT : w ∈ d.T) (k : ℕ) (x y : d.kap w) :
-    (pw (d.betaL a ha) k).m w x y = d.diag (fun x => MT.mpow w (d.qT a w x.1.1) (k + 1)) x y :=
-  by apply _root_.GlobalTheory.CompanionTheory.MatchLMB2.powers_diagonal_at_T_block; assumption
 
 theorem trace_test_function_eq (hT : w ∈ d.T) (m : ℕ)
     (hH : ∀ s, ∀ u ∈ Tail.I2 a (n - a) w, ∀ g, MT.mpow w (d.qT a w s) (m + 1) (u * g) = MT.mpow w (d.qT a w s) (m + 1) g) :
@@ -357,7 +326,7 @@ theorem trace_test_function_eq (hT : w ∈ d.T) (m : ℕ)
     simp only [ite_eq_left hT, hl]
   have hent : ∀ x : d.kap w, ((d.fixL a).mul (pw (d.betaL a ha) m)).m w x x = MT.mpow w (d.qT a w x.1.1) (m + 1) := fun x => by
     show ∑ z, mconv ((d.fixL a).m w x z) ((pw (d.betaL a ha) m).m w z x) = _
-    rw [hf, sum_diag d _ (fun z => (pw (d.betaL a ha) m).m w z x), powers_diagonal_at_T d ha hT]
+    rw [hf, sum_diag d _ (fun z => (pw (d.betaL a ha) m).m w z x), GlobalTheory.CompanionTheory.MatchLMB2.powers_diagonal_at_T_block d ha hT]
     have e1 : ∀ f : d.kap w → LF a (n - a) w, d.diag f x x = f x := fun f => ite_eq_left rfl
     rw [e1]
     exact GlobalTheory.CompanionTheory.FmPowP.mconv_idem_left (GlobalTheory.CompanionTheory.MatchPow.iwahori_pair_open a (n - a) w) (GlobalTheory.CompanionTheory.MatchPow.iwahori_pair_le_maximal a (n - a) w) _ (hH _)
@@ -365,7 +334,7 @@ theorem trace_test_function_eq (hT : w ∈ d.T) (m : ℕ)
   funext y
   rw [Finset.sum_apply]
   simp only [hent]
-  exact sum_kap_alt d hT (fun s => MT.mpow w (d.qT a w s) (m + 1) y)
+  exact GlobalTheory.CompanionTheory.MatchLMB2.sum_kap_alt d hT (fun s => MT.mpow w (d.qT a w s) (m + 1) y)
 
 theorem matching_at_T (hMT : MT.MatchT) (hU : Unr E) (hm : MOk d) (hT : w ∈ d.T) (m : ℕ) :
     Match n a (n - a) w 1 (d.gU (m + 1) w) (((d.fixL a).mul (pw (d.betaL a ha) m)).tr d.P d.one w) := by
@@ -520,13 +489,6 @@ section SlopeTestRemainingChoices
 
 variable {H : Type} [Group H]
 
-theorem ms_exists_of_hint_ne_zero (K : Subgroup H) (u : H → ℂ) (h : hint K u ≠ 0) : ∃ z, u z ≠ 0 := by
-  by_contra hc
-  push Not at hc
-  apply h
-  unfold hint
-  simp [hc]
-
 variable {E : Type} [Field E] [NumberField E] {n : ℕ}
 
 theorem isHk_gconv {w : Pl E} (K' : Subgroup (GLw n w)) (f₁ f₂ : GLw n w → ℂ)
@@ -535,7 +497,7 @@ theorem isHk_gconv {w : Pl E} (K' : Subgroup (GLw n w)) (f₁ f₂ : GLw n w →
   · refine HasCompactSupport.intro (h₁.2.2.1.isCompact.mul h₂.2.2.1.isCompact) fun y hy => ?_
     by_contra hne
     unfold gconv at hne
-    obtain ⟨z, hz⟩ := ms_exists_of_hint_ne_zero _ _ hne
+    obtain ⟨z, hz⟩ := GlobalTheory.BCT.CtLevel.exists_ne_zero_of_hint_ne_zero _ _ hne
     apply hy
     have hz1 : f₁ z ≠ 0 := left_ne_zero_of_mul hz
     have hz2 : f₂ (z⁻¹ * y) ≠ 0 := right_ne_zero_of_mul hz

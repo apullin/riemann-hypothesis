@@ -7,11 +7,15 @@ import Development.AbelianVarietyTheory.Definitions.AutomorphicMembership.IsUnit
 import Development.AbelianVarietyTheory.Proofs.TwistedOperators.IsIrreducibleIffOfLinearEquiv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.AdjacentQuotientOfTwoSegment
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CellFunctorNonscalarOffdiag
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.CompactOpenSubgroupsBasisStatement
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsNontrivialDerivativeStatement
+import Mathlib.NumberTheory.LocalField.Basic
+import Mathlib.Topology.Instances.Matrix
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.CompactOpenSubgroupsBasis
+import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.UnipotentDerivatives.DerUnipLeUnipB
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsNontrivialDerivative
+import Development.WeilBound.CoreStatements.TemperedRepresentationTheory.MirabolicDerivatives.ColMatMulGlEmbMat
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.TwistedJacquetIteratedPhiEquiv
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.HighestDerivativeOfProduct
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.LeibnizOrderOfExactSequences
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.TwistedJacquetIteratedPhiEquivStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.AddChar
 import Development.WeilBound.CoreStatements.AutomorphicKernels.BernsteinUnitaryProducts.IrreducibleAdmissibleReps.AdmissibleParabolicInduction.AdmProd
 import Development.WeilBound.CoreStatements.AutomorphicKernels.BernsteinUnitaryProducts.IrreducibleAdmissibleReps.AdmissibleParabolicInduction.IrrAdm
@@ -166,10 +170,10 @@ theorem exists_deriv_pos (ψ : AddChar k Circle) (hc : Continuous ψ) (h1 : ψ �
     (π : GRep k m) (hs : IsSmooth π.ρ) (hnt : Nontrivial π.V) (hm : 0 < m) :
     ∃ (n j : ℕ) (e : m = n + (j + 1)), Nontrivial (derivB ψ (j + 1) (π.cast e)).V := by
   obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
-  obtain ⟨n0, hn0, hnt'⟩ := GlobalTheory.T.exists_nontrivial_derivative k ψ hc h1 m' (resM k π.ρ).V (resM k π.ρ).ρ
+  obtain ⟨n0, hn0, hnt'⟩ := GlobalTheory.CompanionTheory.BZMirDer.NonZero.exists_derivative_nontrivial k ψ hc h1 m' (resM k π.ρ).V (resM k π.ρ).ρ
     (fun v => (hs v).preimage continuous_subtypeVal) hnt
   obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le hn0
-  obtain ⟨E⟩ := GlobalTheory.T.twisted_jacquet_iterated_phi_equiv k ψ n0 j (resM k π.ρ)
+  obtain ⟨E⟩ := GlobalTheory.CompanionTheory.BZMir.iterPhi_twJacquet_equiv k ψ n0 j (resM k π.ρ)
   have := hnt'; exact ⟨n0, j, rfl, E.symm.injective.nontrivial⟩
 
 theorem pipe (hL : LeibnizOrd k) (ψ : AddChar k Circle) (hc : Continuous ψ) (h1 : ψ ≠ 1)
@@ -606,7 +610,7 @@ theorem prod_irreducible (hT : DerivTop k) (hP : DerivPos k) (hL : LeibnizOrd k)
       (DM_zero ψ h e0 (Representation.IntertwiningMap.id _) (fun _ => Subsingleton.elim _ _) y))
   have hdepth : ∀ S : Subrepresentation X.ρ, S ≠ ⊥ → ND ψ (subG S) h := fun S hS => by
     obtain ⟨S₀, hS₀, hle, hirr⟩ := exists_irreducible_le X.ρ
-      (GlobalTheory.T.compact_open_subgroups_basis k (r + t)) hadm hcompl S hS
+      (GlobalTheory.CompanionTheory.SmGL.exists_compact_open_subgroup_subset k (r + t)) hadm hcompl S hS
     obtain ⟨T₀, hcT₀⟩ := hcompl S₀
     have hndS₀ : ND ψ (subG S₀) h := by
       classical

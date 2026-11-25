@@ -223,12 +223,6 @@ section Alg
 
 variable {F E : Type} [Field F] [Field E] [Algebra F E]
 
-theorem sigR_sigR (R : Type) [CommRing R] [Algebra F R] (σ : E →ₐ[F] E) (hinv : ∀ x, σ (σ x) = x)
-    (x : R ⊗[F] E) : sigR R σ (sigR R σ x) = x := by
-  induction x with
-  | add x y hx hy => simp only [map_add (f := _), hx, hy]
-  | tmul r e => simp [sigR, hinv]
-
 def tVec {K : Type} [One K] {M : ℕ} (c d : K) : Fin (M + 2) → K :=
   Fin.cons c (Fin.cons d fun _ => 1)
 
@@ -274,7 +268,7 @@ theorem tGL_mem (σ : E →ₐ[F] E) (hinv : ∀ x, σ (σ x) = x) {M : ℕ} (J 
   have h1 : sigR R σ (u : R ⊗[F] E) * sigR R σ ((u⁻¹ : (R ⊗[F] E)ˣ) : R ⊗[F] E) = 1 := by
     rw [← map_mul, Units.mul_inv, map_one]
   have h2 : sigR R σ (sigR R σ ((u⁻¹ : (R ⊗[F] E)ˣ) : R ⊗[F] E)) * (u : R ⊗[F] E) = 1 := by
-    rw [sigR_sigR R σ hinv, Units.inv_mul]
+    rw [GlobalTheory.CompanionTheory.AvgFree.sigR_sigR R σ hinv, Units.inv_mul]
   refine Fin.cases ?_ (fun i => Fin.cases ?_ (fun i => ?_) i) i <;>
     refine Fin.cases ?_ (fun j => Fin.cases ?_ (fun j => ?_) j) j
   all_goals simp [ht, tVec, JR, hypOne, h1, h2, inclR, Matrix.of_apply, ← Algebra.TensorProduct.one_def]

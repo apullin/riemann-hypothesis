@@ -207,9 +207,6 @@ theorem val_lt_one_of_nabs {z : kˣ} (hz : nabs k z < 1) : valuation k (z : k) <
   have h1 : nabs k (1 : kˣ) = 1 := (by simp [nabs]); linarith
 theorem exists_ne_one {ψ : Ch k} (hψ1 : ψ ≠ 1) : ∃ x, ψ x ≠ 1 := by
   by_contra hc; push Not at hc; exact hψ1 (AddChar.ext _ _ fun x => by rw [hc x, one_apply])
-theorem exists_lat_mem (n : ℕ) (x : Fin n → k) :
-    ∃ A : AddSubgroup (Fin n → k), IsCompact (A : Set (Fin n → k)) ∧ IsOpen (A : Set (Fin n → k)) ∧ x ∈ A :=
-  GlobalTheory.CompanionTheory.LatticePoint.exists_compact_open_addSubgroup_mem n x
 theorem apply_eq_zero_of_isotropic {V : Type} [AddCommGroup V] [Module ℂ V] (B : SForm V)
     (hB : ∀ v w, B w v = cJ (B v w)) (hB' : ∀ v, 0 ≤ (B v v).re) (x : V) (hx : (B x x).re = 0) (w : V) : B x w = 0 :=
   GlobalTheory.T.hermitian_semidefinite_null_radical B hB hB' x hx w
@@ -689,11 +686,11 @@ end Api
 section P0Helpers
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 instance instNonemptyLat (m : ℕ) : Nonempty (LT k m) :=
-  let ⟨A, h1, h2, _⟩ := exists_lat_mem (k := k) (m + 1) 0; ⟨⟨A, h1, h2⟩⟩
+  let ⟨A, h1, h2, _⟩ := GlobalTheory.CompanionTheory.LatticePoint.exists_compact_open_addSubgroup_mem (k := k) (m + 1) 0; ⟨⟨A, h1, h2⟩⟩
 instance instDirectedLat (m : ℕ) : IsDirected (LT k m) (· ≤ ·) :=
   ⟨fun a b => ⟨⟨a.1 ⊔ b.1, isLat_sup a.2 b.2⟩, le_sup_left (a := a.1), le_sup_right (b := b.1)⟩⟩
 theorem eventually_mem_lat (m : ℕ) (x : V1 k m) : ∀ᶠ A : LT k m in atTop, x ∈ A.1 :=
-  let ⟨A, h1, h2, hx⟩ := exists_lat_mem (k := k) (m + 1) x; eventually_atTop.2 ⟨⟨A, h1, h2⟩, fun _ hB => hB hx⟩
+  let ⟨A, h1, h2, hx⟩ := GlobalTheory.CompanionTheory.LatticePoint.exists_compact_open_addSubgroup_mem (k := k) (m + 1) x; eventually_atTop.2 ⟨⟨A, h1, h2⟩, fun _ hB => hB hx⟩
 theorem eventually_ge_lat (m : ℕ) (A₁ : Sub1 k m) (h1 : IsLat A₁) : ∀ᶠ A : LT k m in atTop, A₁ ≤ A.1 :=
   eventually_atTop.2 ⟨⟨A₁, h1⟩, fun _ hB => hB⟩
 variable {m N : ℕ} {h : m + 2 ≤ N} {V : Type} [AddCommGroup V] [Module ℂ V] {π : RepN k N V} {s : ℝ} {B : SForm V}

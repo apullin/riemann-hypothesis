@@ -908,7 +908,6 @@ open PositivityTheory.Rg.BcB.N3 PositivityTheory.Rg.BcB.N3.Pse
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 
-
 theorem main {r t : ℕ} (A : Fin r → ℂˣ) (a b : ℂˣ) (B : Fin t → ℂˣ)
     (T : (iP (k := k) ![a, b]).IntertwiningMap (iP (k := k) ![b, a])) (hT : KInj k T) :
     ∃ T' : (iP (k := k) (Fin.append A (Fin.append ![a, b] B))).IntertwiningMap
@@ -1064,16 +1063,6 @@ open PositivityTheory.Rg.BcB.N3
 
 variable {G V : Type} [Group G] [TopologicalSpace G] [AddCommGroup V] [Module ℂ V]
 
-theorem isSmooth_sub {ρ : Representation ℂ G V} (hρ : IsSmooth ρ) (S : Subrepresentation ρ) :
-    IsSmooth S.toRepresentation := by
-  intro y
-  have e : {g : G | S.toRepresentation g y = y} = {g : G | ρ g (y : V) = y} := by
-    ext g
-    simp only [Set.mem_ofPred_eq]
-    exact ⟨fun h => congrArg Subtype.val h, fun h => Subtype.ext h⟩
-  rw [e]
-  exact hρ (y : V)
-
 theorem injective_of_irred {W : Type} [AddCommGroup W] [Module ℂ W] {ρ : Representation ℂ G V}
     {σ : Representation ℂ G W} (hi : ρ.IsIrreducible) (f : ρ.IntertwiningMap σ) (hf : f ≠ 0) :
     Function.Injective f := by
@@ -1113,7 +1102,7 @@ theorem satLink : SatLink := by
 
   obtain ⟨S, q, hqs⟩ := hq
   obtain ⟨s0, hs0⟩ := hqs x
-  have hSs : IsSmooth S.toRepresentation := isSmooth_sub (isSmooth_parInd _ _) S
+  have hSs : IsSmooth S.toRepresentation := PositivityTheory.RgGu.SRC.SrEasy.isSmooth_sub (isSmooth_parInd _ _) S
   set s := GlobalTheory.LocGL.idem hSs hc s0 with hsdef
   have hqs' : q s = x := by
     rw [hsdef, GlobalTheory.LocGL.map_idem hSs P.smooth hc q s0, hs0, GlobalTheory.LocGL.idem_of_mem P.smooth hc hx]

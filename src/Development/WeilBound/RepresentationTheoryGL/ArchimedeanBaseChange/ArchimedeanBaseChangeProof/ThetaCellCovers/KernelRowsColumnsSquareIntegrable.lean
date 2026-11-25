@@ -143,8 +143,6 @@ theorem cellSum_holds : CellSum := by
     _ = X.μ (Ω₀ * Ω) * ∑' i, c i := by
         rw [ENNReal.tsum_mul_right, mul_comm]
 
-theorem cellSum_of_cntBasic : CntBasic → CellSum := fun _ => cellSum_holds
-
 end GlobalTheory.CompanionTheory.CellSumProof
 end -- clump:auto
 end -- clump:auto
@@ -1437,10 +1435,6 @@ open PositivityTheory.Rg.BcB.E1
 
 variable {α : Type} [MeasurableSpace α] {ν : Measure α}
 
-theorem eLpNorm_two_sq (f : α → ℂ) : eLpNorm' f 2 ν ^ 2 = ∫⁻ x, ‖f x‖ₑ ^ 2 ∂ν := by
-  simpa [ENNReal.rpow_ofNat] using
-    (lintegral_rpow_eNorm_eq_rpow_eLpNorm' (f := f) (μ := ν) (q := 2) (by norm_num)).symm
-
 theorem schur_memLp (hS : SchurL) [SFinite ν] (k : α → α → ℂ) (A : ℝ≥0∞)
     (hk : Measurable (Function.uncurry k)) (hA : A ≠ ⊤)
     (hr : ∀ x, ∫⁻ y, ‖k x y‖ₑ ∂ν ≤ A) (hc : ∀ y, ∫⁻ x, ‖k x y‖ₑ ∂ν ≤ A)
@@ -1849,21 +1843,18 @@ theorem colSq : ColSq := GlobalTheory.CompanionTheory.KernelColumn.colSq_of_kerB
 theorem kernel_rows_columns_square_integrable : KernelL2RowsColumns := GlobalTheory.CompanionTheory.KerSquare.kernel_rows_columns_square_integrable kerBasic cntBasic colSq
 theorem schurInt : SchurInt := GlobalTheory.CompanionTheory.SchurKernel.schurInt_of_schurL _root_.GlobalTheory.CompanionTheory.Schur.schurL
 theorem schurOp : SchurOp := GlobalTheory.CompanionTheory.Schur.schurOp_of_schurL _root_.GlobalTheory.CompanionTheory.Schur.schurL
-theorem cvTest : CvTest := GlobalTheory.CompanionTheory.ConvTest.cvTest
-theorem kerMul : KerMul := GlobalTheory.CompanionTheory.KernelComposition.kerMul_of_kerBasic_of_cvTest kerBasic cvTest
+theorem kerMul : KerMul := GlobalTheory.CompanionTheory.KernelComposition.kerMul_of_kerBasic_of_cvTest kerBasic GlobalTheory.CompanionTheory.ConvTest.cvTest
 theorem opExA : OpExA := GlobalTheory.CompanionTheory.OpEx.opExA kerBasic rowInt schurOp
 theorem opAdj : OpAdj := GlobalTheory.CompanionTheory.KerAdj.opAdj_of kerBasic rowInt schurInt opExA
-theorem opMul : OpMul := GlobalTheory.CompanionTheory.KernelOperators.opMul kerBasic kerLin rowInt kernel_rows_columns_square_integrable schurInt cvTest kerMul
-theorem colOp : ColOp := GlobalTheory.CompanionTheory.KernelColumns.colOp kerBasic cvTest kernel_rows_columns_square_integrable kerMul
-theorem bumpEx : BumpEx := GlobalTheory.CompanionTheory.Bump.bumpEx
-theorem approxU : ApproxU := GlobalTheory.CompanionTheory.ApproxUnit.approxU cvTest _root_.GlobalTheory.CompanionTheory.TwoSidedUnif.twoUnif
-theorem kerClose : KerClose := GlobalTheory.CompanionTheory.KernelClose.kerClose
+theorem opMul : OpMul := GlobalTheory.CompanionTheory.KernelOperators.opMul kerBasic kerLin rowInt kernel_rows_columns_square_integrable schurInt GlobalTheory.CompanionTheory.ConvTest.cvTest kerMul
+theorem colOp : ColOp := GlobalTheory.CompanionTheory.KernelColumns.colOp kerBasic GlobalTheory.CompanionTheory.ConvTest.cvTest kernel_rows_columns_square_integrable kerMul
+theorem approxU : ApproxU := GlobalTheory.CompanionTheory.ApproxUnit.approxU GlobalTheory.CompanionTheory.ConvTest.cvTest _root_.GlobalTheory.CompanionTheory.TwoSidedUnif.twoUnif
 theorem vecClose : VecClose := GlobalTheory.CompanionTheory.KernelColumns.vecClose_of_kerBasic_colSq kerBasic colSq
 theorem vecNorm : VecNorm := GlobalTheory.CompanionTheory.KernelColumns.vecNorm_of_vecClose vecClose
 theorem vecEx : VecEx := GlobalTheory.CompanionTheory.KerVec.vecEx cntBasic kernel_rows_columns_square_integrable _root_.GlobalTheory.CompanionTheory.TwoSidedUnif.twoUnif vecClose
 theorem vecInner : VecInner := GlobalTheory.CompanionTheory.E1.vecInner_of_kerBasic kerBasic
-theorem vecLim : VecLim := GlobalTheory.CompanionTheory.KernelColumns.vecLim_of cntBasic cvTest colOp approxU vecClose
-theorem ptEq : PtEq := GlobalTheory.CompanionTheory.KerPoint.ptEq_of kerBasic cvTest opAdj colOp bumpEx approxU kerClose vecLim
+theorem vecLim : VecLim := GlobalTheory.CompanionTheory.KernelColumns.vecLim_of cntBasic GlobalTheory.CompanionTheory.ConvTest.cvTest colOp approxU vecClose
+theorem ptEq : PtEq := GlobalTheory.CompanionTheory.KerPoint.ptEq_of kerBasic GlobalTheory.CompanionTheory.ConvTest.cvTest opAdj colOp GlobalTheory.CompanionTheory.Bump.bumpEx approxU GlobalTheory.CompanionTheory.KernelClose.kerClose vecLim
 
 end PositivityTheory.Rg.BcB.E1
 end -- clump:auto

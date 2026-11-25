@@ -150,12 +150,8 @@ theorem mR_inv (x : GR n) : mR x⁻¹ = (mR x)⁻¹ := by
   unfold mR
   rw [Subgroup.coe_inv, Matrix.coe_units_inv]
 
-theorem JJ_mul_JJ : JJ n * JJ n = -1 := by
-  rw [← Matrix.fromBlocks_one, Matrix.fromBlocks_neg]
-  simp [JJ, Matrix.fromBlocks_multiply]
-
 theorem inv_JJ : (JJ n)⁻¹ = -JJ n :=
-  Matrix.inv_eq_left_inv (by rw [Matrix.neg_mul, JJ_mul_JJ, neg_neg])
+  Matrix.inv_eq_left_inv (by rw [Matrix.neg_mul, PositivityTheory.Rg.Sw.Glob.jj_mul_jj, neg_neg])
 
 theorem inv_nU (x : Matrix (Fin n) (Fin n) ℂ) : (nU x)⁻¹ = nU (-x) :=
   Matrix.inv_eq_left_inv (by unfold nU; simp [Matrix.fromBlocks_multiply])
@@ -180,7 +176,7 @@ theorem inG_JJ : InG (JJ n) := by
     rw [Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_neg]
     simp
   unfold InG
-  rw [hH, Matrix.neg_mul, JJ_mul_JJ, neg_neg, Matrix.one_mul]
+  rw [hH, Matrix.neg_mul, PositivityTheory.Rg.Sw.Glob.jj_mul_jj, neg_neg, Matrix.one_mul]
 
 def nEl (b : Matrix (Fin n) (Fin n) ℂ) (hb : bᴴ = b) : GR n := mkGR (nU b) (inG_nU hb)
 
@@ -427,14 +423,6 @@ namespace PositivityTheory.Rg.Sw.Glob.DenseP
 
 variable {n : ℕ}
 
-theorem inG_mL {A : Matrix (Fin n) (Fin n) ℂ} (hA : IsUnit A.det) : InG (fromBlocks A 0 0 (A⁻¹)ᴴ) := by
-  have h1 : Aᴴ * (A⁻¹)ᴴ = 1 := by
-    rw [← Matrix.conjTranspose_mul, Matrix.nonsing_inv_mul _ hA, Matrix.conjTranspose_one]
-  have h2 : A⁻¹ * A = 1 := Matrix.nonsing_inv_mul _ hA
-  simp only [InG, JJ, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply, Matrix.conjTranspose_conjTranspose,
-    Matrix.conjTranspose_zero]
-  simp [h1, h2]
-
 def hpart (A : Matrix (Fin n) (Fin n) ℂ) : Matrix (Fin n) (Fin n) ℂ := (1 / 2 : ℂ) • (A + Aᴴ)
 
 theorem hpart_herm (A : Matrix (Fin n) (Fin n) ℂ) : (hpart A)ᴴ = hpart A := by
@@ -473,10 +461,10 @@ theorem continuous_nuE : Continuous (nuE (n := n)) := by
 
 open Classical in
 def mlE (A : Matrix (Fin n) (Fin n) ℂ) : GR n :=
-  if h : IsUnit A.det then mkGR (fromBlocks A 0 0 (A⁻¹)ᴴ) (inG_mL h) else 1
+  if h : IsUnit A.det then mkGR (fromBlocks A 0 0 (A⁻¹)ᴴ) (PositivityTheory.Rg.Sw.Glob.DenseP.inG_lev h) else 1
 
 theorem mlE_of {A : Matrix (Fin n) (Fin n) ℂ} (h : IsUnit A.det) :
-    mlE A = mkGR (fromBlocks A 0 0 (A⁻¹)ᴴ) (inG_mL h) := by
+    mlE A = mkGR (fromBlocks A 0 0 (A⁻¹)ᴴ) (PositivityTheory.Rg.Sw.Glob.DenseP.inG_lev h) := by
   unfold mlE; exact dite_eq_left h
 
 theorem isOpen_unitDet : IsOpen {A : Matrix (Fin n) (Fin n) ℂ | IsUnit A.det} := by
@@ -610,10 +598,6 @@ theorem cT_map_tauE (τ : D.what₂.Tau) {k : ℕ} (u : Matrix (Fin k) (Fin k) D
   ext i j
   simp [Formalism.UG.cT, Matrix.conjTranspose_apply, sig_apply, Formalism.IndefR.Eqv.tauE_star]
 
-theorem block_matrix_map {R S : Type} [CommRing R] [CommRing S] (f : R →+* S) (a b c d : Matrix (Fin n) (Fin n) R) :
-    (blk4 a b c d).map f = blk4 (a.map f) (b.map f) (c.map f) (d.map f) := by
-  rw [blk4, blk4, ← Matrix.submatrix_map, Matrix.fromBlocks_map]
-
 theorem map0 (τ : D.what₂.Tau) : (0 : Matrix (Fin n) (Fin n) D.host.E).map (tauE D τ) = 0 :=
   map_zero (RingHom.mapMatrix (tauE D τ))
 
@@ -629,22 +613,10 @@ theorem map_smul_E (τ : D.what₂.Tau) {k : ℕ} (c : D.host.E) (X : Matrix (Fi
   ext i j; simp [Matrix.map_apply, Matrix.smul_apply]
 
 theorem Jst_map (τ : D.what₂.Tau) : (Jst D n).map (tauE D τ) = Glob.reidx (JJ n) := by
-  rw [Jst, block_matrix_map, map0, map1, mapn1]
+  rw [Jst, PositivityTheory.Rg.Sw.Glob.PlaceFactsH.block_matrix_map, map0, map1, mapn1]
   rfl
 
-theorem reidx_mul (a b : M2 n) : Glob.reidx (a * b) = Glob.reidx a * Glob.reidx b := by
-  simp [Glob.reidx, Matrix.submatrix_mul_equiv]
-
-theorem reidx_one : Glob.reidx (1 : M2 n) = 1 := by
-  simp [Glob.reidx, Matrix.submatrix_one_equiv]
-
-theorem inG_JJc : InG (JJ n) := by
-  simp only [InG, JJ, Matrix.fromBlocks_conjTranspose, Matrix.fromBlocks_multiply]
-  simp
-
 theorem mat_one : mat (1 : G D n) = 1 := by simp [mat]
-
-theorem mat_mul (g h : G D n) : mat (g * h) = mat g * mat h := by simp [mat]
 
 theorem ratPt_of (τ : D.what₂.Tau) (u : Matrix (Fin (n + n)) (Fin (n + n)) D.host.E) (M : M2 n) (hM : InG M)
     (hu : u.map (tauE D τ) = Glob.reidx M) : ∃ γ ∈ GF D n, (mat γ).map (psiT D τ) = Glob.reidx M := by
@@ -659,7 +631,7 @@ theorem ratPt_of (τ : D.what₂.Tau) (u : Matrix (Fin (n + n)) (Fin (n + n)) D.
     show Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) u * Jst D n * u = Jst D n
     have key : (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) u * Jst D n * u).map (tauE D τ) =
         (Jst D n).map (tauE D τ) := by
-      rw [Matrix.map_mul, Matrix.map_mul, cT_map_tauE, Jst_map, hu, ← PositivityTheory.Rg.Sw.Glob.reidx_ct, ← reidx_mul, ← reidx_mul, hM]
+      rw [Matrix.map_mul, Matrix.map_mul, cT_map_tauE, Jst_map, hu, ← PositivityTheory.Rg.Sw.Glob.reidx_ct, ← PositivityTheory.Rg.Sw.Glob.reidx_mul, ← PositivityTheory.Rg.Sw.Glob.reidx_mul, hM]
     exact Matrix.map_injective (tauE D τ).injective key
   refine ⟨GlobalTheory.AdelicU.ratEmb D.sp.cm.sig (Jst D n) ⟨U, hU⟩, ?_, ?_⟩
   · show _ ∈ GlobalTheory.AdelicU.ratPts D.sp.cm.sig (Jst D n)
@@ -673,21 +645,21 @@ def gam (D : D7) (n : ℕ) (τ : D.what₂.Tau) : Subgroup (GR n) where
   carrier := {y | ∃ γ ∈ GF D n, (mat γ).map (psiT D τ) = Glob.reidx (mR y)}
   one_mem' := ⟨1, one_mem _, by
     rw [mat_one, Matrix.map_one _ (map_zero _) (map_one _)]
-    exact reidx_one.symm⟩
+    exact PositivityTheory.Rg.Sw.Glob.reidx_one.symm⟩
   mul_mem' := by
     rintro a b ⟨γ, hγ, ea⟩ ⟨γ', hγ', eb⟩
     refine ⟨γ * γ', mul_mem hγ hγ', ?_⟩
-    rw [mat_mul, Matrix.map_mul, ea, eb]
-    exact (reidx_mul _ _).symm
+    rw [GlobalTheory.StdUnn.LeftInvSect.mat_mul, Matrix.map_mul, ea, eb]
+    exact (PositivityTheory.Rg.Sw.Glob.reidx_mul _ _).symm
   inv_mem' := by
     rintro a ⟨γ, hγ, ea⟩
     refine ⟨γ⁻¹, inv_mem hγ, ?_⟩
     have h1 : (mat γ⁻¹).map (psiT D τ) * (mat γ).map (psiT D τ) = 1 := by
-      rw [← Matrix.map_mul, ← mat_mul, inv_mul_cancel, mat_one, Matrix.map_one _ (map_zero _) (map_one _)]
+      rw [← Matrix.map_mul, ← GlobalTheory.StdUnn.LeftInvSect.mat_mul, inv_mul_cancel, mat_one, Matrix.map_one _ (map_zero _) (map_one _)]
     have h2 : Glob.reidx (mR a) * Glob.reidx (mR a⁻¹) = 1 := by
-      rw [← reidx_mul]
+      rw [← PositivityTheory.Rg.Sw.Glob.reidx_mul]
       show Glob.reidx (mR (a * a⁻¹)) = 1
-      rw [mul_inv_cancel]; exact reidx_one
+      rw [mul_inv_cancel]; exact PositivityTheory.Rg.Sw.Glob.reidx_one
     calc (mat γ⁻¹).map (psiT D τ) = (mat γ⁻¹).map (psiT D τ) * (Glob.reidx (mR a) * Glob.reidx (mR a⁻¹)) := by
           rw [h2, Matrix.mul_one]
       _ = Glob.reidx (mR a⁻¹) := by rw [← Matrix.mul_assoc, ← ea, h1, Matrix.one_mul]
@@ -708,10 +680,10 @@ theorem gens_mem (τ : D.what₂.Tau) (h : GR n) (hh : IsNElt h ∨ IsMElt h ∨
       rw [map_smul_E, Matrix.map_add _ (map_add (tauE D τ)), cT_map_tauE, map_inv₀, map_ofNat, hpart, one_div]
     obtain ⟨γ, hγ, he⟩ := ratPt_of τ (blk4 1 ((2 : D.host.E)⁻¹ • (e' + Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) e')) 0 1)
       (nU (hpart (e'.map (tauE D τ)))) (PositivityTheory.Rg.Sw.LVs.ts_inG_nU (hpart_herm _)) (by
-        rw [block_matrix_map, map0, map1, hβ]
+        rw [PositivityTheory.Rg.Sw.Glob.PlaceFactsH.block_matrix_map, map0, map1, hβ]
         rfl)
     exact ⟨γ, hγ, he⟩
-  · have hh : h = mlE A := by rw [mlE_of hA]; exact mkGR_ext (inG_mL hA) e
+  · have hh : h = mlE A := by rw [mlE_of hA]; exact mkGR_ext (PositivityTheory.Rg.Sw.Glob.DenseP.inG_lev hA) e
     rw [hh]
     refine closure_mono ?_ (mlE_mem_closure (tauE D τ) (denseRange_tauE τ) A hA)
     rintro _ ⟨B, ⟨hB, e', rfl⟩, rfl⟩
@@ -732,14 +704,14 @@ theorem gens_mem (τ : D.what₂.Tau) (h : GR n) (hh : IsNElt h ∨ IsMElt h ∨
       refine (Matrix.inv_eq_right_inv ?_).symm
       rw [← Matrix.map_mul, Matrix.mul_nonsing_inv _ hcd, Matrix.map_one _ (map_zero _) (map_one _)]
     obtain ⟨γ, hγ, he⟩ := ratPt_of τ (blk4 e' 0 0 (Formalism.UG.cT (D.sp.cm.sig : D.host.E →+* D.host.E) e')⁻¹)
-      (fromBlocks (e'.map (tauE D τ)) 0 0 ((e'.map (tauE D τ))⁻¹)ᴴ) (inG_mL hB) (by
-        rw [block_matrix_map, hinv, map0]
+      (fromBlocks (e'.map (tauE D τ)) 0 0 ((e'.map (tauE D τ))⁻¹)ᴴ) (PositivityTheory.Rg.Sw.Glob.DenseP.inG_lev hB) (by
+        rw [PositivityTheory.Rg.Sw.Glob.PlaceFactsH.block_matrix_map, hinv, map0]
         rfl)
     refine ⟨γ, hγ, ?_⟩
     rw [he, mlE_of hB]
     rfl
   · refine (gam D n τ).le_topologicalClosure ?_
-    obtain ⟨γ, hγ, he⟩ := ratPt_of τ (Jst D n) (JJ n) inG_JJc (Jst_map τ)
+    obtain ⟨γ, hγ, he⟩ := ratPt_of τ (Jst D n) (JJ n) PositivityTheory.Rg.Sw.Glob.DenseP.inG_JJ (Jst_map τ)
     exact ⟨γ, hγ, by rw [he, e]⟩
 
 theorem gam_dense (hgen : GenSt) (τ : D.what₂.Tau) (g : GR n) : g ∈ closure (gam D n τ : Set (GR n)) := by
@@ -780,12 +752,12 @@ theorem denseTau : DenseTau := by
   refine ⟨γ, hγ, y', hy'O, γ * (ι y')⁻¹, by group, fun y'' => ?_⟩
   have hR : (mat (γ * (ι y')⁻¹)).map (psiT D τ) = 1 := by
     have h1 : (mat γ).map (psiT D τ) = (mat (γ * (ι y')⁻¹)).map (psiT D τ) * (mat (ι y')).map (psiT D τ) := by
-      rw [← Matrix.map_mul, ← DenseP.mat_mul, inv_mul_cancel_right]
+      rw [← Matrix.map_mul, ← GlobalTheory.StdUnn.LeftInvSect.mat_mul, inv_mul_cancel_right]
     rw [hγe, hy'] at h1
     have h2 : Glob.reidx (mR y') * Glob.reidx (mR y'⁻¹) = 1 := by
-      rw [← DenseP.reidx_mul]
+      rw [← PositivityTheory.Rg.Sw.Glob.reidx_mul]
       show Glob.reidx (mR (y' * y'⁻¹)) = 1
-      rw [mul_inv_cancel]; exact DenseP.reidx_one
+      rw [mul_inv_cancel]; exact PositivityTheory.Rg.Sw.Glob.reidx_one
     calc (mat (γ * (ι y')⁻¹)).map (psiT D τ)
         = (mat (γ * (ι y')⁻¹)).map (psiT D τ) * (Glob.reidx (mR y') * Glob.reidx (mR y'⁻¹)) := by
           rw [h2, Matrix.mul_one]
@@ -794,7 +766,7 @@ theorem denseTau : DenseTau := by
   apply Subtype.ext
   apply Units.ext
   show mat (x * ι y'') = mat (ι y'' * x)
-  rw [DenseP.mat_mul, DenseP.mat_mul]
+  rw [GlobalTheory.StdUnn.LeftInvSect.mat_mul, GlobalTheory.StdUnn.LeftInvSect.mat_mul]
   apply Formalism.IndefR.Eqv.mat_ext D
   · intro τ'
     rw [Matrix.map_mul, Matrix.map_mul]
@@ -1464,15 +1436,6 @@ theorem thetaInt_at {θ : InfFam D} {V : HSp D} (ω : G D n →* Module.End ℂ 
     funext h
     simp only [theta, map_one, Module.End.one_apply]
   simp only [thetaInt, h]
-
-theorem thetaInt_smul {θ : InfFam D} {V : HSp D} (ω : G D n →* Module.End ℂ (schwartzA θ V.rank n)) (ν : Measure (GA D V))
-    (r : ℂ) (Φ : schwartzA θ V.rank n) (g : G D n) : thetaInt ω ν (r • Φ) g = r * thetaInt ω ν Φ g := by
-  have h : theta ω (r • Φ) g = fun h => r * theta ω Φ g h := by
-    funext h
-    simp only [theta, map_smul, Submodule.coe_smul, Pi.smul_apply, smul_eq_mul]
-    exact tsum_mul_left
-  simp only [thetaInt, h, GlobalTheory.AutomorphicL2Unitary.descend, MeasureTheory.average_eq, integral_const_mul]
-  exact (mul_smul_comm _ _ _).symm
 
 theorem phiS_of_mem {θ : InfFam D} (τ : D.what₂.Tau) (fr : Matrix (Fin m) (Fin m) ℂ) (c : ℝ) (Ψ : Mx D m n → ℂ)
     (P : PX m n) (h : tens θ τ fr (fP c P) Ψ ∈ schwartzA θ m n) : phiS θ τ fr c Ψ P = ⟨_, h⟩ := by

@@ -85,9 +85,6 @@ def GapNorm : Prop :=
 def NormInd : Prop :=
   ∀ (n : ℕ) (ε : Fin n → Bool), 1 ≤ pOf ε → 1 ≤ qOf ε → ∀ lam : Fin n → ℝ, IsHCParam lam → NormAt ε lam
 
-def NormDef : Prop :=
-  ∀ (n : ℕ) (ε : Fin n → Bool), q0 ε = 0 → ∀ lam : Fin n → ℝ, IsHCParam lam → NormAt ε lam
-
 def PsiNorm : Prop := ∀ (n : ℕ) (ε : Fin n → Bool) (lam : Fin n → ℝ), IsHCParam lam → NormAt ε lam
 
 def KmapZero : Prop :=

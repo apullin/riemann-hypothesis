@@ -614,14 +614,6 @@ theorem kgT_star (X : Lie E a) : star (kgT X) = kgT X := by
   simp_rw [star_sum, ← J.coord_conjugate]
   exact Fintype.sum_equiv (Function.Involutive.toPerm _ fun τ => star_star τ) _ _ fun τ => rfl
 
-omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
-theorem kg_coord_atEmb_of_ne {τ τ' : E →+* ℂ} (h : InfinitePlace.mk τ' ≠ InfinitePlace.mk τ) (z : ℂ) :
-    coord τ' (atEmb τ z) = 0 := by
-  classical
-  rw [J.coord_eq]
-  unfold atEmb
-  split_ifs <;> simp only [Pi.single_eq_of_ne h, map_zero]
-
 theorem kg_sum_coord_atEmb (τ : E →+* ℂ) (z : ℂ) :
     ∑ τ' : E →+* ℂ, coord τ' (atEmb τ z) = z + starRingEnd ℂ z := by
   have hne : ComplexEmbedding.conjugate τ ≠ τ := by
@@ -632,7 +624,7 @@ theorem kg_sum_coord_atEmb (τ : E →+* ℂ) (z : ℂ) :
   rw [Fintype.sum_eq_add τ (ComplexEmbedding.conjugate τ) hne.symm, J.coord_conjugate, _root_.GlobalTheory.CuspRep.coord_atEmb]
   · rfl
   · rintro τ' ⟨h1, h2⟩
-    refine kg_coord_atEmb_of_ne (fun h => ?_) z
+    refine PositivityTheory.Rg.Cz.J.coord_atEmb_ne (fun h => ?_) z
     rcases InfinitePlace.mk_eq_iff.1 h with h | h
     · exact h1 h
     · exact h2 (by rw [← h]; exact (star_star τ').symm)

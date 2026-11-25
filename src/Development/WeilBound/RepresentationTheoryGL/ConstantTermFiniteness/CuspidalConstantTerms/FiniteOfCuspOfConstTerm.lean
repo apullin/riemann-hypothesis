@@ -1073,21 +1073,6 @@ namespace GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin.TypeKeep
 
 open MeasureTheory GlobalTheory.Published GlobalTheory.Published.AutFin GlobalTheory.StdPar GlobalTheory.ThK.SmoothLev GlobalTheory.CompanionTheory.Hypotheses₂.ConstFin
 
-theorem finiteDimensional_coeffs {K W : Type} [Group K] [AddCommGroup W] [Module ℂ W] [FiniteDimensional ℂ W]
-    (ρ : Representation ℂ K W) : FiniteDimensional ℂ (coeffSpan ρ) := by
-  let T : Module.Dual ℂ W →ₗ[ℂ] W →ₗ[ℂ] (K → ℂ) :=
-    LinearMap.mk₂ ℂ (fun ℓ w => fun k => ℓ (ρ k w))
-      (fun ℓ₁ ℓ₂ w => by funext k; simp)
-      (fun a ℓ w => by funext k; simp)
-      (fun ℓ w₁ w₂ => by funext k; simp)
-      (fun a ℓ w => by funext k; simp)
-  have hle : coeffSpan ρ ≤ LinearMap.range (TensorProduct.lift T) := by
-    unfold coeffSpan
-    rw [Submodule.span_le]
-    rintro f ⟨ℓ, w, rfl⟩
-    exact ⟨ℓ ⊗ₜ w, by simp [T]⟩
-  exact Submodule.finiteDimensional_of_le hle
-
 theorem exists_interp {K : Type} (A : Submodule ℂ (K → ℂ)) [FiniteDimensional ℂ A] :
     ∃ (ι : Type) (_ : Fintype ι) (p : ι → K) (a : ι → K → ℂ), (∀ i, a i ∈ A) ∧
       ∀ f ∈ A, ∀ k, f k = ∑ i, f (p i) * a i k := by
@@ -1139,7 +1124,7 @@ theorem hasTypeAt_of_isConstAlong : ∀ (D : D7) (θ : D.what₂.Tau → (Ainf D
   obtain ⟨hcoc, μ, 𝓕, hμ, h𝓕, h1⟩ := hst.1 T
   haveI := hμ
   have hcI := hc μ 𝓕 hμ h𝓕 h1
-  haveI := finiteDimensional_coeffs ρ
+  haveI := GlobalTheory.CompanionTheory.CTFin.UniSol.finiteDimensional_coeffSpan ρ
   obtain ⟨ι, _, p, a, ha, hrep⟩ := exists_interp (coeffSpan ρ)
   have hcoc' : GlobalTheory.Cusp.Cocompact (GQ V ⊓ unip D.sp.cm.sig V.gram X T) (unip D.sp.cm.sig V.gram X T) := by
     obtain ⟨K, hK, hKc⟩ := hcoc

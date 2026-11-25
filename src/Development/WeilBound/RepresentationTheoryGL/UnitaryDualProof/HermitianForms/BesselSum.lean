@@ -9,7 +9,9 @@ import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.Car
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.CharacterAnnihilatorIntegerLatticeStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.CompactScaledIntoNhdsStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsCharacterSeparatingLatticeStatement
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsCosetRepsOpenInCompactStatement
+import Mathlib.Algebra.Group.Subgroup.Defs
+import Mathlib.Topology.Algebra.Group.Defs
+import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsCosetRepsOpenInCompact
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsScaledNontrivialCharacterStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.LatticeAnnihilatorWithinNhdsStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.RelIndexLatticeEqHaarDetStatement
@@ -161,8 +163,8 @@ theorem sum_char {ψ : Ch k} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) {m : ℕ} {
 theorem exists_tr_le {n : ℕ} (C D : AddSubgroup (Fin n → k)) (hC : IsCompact (C : Set (Fin n → k)))
     (hD : IsOpen (D : Set (Fin n → k))) (hDC : D ≤ C) :
     ∃ T : Finset (Fin n → k), IsTr C D T ∧ T.card = D.relIndex C := by
-  obtain ⟨T, hT1, hT2⟩ := GlobalTheory.T.exists_coset_reps_open_in_compact (Fin n → k) C D hC hD hDC
-  exact ⟨T, ⟨hT1, hT2⟩, GlobalTheory.T.card_coset_reps_eq_relIndex _ C D T hT1 hT2⟩
+  obtain ⟨T, hT1, hT2⟩ := GlobalTheory.CompanionTheory.Topology.exists_finset_transversal_of_isCompact_of_isOpen (Fin n → k) C D hC hD hDC
+  exact ⟨T, ⟨hT1, hT2⟩, GlobalTheory.CompanionTheory.Transversal.card_eq_relIndex _ C D T hT1 hT2⟩
 
 theorem det_scal (m : ℕ) (z : kˣ) :
     GeneralLinearGroup.det (Units.map (algebraMap k (M1 k m)).toMonoidHom z) = z ^ (m + 1) := by
@@ -179,7 +181,7 @@ theorem avg_decomp (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) (hπ : IsSmooth π) (
     (v : V) : (R.card : ℂ) • avg ψ h π ξ A v = (T.card : ℂ) • ∑ η ∈ R, avg ψ h π (ξ + η) A' v := by
   classical
   obtain ⟨⟨H, S⟩, ⟨hHA, hHo, hHv, hHξ, hS1, hS2⟩, -⟩ := exists_avgData h π ψ hψ hπ ξ hA v ⊤ isOpen_univ
-  obtain ⟨U', hU1, hU2⟩ := GlobalTheory.T.exists_coset_reps_open_in_compact (V1 k m) A' H hA'.1 hHo (hHA.trans hAA)
+  obtain ⟨U', hU1, hU2⟩ := GlobalTheory.CompanionTheory.Topology.exists_finset_transversal_of_isCompact_of_isOpen (V1 k m) A' H hA'.1 hHo (hHA.trans hAA)
   set f : V1 k m → V := fun t => cJ (pc ψ (ξ ⬝ᵥ t)) • π (cE h t) v
   have hav : avg ψ h π ξ A v = ((S.card : ℂ)⁻¹) • ∑ t ∈ S, f t :=
     avg_eq h π ψ (p := (H, S)) ⟨hHA, hHo, hHv, hHξ, hS1, hS2⟩
@@ -199,9 +201,9 @@ theorem avg_decomp (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) (hπ : IsSmooth π) (
     simp only [f, pc, dotProduct_add, AddChar.map_add_eq_mul, hHξ d hd, mul_one, colEl_add, map_mul, mul_apply_eq_comp,
       hHv d hd]
   have cmul : U'.card = S.card * T.card := by
-    rw [GlobalTheory.T.card_coset_reps_eq_relIndex _ A' H U' hU1 hU2,
-      GlobalTheory.T.card_coset_reps_eq_relIndex _ A H S hS1 hS2,
-      GlobalTheory.T.card_coset_reps_eq_relIndex _ A' A T hT.1 hT.2,
+    rw [GlobalTheory.CompanionTheory.Transversal.card_eq_relIndex _ A' H U' hU1 hU2,
+      GlobalTheory.CompanionTheory.Transversal.card_eq_relIndex _ A H S hS1 hS2,
+      GlobalTheory.CompanionTheory.Transversal.card_eq_relIndex _ A' A T hT.1 hT.2,
       AddSubgroup.relIndex_mul_relIndex H A A' hHA hAA]
   have hT0 : (T.card : ℂ) ≠ 0 := cast_ne_zero.2 (transversal_nonempty hT.2).card_pos.ne'
   rw [hsum, hind, hav, smul_smul, smul_smul, cmul]; congr 1; rw [cast_mul, mul_inv]
@@ -374,7 +376,7 @@ theorem dens_mir (hB : Lv ψ h π s B) {A₀ : Sub1 k m} (hA₀ : IsLat A₀) {B
   have hconj := avg_conj h π ψ hB.cont hB.smooth p (eLast k m) hA'l v
   rw [hp, ← hPdef] at hconj; change avg ψ h π (xi0 k m) A (π P v) = π P (avg ψ h π (xi0 k m) A' v) at hconj
   have hidx : ((A₀.relIndex A : ℕ) : ℝ) = md p * ((A₀.relIndex A' : ℕ) : ℝ) := by
-    have := GlobalTheory.T.relIndex_lattice_eq_haar_det k (m + 1) p A₀ A hAl.1 hA₀.2 (h01.trans h1A)
+    have := GlobalTheory.CompanionTheory.IndexDet.relIndex_eq_distribHaarChar_det_mul k (m + 1) p A₀ A hAl.1 hA₀.2 (h01.trans h1A)
       (by change A₀ ≤ pre p A; rw [hcom]; exact h02.trans le_sup_left)
     change _ = md p * ((A₀.relIndex (pre p A) : ℕ) : ℝ) at this; rwa [hcom] at this
   rw [hA₁' A hAl h1A, hconj, glInv h π hB.mir p, hA₂' A' hA'l le_sup_left]

@@ -100,15 +100,6 @@ theorem mulVec_consA {n : ℕ} (U : Matrix (Fin (M + 2)) (Fin (M + 2)) K)
   · simpa [consA] using hfix
   · simpa [consA] using mulVec_cons U h0 h1 (a 0 j) (Y j)
 
-theorem map_hypOne {L : Type} [CommRing L] (f : K →+* L) (A : Matrix (Fin M) (Fin M) K) :
-    (hypOne A).map f = hypOne (A.map f) := by
-  ext i j
-  refine Fin.cases ?_ (fun i => Fin.cases ?_ (fun i => ?_) i) i <;>
-    refine Fin.cases ?_ (fun j => Fin.cases ?_ (fun j => ?_) j) j
-  all_goals
-    simp [hypOne_zero_zero, hypOne_zero_one, hypOne_one_zero, hypOne_one_one, hypOne_zero_rest,
-      hypOne_one_rest, hypOne_rest_zero, hypOne_rest_one, hypOne_rest_rest]
-
 end Alg
 
 section Main

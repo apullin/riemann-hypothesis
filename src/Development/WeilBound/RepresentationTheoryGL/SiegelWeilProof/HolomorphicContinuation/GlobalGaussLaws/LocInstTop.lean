@@ -939,7 +939,7 @@ theorem lIlin : LIlin := by
     have hlin : phiS θ τ fr (cLoc l τ) (LocLawH.psi0 θ V n l s τ) (a • P + Q) =
         a • phiS θ τ fr (cLoc l τ) (LocLawH.psi0 θ V n l s τ) P + phiS θ τ fr (cLoc l τ) (LocLawH.psi0 θ V n l s τ) Q := by
       apply Subtype.ext
-      rw [LocLawH.phiS_val (mem _), Submodule.coe_add, Submodule.coe_smul, LocLawH.phiS_val (mem P), LocLawH.phiS_val (mem Q)]
+      rw [PositivityTheory.Rg.Sw.Glob.RhoH.phiS_val (mem _), Submodule.coe_add, Submodule.coe_smul, PositivityTheory.Rg.Sw.Glob.RhoH.phiS_val (mem P), PositivityTheory.Rg.Sw.Glob.RhoH.phiS_val (mem Q)]
       funext x
       simp only [tens, fP, evX, Pi.add_apply, Pi.smul_apply, smul_eq_mul, map_add (f := _), MvPolynomial.smul_eval]
       ring
@@ -952,7 +952,7 @@ theorem lIlin : LIlin := by
     ring
   · apply LocLawH.tens_cancel hσ V l s τ hfr
     have e := hL 1 _ hΨ P
-    rw [map_one, map_one, Module.End.one_apply, LocLawH.phiS_val (mem P)] at e
+    rw [map_one, map_one, Module.End.one_apply, PositivityTheory.Rg.Sw.Glob.RhoH.phiS_val (mem P)] at e
     exact e.symm
 
 theorem lIcont : LIcont := by
@@ -975,7 +975,7 @@ theorem lIkact : LIkact := by
   have hk' : ω (ι k) (phiS θ τ fr (cLoc l τ) (LocLawH.psi0 θ V n l s τ) P) =
       phiS θ τ fr (cLoc l τ) (LocLawH.psi0 θ V n l s τ) (ρ k P) := by
     apply Subtype.ext
-    rw [hL k _ hΨ P, hρ k P hk, LocLawH.phiS_val (mem _)]
+    rw [hL k _ hΨ P, hρ k P hk, PositivityTheory.Rg.Sw.Glob.RhoH.phiS_val (mem _)]
   have e : (ω (ι (g * k)) (phiS θ τ fr (cLoc l τ) (LocLawH.psi0 θ V n l s τ) P)).1 0 =
       (ω (ι g) (phiS θ τ fr (cLoc l τ) (LocLawH.psi0 θ V n l s τ) (ρ k P))).1 0 := by
     rw [map_mul, map_mul, Module.End.mul_apply, hk']

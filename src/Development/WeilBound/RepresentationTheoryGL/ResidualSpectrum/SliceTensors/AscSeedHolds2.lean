@@ -738,10 +738,6 @@ open GlobalTheory.CuspRep GlobalTheory.UnitaryBC GlobalTheory.SmGL GlobalTheory.
 
 namespace PositivityTheory.RSHS.LocalComponentTwist
 
-theorem modExp_const {a d : ℕ} (i : Fin d) :
-    modExp (fun _ : Fin d => Fin a) i = (a : ℤ) * ((d : ℤ) - 1 - 2 * ((i : ℕ) : ℤ)) :=
-  _root_.PositivityTheory.Rg.Rs.satakeAscent.modExp_const i
-
 section Local
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
@@ -956,7 +952,7 @@ theorem step1 (hR : RestrictAtPoint) (hP : ExistsProj) (E : Type) [Field E] [Num
 theorem hst_rev (a d : ℕ) (i : Fin d) :
     ((-spehExp d i + a * spehExp d i : ℝ) : ℂ) =
       ((modExp (fun _ : Fin d => Fin a) i : ℤ) : ℂ) / 2 + (((d : ℂ) - 1) / 2 - ((i.rev : ℕ) : ℂ)) := by
-  rw [PositivityTheory.RSHS.LocalComponentTwist.modExp_const, Fin.val_rev]
+  rw [PositivityTheory.Rg.Rs.satakeAscent.modExp_const, Fin.val_rev]
   have hi := i.2
   have hc : ((d - ((i : ℕ) + 1) : ℕ) : ℂ) = (d : ℂ) - ((i : ℕ) : ℂ) - 1 := by
     rw [Nat.cast_sub (by omega)]

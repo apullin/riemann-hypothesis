@@ -164,8 +164,6 @@ theorem hOf_single (i : Fin n × Fin n) : hOf (Pi.single i (1 : ℝ)) = (hb i : 
     simp [hp]
   · simp
 
-theorem unit_of {y : Mat n} (hy : y ∈ GLs n) : IsUnit y.det := isUnit_iff_ne_zero.mpr hy
-
 section Main
 
 variable {lam : Fin n → ℤ} {E : KMod n} {Fr : Mat n → (E.V →L[ℂ] E.V)} {ε ι : Mat n →ₗ[ℝ] (E.V →L[ℂ] E.V)}
@@ -174,8 +172,8 @@ variable {lam : Fin n → ℤ} {E : KMod n} {Fr : Mat n → (E.V →L[ℂ] E.V)}
 theorem frInv (h : CxData lam E Fr ε ι S Γ T) {y : Mat n} (hy : y ∈ GLs n) :
     Fr y⁻¹ * Fr y = 1 ∧ Fr y * Fr y⁻¹ = 1 := by
   constructor
-  · rw [← h.mul _ (KcInv.inv_mem hy) _ hy, Matrix.nonsing_inv_mul _ (unit_of hy), h.one]
-  · rw [← h.mul _ hy _ (KcInv.inv_mem hy), Matrix.mul_nonsing_inv _ (unit_of hy), h.one]
+  · rw [← h.mul _ (KcInv.inv_mem hy) _ hy, Matrix.nonsing_inv_mul _ (GlobalTheory.CompanionTheory.LengthGL.isUnit_det_of_mem hy), h.one]
+  · rw [← h.mul _ hy _ (KcInv.inv_mem hy), Matrix.mul_nonsing_inv _ (GlobalTheory.CompanionTheory.LengthGL.isUnit_det_of_mem hy), h.one]
 
 theorem frInvEps (h : CxData lam E Fr ε ι S Γ T) {y : Mat n} (hy : y ∈ GLs n) {H : Mat n} (hH : H.IsHermitian) :
     Fr y⁻¹ * ε H = ε (yᴴ * H * y) * Fr y⁻¹ := by
@@ -276,8 +274,8 @@ theorem halfTwo_of (hH : HbFacts) (hF : FrameDer) (hc : FrComm) (h2 : DerTwo) (h
   have hgl := KcInv.coneGL n σ hσ
   have hx : σ v ∈ GLs n := (hgl v hv).1
   have hy : σ w ∈ GLs n := (hgl w hw).1
-  have hyu : IsUnit (σ w).det := unit_of hy
-  have hyHu : IsUnit (σ w)ᴴ.det := unit_of (KcInv.conjT_mem hy)
+  have hyu : IsUnit (σ w).det := GlobalTheory.CompanionTheory.LengthGL.isUnit_det_of_mem hy
+  have hyHu : IsUnit (σ w)ᴴ.det := GlobalTheory.CompanionTheory.LengthGL.isUnit_det_of_mem (KcInv.conjT_mem hy)
   have hKs := KcInv.kcSmooth n E.V σ c Fr k Γ T d hd hσs hσ h.smooth hk
   have hop : IsOpen (cone n) := _root_.PositivityTheory.KcHalf2₂.isOpen_cone_of_hbFacts hH
   have hmem : (v, w) ∈ cone n ×ˢ cone n := ⟨hv, hw⟩

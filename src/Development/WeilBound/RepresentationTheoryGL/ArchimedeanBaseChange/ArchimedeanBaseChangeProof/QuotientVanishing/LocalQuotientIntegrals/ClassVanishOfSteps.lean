@@ -51,11 +51,6 @@ theorem cV_embInf (v w : InfinitePlace E) (y : GL (Fin n) ℂ) :
     simp
   · simp [h]
 
-theorem cV_embInf_self (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
-    GeneralLinearGroup.map (cV v) (embInf n v y) = y := by
-  classical
-  rw [cV_embInf, ite_eq_left rfl]
-
 theorem pFin_embInf (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
     GeneralLinearGroup.map (pFin E) (embInf n v y) = 1 := by
   unfold embInf
@@ -157,7 +152,7 @@ theorem deg_embInf (v : InfinitePlace E) (W : Submodule E (Fin n → E)) (g : GL
         ploc ((basisMat W).map v.embedding) (GeneralLinearGroup.map (cV v) x) else 0 := fun w => by
     by_cases h : w = v
     · subst h
-      rw [ite_eq_left rfl, lognInf_eq, lognInf_eq, map_mul, cV_embInf_self]
+      rw [ite_eq_left rfl, lognInf_eq, lognInf_eq, map_mul, GlobalTheory.CompanionTheory.LocFlagPf.map_cV_embInf]
       ring
     · rw [ite_eq_right h, add_zero]
       unfold lognInf
@@ -172,7 +167,7 @@ open PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 in
 theorem PositivityTheory.Rg.BcB.CV.pf_Ploc : PositivityTheory.Rg.BcB.CV.Ploc := by
   intro E _ _ _ n v W
   refine ⟨fun x => LocalPlacePositivity.lognInf_eq v x _, LocalPlacePositivity.ploc_cont v W, fun x k hk => LocalPlacePositivity.ploc_mul_k _ x k hk,
-    fun hW => ?_, LocalPlacePositivity.cV_embInf_self v, fun v' hv' g => ?_, fun d => LocalPlacePositivity.cV_ratGL v d,
+    fun hW => ?_, GlobalTheory.CompanionTheory.LocFlagPf.map_cV_embInf v, fun v' hv' g => ?_, fun d => LocalPlacePositivity.cV_ratGL v d,
     fun g x => LocalPlacePositivity.deg_embInf v W g x⟩
   · subst hW
     exact ⟨fun x => LocalPlacePositivity.ploc_empty _ (by simp) x, fun x => LocalPlacePositivity.degM_empty x _ (by simp)⟩
@@ -787,11 +782,6 @@ namespace PositivityTheory.Rg.BcB.CV.AdelicTopology
 
 variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 
-theorem twConj_mul_eq {G : Type} [Group G] (θ : Monoid.End G) (a b δ : G) :
-    twConj θ (a * b) δ = twConj θ b (twConj θ a δ) := by
-  simp only [twConj, map_mul]
-  group
-
 theorem twConj_ratGL (g d : GL (Fin n) E) :
     twConj (thetaA E n) (ratGL E n g) (ratGL E n d) = ratGL E n (twConj (thetaE E n) g d) := by
   simp only [twConj, GlobalTheory.CompanionTheory.RatDisc.thetaA_ratGL, map_mul, map_inv]
@@ -852,14 +842,14 @@ theorem PositivityTheory.Rg.BcB.CV.pf_CutInt : PositivityTheory.Rg.BcB.D4.KerFin
     subst hγc
     have hd' : twConj (thetaE E n) g d ∈ S := by
       refine ⟨c, hcC, ?_⟩
-      rwa [twConj_mul_eq, twConj_ratGL] at hφx
+      rwa [GlobalTheory.CompanionTheory.UnfoldCut.twConj_mul', twConj_ratGL] at hφx
     have hex : ∃ g', twConj (thetaE E n) g' d = twConj (thetaE E n) g d := ⟨g, rfl⟩
     have hpick : pick (twConj (thetaE E n) g d) = hex.choose := dite_eq_left hex
     set g₀ := hex.choose with hg₀
     have hg₀d : twConj (thetaE E n) g₀ d = twConj (thetaE E n) g d := hex.choose_spec
     have hcent : g * g₀⁻¹ ∈ twCent (thetaE E n) d := by
       change twConj (thetaE E n) (g * g₀⁻¹) d = d
-      rw [twConj_mul_eq, ← hg₀d, ← twConj_mul_eq, mul_inv_cancel]
+      rw [GlobalTheory.CompanionTheory.UnfoldCut.twConj_mul', ← hg₀d, ← GlobalTheory.CompanionTheory.UnfoldCut.twConj_mul', mul_inv_cancel]
       simp [twConj]
     refine ⟨ratGL E n (g * g₀⁻¹), ⟨g * g₀⁻¹, hcent, rfl⟩, ratGL E n g₀ * c, ?_, ?_⟩
     · refine Set.mem_biUnion hd' ⟨c, hcC, ?_⟩
@@ -906,23 +896,6 @@ namespace PositivityTheory.Rg.BcB.CV.FamilyAtPlace
 
 open PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4
 
-theorem emb_conj {E : Type} [Field E] [NumberField E] [IsCMField E] (v : InfinitePlace E) (x : E) :
-    v.embedding (conjE E x) = starRingEnd ℂ (v.embedding x) :=
-  IsCMField.complexEmbedding_complexConj E v.embedding x
-
-theorem locGL_theta {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} (v : InfinitePlace E)
-    (d : GL (Fin n) E) : locGL v (thetaE E n d) = thC n (locGL v d) := by
-  apply Units.ext
-  have h1 : (locGL v (thetaE E n d)).val = ((thetaR (conjE E) n d).val).map v.embedding := rfl
-  have h2 : (locGL v d⁻¹).val = (d⁻¹ : GL (Fin n) E).val.map v.embedding := rfl
-  rw [h1, thetaR_val, thetaR_val, ← map_inv, h2]
-  ext i j
-  simp [emb_conj]
-
-theorem locGL_nrm {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ} (v : InfinitePlace E)
-    (d : GL (Fin n) E) : locGL v (nrm d) = locGL v d * thC n (locGL v d) := by
-  rw [nrm, map_mul, locGL_theta]
-
 theorem perp_anti {K : Type} [Field K] (σ : K →+* K) {n : ℕ} {W W' : Submodule K (Fin n → K)} (h : W ≤ W') :
     perp σ W' ≤ perp σ W := fun _ hy x hx => hy x (h hx)
 
@@ -936,7 +909,7 @@ open PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D4 PositivityTheory.Rg.BcB.
 theorem PositivityTheory.Rg.BcB.CV.pf_FamAt : PositivityTheory.Rg.BcB.D4.LocFlag → PositivityTheory.Rg.BcB.CV.Ploc → PositivityTheory.Rg.BcB.CV.FamAt := by
   intro hLF hP E _ _ _ n m d Wof a V v hPar hV hemb
   refine ⟨?_, ?_⟩
-  · rw [← locGL_nrm]
+  · rw [← PositivityTheory.Rg.BcB.CV.Glob1Aux.locGL_nrm]
     have : (locGL v (nrm d)).val = (nrm d).val.map v.embedding := rfl
     rw [this, Matrix.charpoly_map]
     exact hPar.reg.map

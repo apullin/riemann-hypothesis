@@ -96,13 +96,6 @@ theorem md_pr (t : Fˣ) : md (pr t) = 1 := by
 theorem md_pr_mul (t : Fˣ) (a : (AF F)ˣ) : md (pr t * a) = md a := by
   rw [md_mul, md_pr, one_mul]
 
-theorem th_pr_mul (f : (AF F)ˣ → ℝ≥0∞) (t : Fˣ) (a : (AF F)ˣ) : th f (pr t * a) = th f a := by
-  unfold th
-  have h : ∀ u : Fˣ, pr u * (pr t * a) = pr (u * t) * a := fun u => by
-    rw [← mul_assoc]; congr 1; exact (map_mul (Units.map (algebraMap F (AF F)).toMonoidHom) u t).symm
-  simp_rw [h]
-  exact (Equiv.mulRight t).tsum_eq (fun u => f (pr u * a))
-
 def ray (θ : ℝ →+* Ainf F) (δ : ℝ) : (AF F)ˣ :=
   if h : δ = 0 then 1 else
     ⟨(θ δ, 1), (θ δ⁻¹, 1), by
@@ -172,13 +165,13 @@ theorem asym_of {H : Subgroup (AF F)ˣ} (hH : IsH σ H) {r : ℝ → (AF F)ˣ} (
   refine ⟨⟨C, fun a => ?_⟩, ⟨R, fun a ha => ?_⟩, hth0, fun a haH => ?_⟩
   · by_cases h : a ∈ H
     · obtain ⟨t, x, n, hn, rfl⟩ := (hH a).1 h
-      rw [md_pr_mul, th_pr_mul, ← hM x n hn]
+      rw [md_pr_mul, GlobalTheory.CompanionTheory.BasePsi.th_pr, ← hM x n hn]
       exact hC x n hn
     · simp [hth0 a h]
   · by_cases h : a ∈ H
     · obtain ⟨t, x, n, hn, rfl⟩ := (hH a).1 h
       rw [md_pr_mul] at ha
-      rw [th_pr_mul, ← hM x n hn]
+      rw [GlobalTheory.CompanionTheory.BasePsi.th_pr, ← hM x n hn]
       exact hR x n hn ha
     · exact hth0 a h
   · obtain ⟨t, x, n, hn, rfl⟩ := (hH a).1 haH
@@ -196,7 +189,7 @@ theorem asym_of {H : Subgroup (AF F)ˣ} (hH : IsH σ H) {r : ℝ → (AF F)ˣ} (
     have hN := isNm_mul hn (r (Real.sqrt δ))
     rw [hr _ hε, e1] at hN
     simp only [Function.comp, e1]
-    rw [hM _ _ hN, mul_assoc, md_pr_mul, th_pr_mul]
+    rw [hM _ _ hN, mul_assoc, md_pr_mul, GlobalTheory.CompanionTheory.BasePsi.th_pr]
 
 end Norms
 

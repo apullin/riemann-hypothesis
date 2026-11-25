@@ -486,17 +486,6 @@ variable {L : Type} [Field L] [Valued L (WithZero (Multiplicative ℤ))] {n : �
 def wJ (L : Type) [Field L] [Valued L (WithZero (Multiplicative ℤ))] (n : ℕ) : GL (Fin n) L :=
   ⟨antiJ L n, antiJ L n, GlobalTheory.UnitarySwap.antiJ_mul_self, GlobalTheory.UnitarySwap.antiJ_mul_self⟩
 
-theorem cT_antiJ (σ : L →+* L) : cT σ (antiJ L n) = antiJ L n := by
-  ext i j
-  simp only [cT, Matrix.transpose_apply, Matrix.map_apply, antiJ]
-  by_cases h : i.val + j.val + 1 = n
-  · rw [ite_eq_left h, ite_eq_left (by omega)]; simp
-  · rw [ite_eq_right h, ite_eq_right (by omega)]; simp
-
-theorem wJ_mem_GU (σ : L →+* L) : wJ L n ∈ GU σ n := by
-  change cT σ (antiJ L n) * antiJ L n * antiJ L n = antiJ L n
-  rw [cT_antiJ, GlobalTheory.UnitarySwap.antiJ_mul_self, Matrix.one_mul]
-
 theorem wJ_mem_GLint (O : Subring L) : wJ L n ∈ GLint (Fin n) O := by
   have h : ∀ i j, antiJ L n i j ∈ O := fun i j => by
     simp only [antiJ]
@@ -504,23 +493,6 @@ theorem wJ_mem_GLint (O : Subring L) : wJ L n ∈ GLint (Fin n) O := by
     · exact O.one_mem
     · exact O.zero_mem
   exact GlobalTheory.AdelicU.mem_GLint_iff.2 ⟨h, h⟩
-
-theorem wJ_conj_diag {σ : L →+* L} {ϖ : L} (hϖ : σ ϖ = ϖ) (d : Fin n → ℤ) (t : GU σ n)
-    (ht : t.1.1 = Matrix.diagonal fun i => ϖ ^ d i) : wJ L n * t.1 * wJ L n = (t.1)⁻¹ := by
-  have h0 : cT σ t.1.1 * antiJ L n * t.1.1 = antiJ L n := t.2
-  have hc : cT σ t.1.1 = t.1.1 := by
-    rw [ht]
-    ext i j
-    by_cases h : i = j
-    · subst h
-      simp [cT, map_zpow₀, hϖ]
-    · simp [cT, Matrix.diagonal_apply_ne _ h, Matrix.diagonal_apply_ne _ (Ne.symm h)]
-  rw [hc] at h0
-  refine eq_inv_of_mul_eq_one_left (Units.ext ?_)
-  change antiJ L n * t.1.1 * antiJ L n * t.1.1 = 1
-  calc antiJ L n * t.1.1 * antiJ L n * t.1.1 = antiJ L n * (t.1.1 * antiJ L n * t.1.1) := by
-        simp only [Matrix.mul_assoc]
-    _ = 1 := by rw [h0, GlobalTheory.UnitarySwap.antiJ_mul_self]
 
 end Generic
 
@@ -773,7 +745,7 @@ theorem sphStar : LocAlg → SphStarU := by
   · obtain ⟨B, hBh, hBpos, hBinv⟩ := hU
     haveI : Nontrivial (fixed σ.ρ (KL n w)) := Module.nontrivial_of_finrank_eq_succ hrank
     obtain ⟨v, hv0⟩ := exists_ne (0 : fixed σ.ρ (KL n w))
-    have hvfix := mem_fixed_iff.1 v.2
+    have hvfix := GlobalTheory.Parabolic.mem_fixed.1 v.2
     let φ : UL n w → ℂ := fun x => B (σ.ρ x v) v
     have key : ∀ f, IsHecke (KL n w) f →
         twTr σ.ρ (KL n w) (KL n w) f LinearMap.id = LinearMap.trace ℂ _ (locOp σ (KL n w) f) →

@@ -74,14 +74,6 @@ theorem isUnit_of_inG {x : M2 n} (hx : InG x) : IsUnit x := by
       _ = 1 := by rw [h, _root_.PositivityTheory.Rg.Sw.AbsSt.IwaPf.JJ_mul_self]; simp
   exact (Matrix.isUnit_iff_isUnit_det x).mpr (Matrix.isUnit_det_of_left_inverse h)
 
-theorem inverse_first_block_eq_conjTranspose {x : M2 n} (hx : InG x) : ub1 x = (u1 x)ᴴ := by
-  rw [ub1, inv_of_inG hx, u1]
-  conv_lhs => rw [← fromBlocks_toBlocks x]
-  simp only [JJ, fromBlocks_conjTranspose, fromBlocks_multiply, fromBlocks_neg, toBlocks_fromBlocks₁₁,
-    toBlocks_fromBlocks₂₁]
-  simp [Matrix.conjTranspose_add, Matrix.conjTranspose_smul]
-  abel
-
 def Nq (Q : Matrix (Fin n) (Fin n) ℂ) : M2 n := Cm n * fromBlocks 0 Q 0 0 * Cmi n
 
 theorem cmi_mul_cm : Cmi n * Cm n = 1 := mul_eq_one_comm.mp cm_mul_cmi

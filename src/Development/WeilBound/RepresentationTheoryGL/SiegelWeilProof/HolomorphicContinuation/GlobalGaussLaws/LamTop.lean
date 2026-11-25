@@ -146,8 +146,6 @@ def ChiPer : Prop :=
 
 namespace LamSingH
 
-theorem JJ_sq : JJ n * JJ n = -1 := PlaceFactsH.JJ_mul_self
-
 def toGR (M : M2 n) (hM : InG M) : GR n :=
   ⟨Matrix.GeneralLinearGroup.mkOfDetNeZero M (by
       intro h0
@@ -155,7 +153,7 @@ def toGR (M : M2 n) (hM : InG M) : GR n :=
       rw [Matrix.det_mul, Matrix.det_mul, h0, mul_zero] at e
       have hJ : (JJ n).det ≠ 0 := by
         intro hJ0
-        have := congrArg Matrix.det (JJ_sq (n := n))
+        have := congrArg Matrix.det (PositivityTheory.Rg.Sw.Glob.PlaceFactsH.JJ_mul_self (n := n))
         rw [Matrix.det_mul, hJ0, zero_mul] at this
         simp [Matrix.det_neg] at this
       exact hJ e.symm), hM⟩
@@ -380,7 +378,7 @@ theorem gLsing_core (hFZ : FourierZeroN) (hTS : TwoSided) (hD : DenseTau) (hCD :
         apply Units.inv_eq_of_mul_eq_one_left
         show -(JJ n * M.1ᴴ * JJ n) * M.1 = 1
         have h2 : M.1ᴴ * JJ n * M.1 = JJ n := M.2
-        rw [Matrix.neg_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc M.1ᴴ, h2, JJ_sq, neg_neg]
+        rw [Matrix.neg_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc M.1ᴴ, h2, PositivityTheory.Rg.Sw.Glob.PlaceFactsH.JJ_mul_self, neg_neg]
       exact (((continuous_const.mul (continuous_subtype_val.matrix_conjTranspose)).mul continuous_const).neg).congr
         fun M => (hinv M).symm
     exact (hFc.comp ((hιc.comp hc).mul continuous_const)).congr fun M => (hFam h M.1 M.2).symm
@@ -461,7 +459,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.ModerateGrowthSchwartz (schwartzA)
 noncomputable section
 
 namespace GlobalTheory.StdUnn
-
 
 
 theorem exists_realPar_of_isCharAF : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ), IsCharAF D.host.F ψ →
@@ -607,32 +604,12 @@ variable {D : D7} {n : ℕ}
 
 namespace FZNH
 
-theorem unipotent_block_mul_add {R : Type} [CommRing R] (b c : Matrix (Fin n) (Fin n) R) :
-    blk4 1 b 0 1 * blk4 1 c 0 1 = blk4 (1 : Matrix (Fin n) (Fin n) R) (b + c) 0 1 := by
-  rw [GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul]
-  simp [add_comm]
-
-theorem block_matrix_one {R : Type} [CommRing R] :
-    blk4 (1 : Matrix (Fin n) (Fin n) R) 0 0 1 = 1 :=
-  GlobalTheory.StdUnn.Frame.block_matrix_one
-
-theorem mat_injective : Function.Injective (mat (D := D) (n := n)) :=
-  fun _ _ => GlobalTheory.StdUnn.LeftInvSect.mat_inj
-
-theorem mat_mul (x y : G D n) : mat (x * y) = mat x * mat y :=
-  GlobalTheory.StdUnn.LeftInvSect.mat_mul x y
-
-theorem mat_one : mat (1 : G D n) = 1 := GlobalTheory.StdUnn.LeftInvSect.mat_one
-
 theorem nb_add {nb : hermA D n → G D n} (h : PositivityTheory.PfSWUS.IsNMap nb)
     (b c : hermA D n) : nb (b + c) = nb b * nb c :=
   GlobalTheory.CompanionTheory.SiegelUnip.nb_add h b c
 
 theorem nb_zero {nb : hermA D n → G D n} (h : PositivityTheory.PfSWUS.IsNMap nb) : nb 0 = 1 :=
   GlobalTheory.CompanionTheory.SiegelUnip.nb_zero h
-
-theorem nb_neg {nb : hermA D n → G D n} (h : PositivityTheory.PfSWUS.IsNMap nb) (b : hermA D n) :
-    (nb b)⁻¹ = nb (-b) := (GlobalTheory.CompanionTheory.SiegelUnip.nb_neg h b).symm
 
 theorem nb_continuous {nb : hermA D n → G D n} (h : PositivityTheory.PfSWUS.IsNMap nb) :
     Continuous nb := GlobalTheory.CompanionTheory.SiegelUnip.nb_continuous h

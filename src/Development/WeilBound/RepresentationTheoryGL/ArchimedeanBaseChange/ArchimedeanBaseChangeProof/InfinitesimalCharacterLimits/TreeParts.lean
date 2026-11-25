@@ -22,8 +22,6 @@ def Tr.leafList : {N : ℕ} → Tr E N → List (Σ M : ℕ, Submodule ℂ (Sm E
 def TreeParts {N : ℕ} (t : Tr E N) (P : PositivityTheory.Rg.BcB.F.Pre E N) : Prop :=
   (List.ofFn fun i => (⟨P.N i, P.V i⟩ : Σ M : ℕ, Submodule ℂ (Sm E M))) = t.leafList.filter fun x => 0 < x.1
 
-def rt {a b : ℕ} (g : Hf E a b) (F : H E a b → ℂ) : H E a b → ℂ := fun x => F (x * finH g)
-
 def PreOfTree : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (N : ℕ) (t : Tr E N), t.Good → t.Untw →
   (∀ τ, ∃ m, HasInfCharGL t.space τ m) → ∃ P : PositivityTheory.Rg.BcB.F.Pre E N, TreeParts t P
 

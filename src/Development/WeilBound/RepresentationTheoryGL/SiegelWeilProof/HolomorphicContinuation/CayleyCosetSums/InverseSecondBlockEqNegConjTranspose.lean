@@ -111,7 +111,7 @@ theorem inverse_second_block_eq_neg_conjTranspose {x : M2 n} (hx : InG x) : ub2 
 
 theorem Om_K {k : M2 n} (hk : InK k) : Om k = -((u2 k)⁻¹ * u1 k) := by
   unfold Om
-  rw [inverse_second_block_eq_neg_conjTranspose hk.1, inverse_first_block_eq_conjTranspose hk.1, Matrix.inv_eq_left_inv (mul_eq_one_comm.mp (first_cayley_block_compact_unitary hk)),
+  rw [inverse_second_block_eq_neg_conjTranspose hk.1, PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group hk.1, Matrix.inv_eq_left_inv (mul_eq_one_comm.mp (first_cayley_block_compact_unitary hk)),
     ← second_cayley_block_inv_eq_conjTranspose hk, Matrix.neg_mul]
 
 theorem normSq_det_u1K {k : M2 n} (hk : InK k) : Complex.normSq (u1 k).det = 1 := by
@@ -122,7 +122,7 @@ theorem normSq_det_u1K {k : M2 n} (hk : InK k) : Complex.normSq (u1 k).det = 1 :
 
 theorem fz_K (m : ℕ) (e : ℤ) (z : ℂ) {k : M2 n} (hk : InK k) : fz m e z k = fz m e 0 k := by
   have hd : (u1 k).det * (ub1 k).det = 1 := by
-    rw [inverse_first_block_eq_conjTranspose hk.1, Matrix.det_conjTranspose, Complex.star_def, mul_comm,
+    rw [PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group hk.1, Matrix.det_conjTranspose, Complex.star_def, mul_comm,
       ← Complex.normSq_eq_conj_mul_self, normSq_det_u1K hk, Complex.ofReal_one]
   simp only [fz, hd, Complex.one_cpow, neg_zero, Complex.cpow_zero]
 
@@ -140,7 +140,7 @@ theorem Om_up {p y : M2 n} (hp : InG p) (hp21 : p.toBlocks₂₁ = 0) (hy : InG 
   have hq : (p.toBlocks₂₂)ᴴ * p.toBlocks₁₁ = 1 := by
     simpa [Matrix.conjTranspose_mul] using congrArg Matrix.conjTranspose hp'.2.1
   unfold Om
-  rw [inverse_second_block_eq_neg_conjTranspose (_root_.PositivityTheory.Rg.Sw.LVs.inG_mul hp hy), inverse_first_block_eq_conjTranspose (_root_.PositivityTheory.Rg.Sw.LVs.inG_mul hp hy), inverse_second_block_eq_neg_conjTranspose hy, inverse_first_block_eq_conjTranspose hy, second_cayley_block_upper_triangular_mul hp21, first_cayley_block_upper_triangular_mul hp21,
+  rw [inverse_second_block_eq_neg_conjTranspose (_root_.PositivityTheory.Rg.Sw.LVs.inG_mul hp hy), PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group (_root_.PositivityTheory.Rg.Sw.LVs.inG_mul hp hy), inverse_second_block_eq_neg_conjTranspose hy, PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group hy, second_cayley_block_upper_triangular_mul hp21, first_cayley_block_upper_triangular_mul hp21,
     Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, Matrix.mul_inv_rev, Matrix.inv_eq_right_inv hq,
     Matrix.neg_mul, Matrix.neg_mul, Matrix.mul_assoc, ← Matrix.mul_assoc (p.toBlocks₂₂)ᴴ, hq, Matrix.one_mul]
 
@@ -152,11 +152,11 @@ theorem fz_up {p y : M2 n} (hp : InG p) (hp21 : p.toBlocks₂₁ = 0) (hy : InG 
   have h1 : (u1 (p * y)).det = (p.toBlocks₂₂).det * (u1 y).det := by rw [first_cayley_block_upper_triangular_mul hp21, Matrix.det_mul]
   have h2 : (u1 (p * y)).det * (ub1 (p * y)).det =
       ((Complex.normSq (p.toBlocks₂₂).det : ℝ) : ℂ) * ((Complex.normSq (u1 y).det : ℝ) : ℂ) := by
-    rw [inverse_first_block_eq_conjTranspose (_root_.PositivityTheory.Rg.Sw.LVs.inG_mul hp hy), Matrix.det_conjTranspose, h1, star_mul', Complex.star_def,
+    rw [PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group (_root_.PositivityTheory.Rg.Sw.LVs.inG_mul hp hy), Matrix.det_conjTranspose, h1, star_mul', Complex.star_def,
       Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_conj_mul_self]
     ring
   have h3 : (u1 y).det * (ub1 y).det = ((Complex.normSq (u1 y).det : ℝ) : ℂ) := by
-    rw [inverse_first_block_eq_conjTranspose hy, Matrix.det_conjTranspose, Complex.star_def, Complex.normSq_eq_conj_mul_self]
+    rw [PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group hy, Matrix.det_conjTranspose, Complex.star_def, Complex.normSq_eq_conj_mul_self]
     ring
   simp only [fz, lam]
   rw [h2, h3, h1, Matrix.det_mul, mul_zpow, mul_zpow,

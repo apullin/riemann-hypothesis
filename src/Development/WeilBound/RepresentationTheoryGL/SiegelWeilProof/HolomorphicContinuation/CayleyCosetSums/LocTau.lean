@@ -531,7 +531,7 @@ theorem diffAt_of_cdo {f : M2 n → ℂ} {U : Set (M2 n)} (hf : ContDiffOn ℂ �
 
 theorem D0_eq_numSeg_mul_add {x : M2 n} (hx : InG x) :
     (u1 x).det * (ub1 x).det = ((Complex.normSq (u1 x).det : ℝ) : ℂ) := by
-  rw [inverse_first_block_eq_conjTranspose hx, Matrix.det_conjTranspose, Complex.star_def]
+  rw [PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group hx, Matrix.det_conjTranspose, Complex.star_def]
   exact Complex.mul_conj _
 
 theorem normSq_det_first_block_pos {x : M2 n} (hx : InG x) : 0 < Complex.normSq (u1 x).det :=

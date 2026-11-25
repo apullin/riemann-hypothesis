@@ -89,14 +89,6 @@ theorem map_mul_entry {R R' : Type} [CommRing R] [CommRing R'] (φ : R →+* R')
 
 variable {D : D7} {n : ℕ}
 
-theorem map_cancel {R : Type} [CommRing R] (φ : AE D →+* R) (V : HSp D) (g : GA D V) :
-    (mt V g).map φ * (mt V g⁻¹).map φ = 1 := by
-  have h : mt V g * mt V g⁻¹ = 1 := by
-    unfold Formalism.L2.Theta.mt
-    rw [map_inv]
-    exact Units.mul_inv _
-  rw [← Matrix.map_mul, h, Matrix.map_one _ (map_zero φ) (map_one φ)]
-
 theorem comp_mem (θ : InfFam D) (V : HSp D) (h : GA D V) {Φ : Mx D V.rank n → ℂ} (hΦ : Φ ∈ schwartzA θ V.rank n) :
     (fun x : Mx D V.rank n => Φ (mt V h ⬝ x)) ∈ schwartzA θ V.rank n := by
   induction hΦ using Submodule.span_induction with
@@ -108,8 +100,8 @@ theorem comp_mem (θ : InfFam D) (V : HSp D) (h : GA D V) {Φ : Mx D V.rank n �
     haveI : IsModuleTopology (Af D.host.F) (Af D.host.F ⊗[D.host.F] D.host.E) := ⟨rfl⟩
     haveI : IsTopologicalRing (Af D.host.F ⊗[D.host.F] D.host.E) := IsModuleTopology.isTopologicalRing (Af D.host.F) _
     refine Submodule.subset_span ⟨SchwartzMap.compCLMOfContinuousLinearEquiv ℝ
-      (lmulFam n fun τ => map_cancel ((θ τ).comp (infPart D)) V h).toContinuousLinearEquiv f,
-      g ∘ lmulHomeo n (map_cancel (finPart D) V h), ⟨hg.1.comp_continuous (lmulHomeo n _).continuous, hg.2.comp_homeomorph _⟩, funext fun x => ?_⟩
+      (lmulFam n fun τ => GlobalTheory.CompactAvgSchwartz.map_cancel ((θ τ).comp (infPart D)) V h).toContinuousLinearEquiv f,
+      g ∘ lmulHomeo n (GlobalTheory.CompactAvgSchwartz.map_cancel (finPart D) V h), ⟨hg.1.comp_continuous (lmulHomeo n _).continuous, hg.2.comp_homeomorph _⟩, funext fun x => ?_⟩
     have e1 := fun τ => map_mul_entry ((θ τ).comp (infPart D)) (mt V h) x
     have e2 := map_mul_entry (finPart D) (mt V h) x
     exact congrArg₂ (· * ·) (congrArg f (funext e1)) (congrArg g e2)

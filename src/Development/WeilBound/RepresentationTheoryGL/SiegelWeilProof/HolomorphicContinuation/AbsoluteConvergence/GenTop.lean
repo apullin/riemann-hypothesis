@@ -536,9 +536,6 @@ variable {m n : ℕ} {ε : Fin m → Bool} {c t : ℝ} {p q : ℕ} {e : ℤ} {sL
   [SecondCountableTopology G] {Pp Γ : Subgroup G} {ι : GR n →* G} {s₀ : ℂ} {Ht : G → ℝ≥0}
   {sec I : PX m n →ₗ[ℂ] (G → ℂ)}
 
-theorem split_mul (x₀ : G) (y k : GR n) : x₀ * ι y * ι k = x₀ * ι (y * k) := by
-  rw [mul_assoc, ← map_mul]
-
 theorem cont_hz (hD : CayleyBlocksInvertible) (hL : LocData ε c t p q e sL ρ) (hG : GlobCore ε c sL ρ G Pp Γ ι s₀ Ht sec I)
     (z : ℂ) (b : GR n) (x : G) : Continuous fun k : KR n => hz Ht sec s₀ z 1 (x * ι ((k : GR n) * b)) := by
   obtain ⟨x₀, y, S, r, hr, rfl, h⟩ := hG.split x
@@ -546,7 +543,7 @@ theorem cont_hz (hD : CayleyBlocksInvertible) (hL : LocData ε c t p q e sL ρ) 
       fun k : KR n => ((r * hLoc (y * (k : GR n) * b) : ℝ) : ℂ) ^ (z - s₀) * (S * F0 p q e (y * (k : GR n) * b)) := by
     funext k
     unfold hz
-    rw [split_mul, ← mul_assoc y (k : GR n) b, (h _).1, (h _).2 1, hL.vac]
+    rw [PositivityTheory.Rg.Sw.AbsSt.Far.split_mul, ← mul_assoc y (k : GR n) b, (h _).1, (h _).2 1, hL.vac]
   rw [hfun]
   have hc : Continuous fun k : KR n => y * (k : GR n) * b :=
     (continuous_const.mul continuous_subtype_val).mul continuous_const
@@ -568,7 +565,7 @@ theorem pointId [MeasurableSpace (KR n)] (hD : CayleyBlocksInvertible) (hL : Loc
         (κ k * ((hLoc (y * (k : GR n) * yy i) : ℂ) ^ (z - s₀) * F0 p q e (y * (k : GR n) * yy i))) := by
     funext k
     unfold hz
-    rw [split_mul, ← mul_assoc y (k : GR n) (yy i), (h _).1, (h _).2 1, hL.vac, Complex.ofReal_mul,
+    rw [PositivityTheory.Rg.Sw.AbsSt.Far.split_mul, ← mul_assoc y (k : GR n) (yy i), (h _).1, (h _).2 1, hL.vac, Complex.ofReal_mul,
       Complex.mul_cpow_ofReal_nonneg hr.le (hLoc_pos hD _).le]
     ring
   rw [hfun, integral_const_mul, hMid (z - s₀) i y, Finset.mul_sum, Finset.mul_sum]
@@ -1009,40 +1006,6 @@ theorem hz_comb (hD : GlobData ε c sL ρ G Pp Γ ι s₀ Ht sec I Λ) {N : ℕ}
 
 end
 
-theorem mulVec_sum {N : ℕ} (A B : Matrix (Fin N) (Fin N) ℂ) (v : Fin N → ℂ) (j : Fin N) :
-    ∑ i, A j i * ∑ l, B i l * v l = ∑ l, (A * B) j l * v l := by
-  simp only [Matrix.mul_apply, Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun i _ => ?_
-  ring
-
-private theorem det_diff_lemma {N : ℕ} {A : ℂ → Matrix (Fin N) (Fin N) ℂ}
-    (h : ∀ i j, Differentiable ℂ fun w => A w i j) : Differentiable ℂ fun w => (A w).det := by
-  simp only [Matrix.det_apply']
-  refine Differentiable.fun_sum fun σ _ => ?_
-  refine Differentiable.fun_mul (differentiable_const _) ?_
-  classical
-  have hp : ∀ s : Finset (Fin N), Differentiable ℂ (fun w => ∏ i ∈ s, A w (σ i) i) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simpa using (differentiable_const (1 : ℂ))
-    | insert a s ha ih =>
-      simp only [Finset.prod_insert ha]
-      exact (h (σ a) a).fun_mul ih
-  exact hp Finset.univ
-
-private theorem adj_diff_lemma_2 {N : ℕ} {A : ℂ → Matrix (Fin N) (Fin N) ℂ}
-    (h : ∀ i j, Differentiable ℂ fun w => A w i j) (a b : Fin N) :
-    Differentiable ℂ fun w => (A w).adjugate a b := by
-  simp only [Matrix.adjugate_apply]
-  refine det_diff_lemma (A := fun w => (A w).updateRow b (Pi.single a 1)) fun i j => ?_
-  by_cases hib : i = b
-  · subst hib
-    simp only [Matrix.updateRow_self]
-    exact differentiable_const _
-  · simp only [Matrix.updateRow_ne hib]
-    exact h i j
-
 private theorem ev_ne_lemma_3 {f : ℂ → ℂ} (hf : Differentiable ℂ f) (ha : ∃ a, f a ≠ 0) (z : ℂ) :
     ∀ᶠ w in 𝓝[≠] z, f w ≠ 0 := by
   rcases (hf.analyticAt z).eventually_eq_zero_or_eventually_ne_zero with h | h
@@ -1062,8 +1025,8 @@ private theorem glue_core_lemma_4 (hG : Glue) {N : ℕ} {s₀ : ℂ} {U V : Set 
     (hσU : rightOf σ ⊆ U) (hEd : ∀ j, DifferentiableOn ℂ (Ej j) (rightOf σ))
     (hBE : ∀ w ∈ rightOf σ, ∀ i, B i w = D w * ∑ l, M' w i l * Ej l w) (j : Fin N) :
     HolValueAt (Ej j) s₀ (Ah j s₀) := by
-  have hdt : Differentiable ℂ fun w => (M' w).det := det_diff_lemma hM
-  have hadj : ∀ a b, Differentiable ℂ fun w => (M' w).adjugate a b := adj_diff_lemma_2 hM
+  have hdt : Differentiable ℂ fun w => (M' w).det := PositivityTheory.Rg.Sw.AbsSt.diffDet_lemma_3 hM
+  have hadj : ∀ a b, Differentiable ℂ fun w => (M' w).adjugate a b := PositivityTheory.Rg.Sw.AbsSt.diffAdj_lemma_4 hM
   have hdt0 : (M' s₀).det = 1 := by rw [hM0, Matrix.det_one]
   have hgb0 : (∑ i, (M' s₀).adjugate j i * Ah i s₀) / (M' s₀).det = Ah j s₀ := by
     rw [hdt0, div_one, hM0, Matrix.adjugate_one]
@@ -1126,7 +1089,7 @@ private theorem glue_core_lemma_4 (hG : Glue) {N : ℕ} {s₀ : ℂ} {U V : Set 
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [hBE w hwσ i]
         ring
-      rw [h2, mulVec_sum, Matrix.adjugate_mul]
+      rw [h2, PositivityTheory.Rg.Sw.AbsSt.mulVec_sum', Matrix.adjugate_mul]
       simp [Matrix.smul_apply, Matrix.one_apply]
     rw [h3, ← mul_assoc, mul_div_cancel_left₀ _ (mul_ne_zero hDw hdw)]
 

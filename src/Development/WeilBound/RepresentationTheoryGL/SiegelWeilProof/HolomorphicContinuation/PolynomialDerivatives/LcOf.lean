@@ -514,10 +514,6 @@ open PositivityTheory.Rg.Sw
 
 variable {m n : ℕ}
 
-theorem hop_pderiv_comm' (i j : Fin m × Fin n × Bool) (p : PX m n) :
-    pderiv (R := ℂ) i (pderiv (R := ℂ) j p) = pderiv (R := ℂ) j (pderiv (R := ℂ) i p) := by
-  apply _root_.PositivityTheory.Rg.Sw.LC.pderiv_comm <;> assumption
-
 theorem cr_false (c : ℝ) (a : Fin m) (i : Fin n) (Q : PX m n) :
     cr c (a, i, false) Q = -pderiv (a, i, false) Q + (2 * c : ℂ) • (X (a, i, true) * Q) := by
   simp [cr]
@@ -526,22 +522,19 @@ theorem cr_true (c : ℝ) (a : Fin m) (i : Fin n) (Q : PX m n) :
     cr c (a, i, true) Q = -pderiv (a, i, true) Q + (2 * c : ℂ) • (X (a, i, false) * Q) := by
   simp [cr]
 
-theorem hop_fock_C (c : ℝ) (r : ℂ) : fock c (C r : PX m n) = C r := by
-  apply _root_.PositivityTheory.Rg.Sw.LC.fock_C <;> assumption
-
 theorem hop_pderiv_cr (c : ℝ) (j k : Fin m × Fin n × Bool) (Q : PX m n) :
     pderiv k (cr c j Q) = cr c j (pderiv k Q) + C (2 * c : ℂ) * (if k = (j.1, j.2.1, !j.2.2) then Q else 0) := by
   obtain ⟨a, i, e⟩ := j
   cases e
   · rw [cr_false, cr_false]
     simp only [map_add (f := _), map_neg, Derivation.leibniz, pderiv_X, smul_eq_mul, smul_eq_C_mul,
-      hop_pderiv_comm' k (a, i, false)]
+      PositivityTheory.Rg.Sw.LC.pderiv_comm k (a, i, false)]
     by_cases h : k = (a, i, true)
     · subst h; simp; ring
     · simp [h, Ne.symm h]
   · rw [cr_true, cr_true]
     simp only [map_add (f := _), map_neg, Derivation.leibniz, pderiv_X, smul_eq_mul, smul_eq_C_mul,
-      hop_pderiv_comm' k (a, i, true)]
+      PositivityTheory.Rg.Sw.LC.pderiv_comm k (a, i, true)]
     by_cases h : k = (a, i, false)
     · subst h; simp; ring
     · simp [h, Ne.symm h]
@@ -580,7 +573,7 @@ theorem hop_deriv_fock {c : ℝ} (hc : 0 < c) (k : Fin m × Fin n × Bool) (p : 
     pderiv (k.1, k.2.1, !k.2.2) (fock c p) = C (2 * c : ℂ) * fock c (pderiv k p) := by
   classical
   induction p using MvPolynomial.induction_on with
-  | C r => rw [hop_fock_C, pderiv_C, pderiv_C, fock_zero' hB hc, mul_zero]
+  | C r => rw [PositivityTheory.Rg.Sw.LC.fock_C, pderiv_C, pderiv_C, fock_zero' hB hc, mul_zero]
   | add p q hp hq =>
     rw [fock_add'' hB hc, map_add (f := _), hp, hq, map_add (f := _), fock_add'' hB hc, mul_add]
   | mul_X p j ih =>
@@ -629,7 +622,7 @@ theorem fockHOp_of : FockHOp := by
     rw [map_sub, fL_apply, fL_apply, d1, d2]
     have e1 := hop_tr_false hB hc b i (pderiv (a, i, true) p)
     have e2 := hop_tr_true hB hc a i (pderiv (b, i, false) p)
-    rw [hop_pderiv_comm' (b, i, false) (a, i, true)] at e1
+    rw [PositivityTheory.Rg.Sw.LC.pderiv_comm (b, i, false) (a, i, true)] at e1
     simp only [sub_self, mul_zero, map_zero, zero_mul, sub_zero, map_one, one_mul]
     linear_combination e1 - e2
 
@@ -645,7 +638,7 @@ theorem fockHOp_of : FockHOp := by
       have : ((b, i, false) : Fin m × Fin n × Bool) ≠ (a, i, false) := by simp [Ne.symm hab]
       simp [this]
     rw [e5] at t4
-    rw [hop_pderiv_comm' (a, i, true) (b, i, false)] at t2
+    rw [PositivityTheory.Rg.Sw.LC.pderiv_comm (a, i, true) (b, i, false)] at t2
     have e6 : fock c (X (b, i, true) * (X (a, i, false) * p)) = fock c (X (a, i, false) * X (b, i, true) * p) := by
       congr 1; ring
     have hK : (C (1 / (2 * c) : ℂ) : PX m n) * C (2 * c : ℂ) = 1 := by
@@ -860,9 +853,6 @@ theorem Sm_deg (c : ℝ) (s : Ix m n →₀ ℕ) : DegLT (s.degree + 1) (Sm c s)
   rw [degree_mapDomain]
   omega
 
-theorem fockMono_zero (c : ℝ) : fockMono (m := m) (n := n) c 0 = 1 := by
-  simp [fockMono]
-
 theorem err_deg (c : ℝ) : ∀ d : ℕ, ∀ s : Ix m n →₀ ℕ, s.degree = d → DegLT d (err c s) := by
   intro d
   induction d with
@@ -870,7 +860,7 @@ theorem err_deg (c : ℝ) : ∀ d : ℕ, ∀ s : Ix m n →₀ ℕ, s.degree = d
     intro s hs
     have : s = 0 := (Finsupp.degree_eq_zero_iff s).mp hs
     subst this
-    simp [err, Sm, fockMono_zero, DegLT.zero]
+    simp [err, Sm, PositivityTheory.Rg.Sw.LC.fockMono_zero, DegLT.zero]
   | succ d ih =>
     intro s hs
     have hs0 : s ≠ 0 := by
@@ -1493,10 +1483,6 @@ theorem sw_inj {k k' : Fin m × Fin n × Bool} : sw k = sw k' ↔ k = k' := by
   obtain ⟨a', i', b'⟩ := k'
   cases b <;> cases b' <;> simp [sw]
 
-theorem pderiv_comm (i j : Fin m × Fin n × Bool) (P : PX m n) :
-    pderiv i (pderiv j P) = pderiv j (pderiv i P) := by
-  apply _root_.PositivityTheory.Rg.Sw.LC.pderiv_comm <;> assumption
-
 theorem cr_apply (c : ℝ) (k : Fin m × Fin n × Bool) (Q : PX m n) :
     cr c k Q = -(pderiv k Q) + (2 * c : ℂ) • ((X (sw k) : PX m n) * Q) := by
   obtain ⟨a, i, b⟩ := k
@@ -1505,7 +1491,7 @@ theorem cr_apply (c : ℝ) (k : Fin m × Fin n × Bool) (Q : PX m n) :
 theorem pderiv_cr (c : ℝ) (k k' : Fin m × Fin n × Bool) (Q : PX m n) :
     pderiv (sw k') (cr c k Q) = cr c k (pderiv (sw k') Q) + (if k = k' then (2 * c : ℂ) else 0) • Q := by
   classical
-  rw [cr_apply, cr_apply, map_add (f := _), map_neg, Derivation.map_smul, pderiv_mul, pderiv_X, pderiv_comm (sw k') k]
+  rw [cr_apply, cr_apply, map_add (f := _), map_neg, Derivation.map_smul, pderiv_mul, pderiv_X, PositivityTheory.Rg.Sw.LC.pderiv_comm (sw k') k]
   by_cases h : k = k'
   · subst h; simp; ring
   · have : sw k' ≠ sw k := fun e => h (sw_inj.1 e).symm
@@ -1539,10 +1525,6 @@ theorem der_fock (hB : FockBasic) (c : ℝ) (hc : 0 < c) (k : Fin m × Fin n × 
     · simp only [Pi.single_apply, h, ite_false, add_zero, zero_smul, mul_comm (X k0) (pderiv k p)]
       rw [zero_mul, hL.map_zero, smul_zero, zero_add]
 
-theorem qp_sum (ε : Fin m → Bool) (i j : Fin n) :
-    Qp ε i j = ∑ a, C (sgn ε a) * ((X (a, i, true) : PX m n) * X (a, j, false)) := by
-  apply _root_.PositivityTheory.Rg.Sw.LC.NullS.Qp_eq <;> assumption
-
 theorem op_id (c : ℝ) (ε : Fin m → Bool) (i j : Fin n) (P : PX m n) :
     (∑ a ∈ Finset.univ.filter (fun a => ε a = true), cr c (a, i, false) (pderiv (a, j, true) P)) -
       ∑ a ∈ Finset.univ.filter (fun a => ε a = false), cr c (a, j, true) (pderiv (a, i, false) P) =
@@ -1554,12 +1536,12 @@ theorem op_id (c : ℝ) (ε : Fin m → Bool) (i j : Fin n) (P : PX m n) :
     by_cases hij : i = j <;> simp [hij, Finset.mul_sum, Finset.sum_smul]
   rw [hd, Finset.sum_filter, Finset.sum_filter, ← Finset.sum_sub_distrib]
   unfold mulQ lapS eulH eulA
-  rw [qp_sum, Finset.sum_mul, Finset.smul_sum, Finset.smul_sum, Finset.smul_sum, ← Finset.sum_sub_distrib,
+  rw [PositivityTheory.Rg.Sw.LC.NullS.Qp_eq, Finset.sum_mul, Finset.smul_sum, Finset.smul_sum, Finset.smul_sum, ← Finset.sum_sub_distrib,
     ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun a _ => ?_
   cases hε : ε a
   · simp only [Bool.false_eq_true, ite_false, ite_true, zero_sub, cr_apply, sw, Bool.not_true]
-    rw [pderiv_comm (a, j, true) (a, i, false)]
+    rw [PositivityTheory.Rg.Sw.LC.pderiv_comm (a, j, true) (a, i, false)]
     by_cases hij : i = j
     · subst hij
       simp [sgn, hε, pderiv_X, smul_eq_C_mul, map_ofNat]

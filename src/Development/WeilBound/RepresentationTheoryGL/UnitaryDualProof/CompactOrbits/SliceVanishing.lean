@@ -399,8 +399,6 @@ variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchim
 
 theorem continuous_pZ (Z : SubM k n) : Continuous (pZ Z : Mat k n → _) := continuous_pZ_shared Z
 
-theorem isClosed_Bz (Z : SubM k n) : IsClosed (Bz Z) := isClosed_Bz_shared Z
-
 private theorem mul_ind_mem {X : Type} [TopologicalSpace X] {U s : Set X} (hs : IsClopen s)
     {F : X → ℂ} (hF : F ∈ supportedIn U) : F * s.indicator 1 ∈ supportedIn U :=
   ⟨⟨hF.1.1.mul ((IsLocallyConstant.iff_exists_open _).2 fun x => by
@@ -450,7 +448,7 @@ theorem local_descent_holds : LocStep (k := k) := by
       · have hsuppc : IsClosed (Function.support F) := by
           rw [show Function.support F = {x | F x = 0}ᶜ by ext x; simp]; exact (hrS.1.1.isOpen_fiber 0).isClosed_compl
         have hKc : IsCompact (Function.support F ∩ (Bz Z ×ˢ (univ : Set (Fin m → k)))) :=
-          hrS.1.2.of_isClosed_subset (hsuppc.inter ((isClosed_Bz Z).prod isClosed_univ))
+          hrS.1.2.of_isClosed_subset (hsuppc.inter ((PositivityTheory.RgUd.T.Desc.Asm.isClosed_Bz Z).prod isClosed_univ))
             (inter_subset_left.trans (subset_tsupport F))
         refine ⟨(q '' (Function.support F ∩ (Bz Z ×ˢ (univ : Set (Fin m → k)))))ᶜ, (hKc.image hq).isClosed.isOpen_compl,
           fun ⟨p, ⟨hpF, hpB⟩, hpy⟩ => hpF (hvan p ⟨⟨hpB.1, hpy⟩, mem_univ _⟩), fun W hW hWO =>

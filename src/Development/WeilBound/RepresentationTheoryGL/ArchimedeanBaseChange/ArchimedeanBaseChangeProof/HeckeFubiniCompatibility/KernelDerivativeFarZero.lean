@@ -55,9 +55,6 @@ end Defs
 section Lem
 variable {L : Type} [NormedAddCommGroup L] [NormedSpace ℂ L]
 
-theorem contDiff_ent (a b : Fin n) : ContDiff ℝ ∞ (fun y : Mat n => y a b) :=
-  (LinearMap.toContinuousLinearMap (Matrix.entryLinearMap ℝ ℂ a b)).contDiff
-
 theorem contDiffOn_invMul : ContDiffOn ℝ ∞ (fun p : Mat n × Mat n => p.1⁻¹ * p.2) (GLs n ×ˢ GLs n) := by
   have hinv : ContDiffOn ℝ ∞ (fun p : Mat n × Mat n => p.1⁻¹) (GLs n ×ˢ GLs n) :=
     (ReciprocityTheory.ChartRestriction.DS.Lap.LemK.contDiffOn_inv_det_ne_zero.restrict_scalars ℝ).comp (f := Prod.fst) contDiff_fst.contDiffOn
@@ -65,8 +62,8 @@ theorem contDiffOn_invMul : ContDiffOn ℝ ∞ (fun p : Mat n × Mat n => p.1⁻
   refine contDiffOn_pi.2 fun a => contDiffOn_pi.2 fun b => ?_
   simp only [Matrix.mul_apply]
   refine ContDiffOn.sum fun c _ => ContDiffOn.mul ?_ ?_
-  · exact (contDiff_ent a c).comp_contDiffOn hinv
-  · exact ((contDiff_ent c b).comp contDiff_snd).contDiffOn
+  · exact (GlobalTheory.CompanionTheory.LengthGL.contDiff_ent a c).comp_contDiffOn hinv
+  · exact ((GlobalTheory.CompanionTheory.LengthGL.contDiff_ent c b).comp contDiff_snd).contDiffOn
 
 theorem cl_kK (hL : LgFacts) {k : Mat n → L} (hk : ContDiffOn ℝ ∞ k (GLs n)) {R : ℝ}
     (hR : ∀ y ∈ GLs n, R < lg y → k y = 0) : Cl (kK k) := by

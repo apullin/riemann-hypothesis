@@ -127,8 +127,4 @@ theorem tens_zero {m : ℕ} (θ : InfFam D) (τ : D.what₂.Tau) (fr : Matrix (F
   simp only [tens, compAt_zero, Matrix.mul_zero]
   rfl
 
-theorem phiS_val {m : ℕ} {θ : InfFam D} {τ : D.what₂.Tau} {fr : Matrix (Fin m) (Fin m) ℂ} {c : ℝ} {Ψ : Mx D m n → ℂ}
-    {P : PX m n} (hm : tens θ τ fr (fP c P) Ψ ∈ schwartzA θ m n) : (phiS θ τ fr c Ψ P).1 = tens θ τ fr (fP c P) Ψ := by
-  simp only [phiS, dite_eq_left hm]
-
 end PositivityTheory.Rg.Sw.Glob.LocLawH

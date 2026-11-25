@@ -865,14 +865,6 @@ theorem contDiff_dirC {f : E n → ℂ} (hf : ContDiff ℝ (⊤ : ℕ∞) f) (w 
 theorem contDiff_Dkl {f : E n → ℂ} (hf : ContDiff ℝ (⊤ : ℕ∞) f) (k l : Fin n) :
     ContDiff ℝ (⊤ : ℕ∞) (Dkl k l f) := contDiff_dirC hf _
 
-theorem dP_pos (y : E n) : 0 < dP y := by
-  have hH := herm_isHermitian y
-  have h1 : (1 + herm y * herm y).PosDef := by
-    have := (Matrix.PosDef.one (n := Fin n) (R := ℂ)).add_posSemidef
-      (posSemidef_conjTranspose_mul_self (herm y))
-    rwa [hH.eq] at this
-  exact (Complex.pos_iff.1 h1.det_pos).1
-
 theorem contDiff_coord (a b : Fin n) : ContDiff ℝ (⊤ : ℕ∞) (fun y : E n => y a b) :=
   (contDiff_apply ℝ (fun _ => ℝ) b).comp (contDiff_apply ℝ (fun _ => (Fin n → ℝ)) a)
 
@@ -899,7 +891,7 @@ theorem contDiff_dP : ContDiff ℝ (⊤ : ℕ∞) (fun y : E n => dP y) := by
 def Lc (y : E n) : ℂ := ((Real.log (dP y) : ℝ) : ℂ)
 
 theorem contDiff_Lc : ContDiff ℝ (⊤ : ℕ∞) (Lc (n := n)) :=
-  Complex.ofRealCLM.contDiff.comp (contDiff_dP.log fun y => (dP_pos y).ne')
+  Complex.ofRealCLM.contDiff.comp (contDiff_dP.log fun y => (PositivityTheory.Rg.Sw.WR.K.GB.dP_pos y).ne')
 
 def W (z : ℂ) (y : E n) : ℂ := Complex.exp (-z * Lc y)
 
@@ -907,7 +899,7 @@ theorem contDiff_W_apply (z : ℂ) : ContDiff ℝ (⊤ : ℕ∞) (W (n := n) z) 
   (contDiff_const.mul contDiff_Lc).cexp
 
 theorem cpow_eq (z : ℂ) (y : E n) : ((dP y : ℝ) : ℂ) ^ (-z) = W z y := by
-  have hp := dP_pos y
+  have hp := PositivityTheory.Rg.Sw.WR.K.GB.dP_pos y
   rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hp.ne'), ← Complex.ofReal_log hp.le]
   unfold W Lc
   congr 1

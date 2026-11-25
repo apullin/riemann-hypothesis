@@ -123,34 +123,6 @@ open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.UnitaryBC PositivityTh
 
 namespace GlobalTheory.CompanionTheory.Cutoff
 
-section Img
-
-variable {K : Type} [Field K] {n : ℕ}
-
-def imgEquiv (g : GL (Fin n) K) : (Fin n → K) ≃ₗ[K] (Fin n → K) :=
-  LinearEquiv.ofLinear (Matrix.toLin' g.val) (Matrix.toLin' (g⁻¹ : GL (Fin n) K).val)
-    (by rw [← Matrix.toLin'_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one, Matrix.toLin'_one])
-    (by rw [← Matrix.toLin'_mul, ← Units.val_mul, inv_mul_cancel, Units.val_one, Matrix.toLin'_one])
-
-theorem img_eq_map (g : GL (Fin n) K) (W : Submodule K (Fin n → K)) :
-    img g W = W.map ((imgEquiv g : (Fin n → K) ≃ₗ[K] (Fin n → K)) : (Fin n → K) →ₗ[K] (Fin n → K)) := rfl
-
-theorem finrank_img (g : GL (Fin n) K) (W : Submodule K (Fin n → K)) :
-    Module.finrank K (img g W) = Module.finrank K W := by
-  rw [img_eq_map]
-  exact LinearEquiv.finrank_map_eq _ _
-
-theorem img_top (g : GL (Fin n) K) : img g (⊤ : Submodule K (Fin n → K)) = ⊤ := by
-  rw [img_eq_map, Submodule.map_top]
-  exact LinearEquiv.range _
-
-theorem img_img_inv (g : GL (Fin n) K) (W : Submodule K (Fin n → K)) :
-    img g (img (g⁻¹ : GL (Fin n) K) W) = W := by
-  unfold img
-  rw [← Submodule.map_comp, ← Matrix.toLin'_mul, ← Units.val_mul, mul_inv_cancel, Units.val_one,
-    Matrix.toLin'_one, Submodule.map_id]
-
-end Img
 
 theorem mem_cutSet_of_mem (hR : DegRat) {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyComplex E] {n : ℕ} {τ : ℝ}
     (g : GL (Fin n) E) {x : GA E n} (hx : x ∈ cutSet E n τ) : ratGL E n g * x ∈ cutSet E n τ := by
@@ -159,11 +131,11 @@ theorem mem_cutSet_of_mem (hR : DegRat) {E : Type} [Field E] [NumberField E] [_r
     -τ ≤ deg (ratGL E n g * x) ⊤
   refine ⟨fun W => ?_, ?_⟩
   · have h := hR E n x g (img (g⁻¹ : GL (Fin n) E) W)
-    rw [img_img_inv] at h
-    rw [h, ← finrank_img (g⁻¹ : GL (Fin n) E) W]
+    rw [PositivityTheory.Rg.BcB.E1.img_img_inv] at h
+    rw [h, ← PositivityTheory.Rg.BcB.E1.finrank_img (g⁻¹ : GL (Fin n) E) W]
     exact hx'.1 _
   · have h := hR E n x g ⊤
-    rw [img_top] at h
+    rw [PositivityTheory.Rg.BcB.E1.img_top] at h
     rw [h]
     exact hx'.2
 
@@ -662,18 +634,6 @@ open PositivityTheory.Rg.BcB PositivityTheory.Rg.BcB.D1
 
 namespace GlobalTheory.CompanionTheory.DegreeSubmod
 
-theorem exists_leftInv {K ι κ : Type} [Field K] [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
-    (M : Matrix ι κ K) (h : LinearIndependent K Mᵀ) : ∃ Y : Matrix κ ι K, Y * M = 1 := by
-  have hinj : Function.Injective M.mulVecLin := by
-    have : Function.Injective M.mulVec := Matrix.mulVec_injective_iff.2 h
-    exact this
-  obtain ⟨g, hg⟩ := M.mulVecLin.exists_leftInverse_of_injective (LinearMap.ker_eq_bot.2 hinj)
-  refine ⟨LinearMap.toMatrix' g, ?_⟩
-  have h2 : LinearMap.toMatrix' (g ∘ₗ M.mulVecLin) = LinearMap.toMatrix' g * M := by
-    rw [LinearMap.toMatrix'_comp, ← Matrix.toLin'_apply', LinearMap.toMatrix'_toLin']
-  rw [← h2, hg]
-  simp
-
 theorem log_ineq {K ι : Type} [Field K] [Fintype ι] [DecidableEq ι] (N : Fam K ι) (hN : IsWedge N) (hS : WedgeSub)
     {κ₀ κ₁ κ₂ : Type} [Fintype κ₀] [DecidableEq κ₀] [Fintype κ₁] [DecidableEq κ₁] [Fintype κ₂] [DecidableEq κ₂]
     (B : Matrix ι κ₀ K) (A : Matrix ι κ₁ K) (C : Matrix ι κ₂ K)
@@ -691,7 +651,7 @@ variable {E : Type} [Field E] [NumberField E] [_root_.NumberField.IsTotallyCompl
 theorem frame_leftInv {κ : Type} [Fintype κ] [DecidableEq κ] (x : GA E n) (M : Matrix (Fin n) κ E)
     (h : LinearIndependent E Mᵀ) :
     ∃ Y : Matrix κ (Fin n) (Ad E), Y * ((x⁻¹ : GA E n).val * M.map (algebraMap E (Ad E))) = 1 := by
-  obtain ⟨Y, hY⟩ := exists_leftInv M h
+  obtain ⟨Y, hY⟩ := GlobalTheory.CompanionTheory.DegBasisGen.exists_left_inv M h
   refine ⟨Y.map (algebraMap E (Ad E)) * x.val, ?_⟩
   have hx : x.val * (x⁻¹ : GA E n).val = 1 := Units.mul_inv x
   have hm : Y.map (algebraMap E (Ad E)) * M.map (algebraMap E (Ad E)) = 1 := by
@@ -1526,9 +1486,6 @@ theorem gram_det_nonneg (A : Matrix ι κ ℂ) : 0 ≤ (Aᴴ * A).det := by
 theorem gram_det_im (A : Matrix ι κ ℂ) : (Aᴴ * A).det.im = 0 := by
   exact (Complex.nonneg_iff.1 (gram_det_nonneg A)).2.symm
 
-theorem nI_nonneg (A : Matrix ι κ ℂ) : 0 ≤ nI A := by
-  exact (Complex.nonneg_iff.1 (gram_det_nonneg A)).1
-
 theorem nI_ne_zero_iff_det (A : Matrix ι κ ℂ) : nI A ≠ 0 ↔ (Aᴴ * A).det ≠ 0 := by
   have him := gram_det_im A
   show (Aᴴ * A).det.re ≠ 0 ↔ _
@@ -1610,7 +1567,7 @@ theorem commGroup_mul_mul_eq_mul_inv_mul_mul_mul [DecidableEq ι] (hD : DetMono)
 
 theorem wedgeI_of_detMono_mulI : DetMono → MulI → WedgeI := by
   intro hD hM ι _ _
-  refine ⟨fun κ _ _ A => nI_nonneg A, fun κ _ _ A => (nI_ne_zero_iff_det A).trans (gram_det_ne_zero_iff A),
+  refine ⟨fun κ _ _ A => GlobalTheory.CompanionTheory.DegMoveProof.nI_nonneg A, fun κ _ _ A => (nI_ne_zero_iff_det A).trans (gram_det_ne_zero_iff A),
     fun κ κ' _ _ _ _ e A => nI_submatrix e A, fun κ _ _ B hB => ?_⟩
   obtain ⟨Y, hYB, hQ⟩ := exists_proj B hB
   exact ⟨Y, fun κ' _ _ C => commGroup_mul_mul_eq_mul_inv_mul_mul_mul hD hM B Y hYB hQ C⟩
@@ -1684,28 +1641,26 @@ section -- clump:auto
 
 namespace PositivityTheory.Rg.BcB.D1
 
-theorem mulF : MulF := _root_.GlobalTheory.CompanionTheory.WedgeMinor.mulF
 theorem detMono : DetMono := _root_.GlobalTheory.CompanionTheory.DetMonotone.detMono
 theorem mulI : MulI := _root_.GlobalTheory.CompanionTheory.GramWedge.mulI_of_detMono detMono
-theorem wedgeF : WedgeF := _root_.GlobalTheory.CompanionTheory.Wedge.wedgeF_of_mulF mulF
+theorem wedgeF : WedgeF := _root_.GlobalTheory.CompanionTheory.Wedge.wedgeF_of_mulF GlobalTheory.CompanionTheory.WedgeMinor.mulF
 theorem wedgeI : WedgeI := _root_.GlobalTheory.CompanionTheory.Wedge.wedgeI_of_detMono_mulI detMono mulI
 theorem wedgeSub : WedgeSub := _root_.GlobalTheory.CompanionTheory.WedgeNorm.wedgeSub
-theorem pairF : PairF := _root_.GlobalTheory.CompanionTheory.Wedge.pairF_of_mulF mulF
+theorem pairF : PairF := _root_.GlobalTheory.CompanionTheory.Wedge.pairF_of_mulF GlobalTheory.CompanionTheory.WedgeMinor.mulF
 theorem pairI : PairI := _root_.GlobalTheory.CompanionTheory.Wedge.pairI_of_detMono detMono
 theorem logAbsBasic : LogAbsBasic := _root_.GlobalTheory.CompanionTheory.LogAbs.logAbsBasic
-theorem szFin : SzFin := _root_.GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin
-theorem finSupp : FinSupp := _root_.GlobalTheory.CompanionTheory.WedgeSupport.finSupp_of_mul mulF mulI szFin
-theorem degAdelic : DegAdelic := _root_.GlobalTheory.CompanionTheory.DegAdelicProof.degAdelic_of mulF mulI logAbsBasic finSupp
-theorem degBasisG : DegBasisG := _root_.GlobalTheory.CompanionTheory.DegBasisGen.degBasisG_of wedgeF wedgeI mulF mulI logAbsBasic finSupp
+theorem finSupp : FinSupp := _root_.GlobalTheory.CompanionTheory.WedgeSupport.finSupp_of_mul GlobalTheory.CompanionTheory.WedgeMinor.mulF mulI GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin
+theorem degAdelic : DegAdelic := _root_.GlobalTheory.CompanionTheory.DegAdelicProof.degAdelic_of GlobalTheory.CompanionTheory.WedgeMinor.mulF mulI logAbsBasic finSupp
+theorem degBasisG : DegBasisG := _root_.GlobalTheory.CompanionTheory.DegBasisGen.degBasisG_of wedgeF wedgeI GlobalTheory.CompanionTheory.WedgeMinor.mulF mulI logAbsBasic finSupp
 theorem degBasis : DegBasis := _root_.GlobalTheory.CompanionTheory.DegreeBasis.degBasis_of_degBasisG degBasisG
 theorem degSubmod : DegSubmod := _root_.GlobalTheory.CompanionTheory.DegreeSubmod.degSubmod_of wedgeF wedgeI wedgeSub finSupp degBasisG _root_.GlobalTheory.CompanionTheory.LinAlg.twoBases
 theorem degRat : DegRat := _root_.GlobalTheory.CompanionTheory.Degree.degRat_of_degBasisG degBasisG
-theorem degMove : DegMove := _root_.GlobalTheory.CompanionTheory.DegMoveProof.degMove_of mulF mulI szFin finSupp degBasisG
-theorem degBdd : DegBdd := _root_.GlobalTheory.CompanionTheory.DegBound.degBdd_of wedgeF wedgeI mulF mulI szFin finSupp logAbsBasic degBasisG
+theorem degMove : DegMove := _root_.GlobalTheory.CompanionTheory.DegMoveProof.degMove_of GlobalTheory.CompanionTheory.WedgeMinor.mulF mulI GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin finSupp degBasisG
+theorem degBdd : DegBdd := _root_.GlobalTheory.CompanionTheory.DegBound.degBdd_of wedgeF wedgeI GlobalTheory.CompanionTheory.WedgeMinor.mulF mulI GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin finSupp logAbsBasic degBasisG
 theorem conjPlaces : ConjPlaces := _root_.GlobalTheory.CompanionTheory.ConjAtPlaces.conjPlaces
-theorem sizeBasic : SizeBasic := _root_.GlobalTheory.CompanionTheory.Size.sizeBasic szFin conjPlaces
+theorem sizeBasic : SizeBasic := _root_.GlobalTheory.CompanionTheory.Size.sizeBasic GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin conjPlaces
 theorem degPairing : DegPairing :=
-  _root_.GlobalTheory.CompanionTheory.DegPairingProof.degPairing_of wedgeF wedgeI mulF mulI pairF pairI szFin finSupp logAbsBasic conjPlaces degBasisG _root_.GlobalTheory.CompanionTheory.RadicalForm.radical
+  _root_.GlobalTheory.CompanionTheory.DegPairingProof.degPairing_of wedgeF wedgeI GlobalTheory.CompanionTheory.WedgeMinor.mulF mulI pairF pairI GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin finSupp logAbsBasic conjPlaces degBasisG _root_.GlobalTheory.CompanionTheory.RadicalForm.radical
 theorem mahler_of_c (h : MahlerC) : Mahler := _root_.GlobalTheory.CompanionTheory.Cutoff.mahler_of degBdd degRat h
 theorem mahler : Mahler := mahler_of_c (PositivityTheory.Rg.BcB.E1.mahlerC_of_deg degBasis degAdelic degBdd degRat)
 theorem onlyStable : OnlyStable := _root_.GlobalTheory.CompanionTheory.OnlyStab.onlyStable_of degSubmod degMove degBdd degPairing sizeBasic

@@ -150,13 +150,6 @@ theorem thetaR_one' {A : Type} [CommRing A] (σ : A →+* A) : thetaR σ n 1 = 1
 theorem cV_conjAd (v : InfinitePlace E) (x : Ad E) : cV v (conjAd E x) = starRingEnd ℂ (cV v x) :=
   congrFun ((infEq E).symm_apply_apply _) v
 
-theorem continuous_cV (v : InfinitePlace E) : Continuous (cV (E := E) v) := by
-  have h : Continuous fun x : InfiniteAdeleRing E => (infEq E).symm x :=
-    continuous_pi fun w =>
-      (InfinitePlace.Completion.isometryEquivComplexOfIsComplex (IsTotallyComplex.isComplex w)).continuous.comp
-        (continuous_apply w)
-  exact (continuous_apply v).comp (h.comp continuous_fst)
-
 theorem ga_ext' {g h : GA E n} (h1 : ∀ w, GeneralLinearGroup.map (cV w) g = GeneralLinearGroup.map (cV w) h)
     (h2 : GeneralLinearGroup.map (pFin E) g = GeneralLinearGroup.map (pFin E) h) : g = h := by
   refine ga_ext ?_ h2
@@ -255,18 +248,6 @@ theorem thetaA_embInf (v : InfinitePlace E) (y : GL (Fin n) ℂ) :
   · rw [GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, map_thetaR (pFin E) (conjAd E) (conjFin (IsCMField.complexConj E).toRingEquiv) (fun _ => rfl),
       GlobalTheory.CompanionTheory.SplitTwo.map_pFin_embInf, thetaR_one']
 
-theorem cV_ratGL (v : InfinitePlace E) (d : GL (Fin n) E) :
-    GeneralLinearGroup.map (cV v) (ratGL E n d) = PositivityTheory.Rg.BcB.D4.locGL v d := by
-  ext i j
-  exact pInf_algebraMap (d i j) v
-
-theorem locallyCompact_GL {R : Type} [CommRing R] [TopologicalSpace R] [IsTopologicalRing R] [T2Space R]
-    [LocallyCompactSpace R] : LocallyCompactSpace (GL (Fin n) R) := by
-  haveI : LocallyCompactSpace (Matrix (Fin n) (Fin n) R) :=
-    inferInstanceAs (LocallyCompactSpace (Fin n → Fin n → R))
-  haveI : T2Space (Matrix (Fin n) (Fin n) R) := inferInstanceAs (T2Space (Fin n → Fin n → R))
-  exact Units.isClosedEmbedding_embedProduct.locallyCompactSpace
-
 theorem secondCountable_GL {R : Type} [CommRing R] [TopologicalSpace R] [SecondCountableTopology R] :
     SecondCountableTopology (GL (Fin n) R) := by
   haveI : SecondCountableTopology (Matrix (Fin n) (Fin n) R) :=
@@ -280,15 +261,15 @@ theorem splitAt : PositivityTheory.Rg.BcB.D4.SplitAt := by
   haveI : LocallyCompactSpace (Ad E) := GlobalTheory.AdelicUnitaryTop.locallyCompact_adele E
   haveI : SecondCountableTopology (Ad E) := GlobalTheory.AdelicUnitaryTop.secondCountable_adele E
   haveI : T2Space (Ad E) := GlobalTheory.AdelicUnitaryTop.t2Space_adeleRing_numberField E
-  haveI : LocallyCompactSpace (GA E n) := locallyCompact_GL
+  haveI : LocallyCompactSpace (GA E n) := GlobalTheory.CompanionTheory.SplitTwo.gl_lc
   haveI : SecondCountableTopology (GA E n) := secondCountable_GL
-  haveI : LocallyCompactSpace (GL (Fin n) ℂ) := locallyCompact_GL
+  haveI : LocallyCompactSpace (GL (Fin n) ℂ) := GlobalTheory.CompanionTheory.SplitTwo.gl_lc
   haveI : SecondCountableTopology (GL (Fin n) ℂ) := secondCountable_GL
   letI mH : MeasurableSpace (GL (Fin n) ℂ) := borel _
   haveI bH : BorelSpace (GL (Fin n) ℂ) := ⟨rfl⟩
   let p : GA E n →* GL (Fin n) ℂ := GeneralLinearGroup.map (cV v)
   let s : GL (Fin n) ℂ →* GA E n := embInf n v
-  have hp : Continuous p := continuous_mapGL _ (continuous_cV v)
+  have hp : Continuous p := continuous_mapGL _ (GlobalTheory.CompanionTheory.SplitTwo.continuous_cV v)
   have hs : Continuous s := continuous_embInf v
   have hps : ∀ y, p (s y) = y := cV_embInf_self v
   have hc : ∀ y, ∀ k ∈ p.ker, s y * k = k * s y := embInf_comm v
@@ -313,7 +294,7 @@ theorem splitAt : PositivityTheory.Rg.BcB.D4.SplitAt := by
   · intro d
     have h := map_twCent_prod (splitE p s hps hc) (thetaA E n) (thetaR (starRingEnd ℂ) n)
       (endK p (thetaA E n) (thetaR (starRingEnd ℂ) n) hθ) (splitE_theta p s hps hc _ _ hθ hθ') (ratGL E n d)
-    have h4 : (splitE p s hps hc (ratGL E n d)).1 = PositivityTheory.Rg.BcB.D4.locGL v d := cV_ratGL v d
+    have h4 : (splitE p s hps hc (ratGL E n d)).1 = PositivityTheory.Rg.BcB.D4.locGL v d := GlobalTheory.CompanionTheory.SplitTwo.map_cV_ratGL v d
     rw [h4] at h
     exact h
 
@@ -448,24 +429,13 @@ end Norm
 
 section Count
 
-theorem count_inv {K : Type*} [Group K] [MeasurableSpace K] [MeasurableSingletonClass K]
-    [Countable K] : (Measure.count : Measure K).IsInvInvariant := by
-  have hmi : Measurable (fun h : K => h⁻¹) := measurable_of_countable _
-  refine ⟨?_⟩
-  ext s hs
-  change Measure.map (fun h : K => h⁻¹) Measure.count s = _
-  rw [Measure.map_apply hmi hs]
-  have : (Inv.inv ⁻¹' s : Set K) = (fun h : K => h⁻¹) '' s := by
-    ext x; simp
-  rw [this, Measure.count_injective_image' inv_injective hs ((Set.to_countable _).measurableSet)]
-
 theorem quotIntegral_strict {K : Type*} [Group K] [MeasurableSpace K] [MeasurableMul₂ K]
     [MeasurableInv K] {ν : Measure K} [ν.IsMulLeftInvariant] [SFinite ν] {Γ : Subgroup K}
     [Countable Γ] [MeasurableSingletonClass Γ] {D : Set K} (hDm : MeasurableSet D)
     (hD : ∀ t : K, ∃! h : Γ, (h : K) * t ∈ D) {f : K → ℂ} (hf : Measurable f)
     (hfΓ : ∀ h ∈ Γ, ∀ t, f (h * t) = f t) :
     quotIntegral ν Γ Measure.count f = ∫ t in D, f t ∂ν := by
-  haveI : (Measure.count : Measure Γ).IsInvInvariant := count_inv
+  haveI : (Measure.count : Measure Γ).IsInvInvariant := PositivityTheory.Rg.BcB.CV.VolumeFunction.count_isInv
   have hρ : IsQuotNormaliser Γ Measure.count (D.indicator (1 : K → ℝ≥0∞)) := by
     refine ⟨measurable_one.indicator hDm, fun g => ?_⟩
     rw [lintegral_count]
@@ -617,7 +587,7 @@ theorem quotStage_holds : PositivityTheory.Rg.BcB.D4.QuotStage := by
   haveI : DiscreteTopology (Γ₀.map T.subtype) := map_discrete T Γ₀
   haveI : Countable (Γ₀.map T.subtype) :=
     (Γ₀.equivMapOfInjective T.subtype T.subtype_injective).toEquiv.surjective.countable
-  haveI : (Measure.count : Measure (Γ₀.map T.subtype)).IsInvInvariant := count_inv
+  haveI : (Measure.count : Measure (Γ₀.map T.subtype)).IsInvInvariant := PositivityTheory.Rg.BcB.CV.VolumeFunction.count_isInv
   obtain ⟨σ, hσ⟩ := exists_normaliser T hT μT
   obtain ⟨D, hDm, hD⟩ := GlobalTheory.CompanionTheory.QuotUnfold.exists_strict_domain Γ₀
   have hρ := stage_normaliser Γ₀ hDm hD hσ
@@ -1055,8 +1025,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {n : ℕ}
 def bform (d : GL (Fin n) E) (x v : Fin n → E) : E :=
   ∑ i, conjE E (x i) * ((d⁻¹ : GL (Fin n) E).val *ᵥ v) i
 
-theorem conj_conj (z : E) : conjE E (conjE E z) = z := IsCMField.complexConj_apply_apply E z
-
 theorem mem_perpD_iff (d : GL (Fin n) E) (W : Submodule E (Fin n → E)) (v : Fin n → E) :
     v ∈ perpD (conjE E) d W ↔ ∀ x ∈ W, bform d x v = 0 := by
   constructor
@@ -1077,7 +1045,7 @@ theorem bform_nrm (d : GL (Fin n) E) (x v : Fin n → E) :
   simp only [bform]
   rw [h]
 
-  simp only [map_sum, map_mul, conj_conj, Matrix.mulVec, dotProduct, Matrix.transpose_apply, Matrix.map_apply,
+  simp only [map_sum, map_mul, GlobalTheory.CompanionTheory.IsotropicDegreeBound.conjE_conjE, Matrix.mulVec, dotProduct, Matrix.transpose_apply, Matrix.map_apply,
   Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
@@ -1085,7 +1053,7 @@ theorem bform_nrm (d : GL (Fin n) E) (x v : Fin n → E) :
 
 theorem bform_nrm_nrm (d : GL (Fin n) E) (x v : Fin n → E) :
     bform d ((nrm d).val *ᵥ x) ((nrm d).val *ᵥ v) = bform d x v := by
-  rw [bform_nrm, bform_nrm, conj_conj]
+  rw [bform_nrm, bform_nrm, GlobalTheory.CompanionTheory.IsotropicDegreeBound.conjE_conjE]
 
 abbrev Stb (d : GL (Fin n) E) (W : Submodule E (Fin n → E)) : Prop := img (nrm d) W = W
 
@@ -1293,12 +1261,6 @@ theorem logSize_nonneg' (g : GA E n) : 0 ≤ logSize g := by
     add_nonneg (Finset.sum_nonneg fun _ _ => Real.posLog_nonneg) (finsum_nonneg fun _ => Real.posLog_nonneg)
   exact add_nonneg (h _) (h _)
 
-theorem deg_bot' (x : GA E n) : deg x (⊥ : Submodule E (Fin n → E)) = 0 := by
-  have h : ∀ (k : ℕ) (M : Matrix (Fin n) (Fin k) E), k = 0 → degM x M = 0 := by
-    rintro _ M rfl
-    exact degM_zero x M
-  exact h _ _ (by simp)
-
 theorem prof_concave (n : ℕ) {τ : ℝ} (hτ : 0 ≤ τ) {a w w' s : ℕ} (h : w + w' = s + a) (h1 : a ≤ w) (h2 : a ≤ w') :
     prof n τ a + prof n τ s ≤ prof n τ w + prof n τ w' := by
   obtain ⟨p, rfl⟩ := Nat.exists_eq_add_of_le h1
@@ -1331,7 +1293,7 @@ theorem posY_of (h1 : DegSubmod) (h2 : DegPairing) : PosY := by
   have hτ1 : C₀ * (1 + logSize (twConj (thetaA E n) x (ratGL E n d))) ≤ τ :=
     le_trans (mul_le_mul_of_nonneg_right (le_max_left _ _) (by linarith)) hτ
   refine ⟨?_, fun e e' => ?_⟩
-  · simp [h0, prof, deg_bot']
+  · simp [h0, prof, GlobalTheory.CompanionTheory.EllIso.deg_bot]
   · have hS : Stb d (Wof e ⊔ Wof e') := stb_sup (hiso e).1 (hiso e').1
     have hr := radical_eq hiso hu hmeet hmono e e'
     have hJS : Wof (sJoin e e') ≤ Wof e ⊔ Wof e' := hr ▸ inf_le_left

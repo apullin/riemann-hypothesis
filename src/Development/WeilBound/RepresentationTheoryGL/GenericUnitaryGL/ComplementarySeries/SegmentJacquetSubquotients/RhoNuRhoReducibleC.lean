@@ -615,17 +615,6 @@ theorem irr_sub {ρ : Representation ℂ G V} (h : ρ.IsIrreducible) (W : Submod
   (eq_bot_or_eq_top (⟨W, hW⟩ : Subrepresentation ρ)).imp (congrArg Subrepresentation.toSubmodule)
     (congrArg Subrepresentation.toSubmodule)
 
-theorem irr_nontrivial {ρ : Representation ℂ G V} (h : ρ.IsIrreducible) : Nontrivial V := by
-  by_contra hV
-  rw [not_nontrivial_iff_subsingleton] at hV
-  have : (⊥ : Subrepresentation ρ) = ⊤ := Subrepresentation.toSubmodule_injective (Subsingleton.elim _ _)
-  exact bot_ne_top this
-
-def starF {M : Type} [AddCommGroup M] [Module ℂ M] (B : M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ) :
-    M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ :=
-  LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun v w => starRingEnd ℂ (B w v))
-    (fun _ _ _ => by simp) (fun _ _ _ => by simp) (fun _ _ _ => by simp) (fun _ _ _ => by simp)
-
 def resF {M : Type} [AddCommGroup M] [Module ℂ M] (B : M →ₗ[ℂ] M →ₛₗ[starRingEnd ℂ] ℂ) (W : Submodule ℂ M) :
     W →ₗ[ℂ] W →ₛₗ[starRingEnd ℂ] ℂ :=
   LinearMap.mk₂'ₛₗ (RingHom.id ℂ) (starRingEnd ℂ) (fun v w => B v w)
@@ -679,7 +668,7 @@ theorem complementary_of (h : Signature) : Complementary := by
   intro G V _ _ _ _ _ K₀ hK₀o hK₀c F hF hall h0 s hs
   have hsm : IsSmooth (F 0) := (hall 0 le_rfl).2.1
   have hirr : (F s).IsIrreducible := (hall s hs).2.2.1
-  haveI := irr_nontrivial hirr
+  haveI := GlobalTheory.JacFactor.nontrivial_of_isIrreducible hirr
   obtain ⟨H, hH0, hHh, hHi⟩ := exists_herm (hall s hs).2.2.2
   obtain ⟨B₀, hB₀h, hB₀p, hB₀i⟩ := h0
   have key : ∀ K : Subgroup G, IsOpen (K : Set G) → K ≤ K₀ → fixed (F 0) K ≠ ⊥ →

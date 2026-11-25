@@ -8,7 +8,8 @@ import Development.AbelianVarietyTheory.Proofs.TwistedOperators.NormalizedAbsCha
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.AnnihilatorOpenCompactStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.EventuallyHaarDetEqOneNearOneStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsFiniteCosetRepresentativesStatement
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsGLLastBasisVecMulEqStatement
+import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ExistsGLLastBasisVecMulEq
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ExistsOpenCompactLatticeContainingStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.HaarMeasureSubgroupRelIndexMulStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.LatticeAnnihilatorWithinNhdsStatement
@@ -82,7 +83,7 @@ theorem relIndex_ne_zero_of_lat {A₀ A : Sub1 k m} (h₀ : IsLat A₀) (h : IsL
   have := AddSubgroup.quotient_finite_of_isOpen (A₀.addSubgroupOf A) (h₀.2.preimage continuous_subtypeVal)
   exact AddSubgroup.index_ne_zero_of_finite
 theorem lat_over {K : Set (V1 k m)} (hK : IsCompact K) : ∃ A : Sub1 k m, IsLat A ∧ K ⊆ A :=
-  let ⟨A, h1, h2, h3⟩ := GlobalTheory.T.exists_open_compact_lattice_containing k (m + 1) K hK; ⟨A, ⟨h1, h2⟩, h3⟩
+  let ⟨A, h1, h2, h3⟩ := GlobalTheory.CompanionTheory.LocalLattice.exists_compact_open_addSubgroup k (m + 1) K hK; ⟨A, ⟨h1, h2⟩, h3⟩
 theorem lat_shrink (ψ : Ch k) (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) {U : Set (V1 k m)} (hU : U ∈ 𝓝 (0 : V1 k m)) :
     ∃ A : Sub1 k m, IsLat A ∧ (ann ψ A : Set _) ⊆ U :=
   let ⟨A, h1, h2, h3⟩ := GlobalTheory.CompanionTheory.AnnihShrink.exists_compact_open_annihilator_subset k ψ hψ hψ1 (m + 1) U hU; ⟨A, ⟨h1, h2⟩, h3⟩
@@ -98,10 +99,10 @@ theorem Ct_apply (g : G1 k m) (v w : V) :
     Ct π h' s C g v w = ((md g ^ (s + 1) : ℝ) : ℂ) * C (π (bG h' g⁻¹) v) (π (bG h' g⁻¹) w) := by simp [Ct, glAct]
 open Classical in
 def sect (ξ : V1 k m) : G1 k m :=
-  if h : ξ = 0 then 1 else (Classical.choose (GlobalTheory.T.exists_GL_last_basis_vecMul_eq k m ξ h))⁻¹
+  if h : ξ = 0 then 1 else (Classical.choose (GlobalTheory.CompanionTheory.RowSect.exists_GL_last_row k m ξ h))⁻¹
 theorem sect_spec {ξ : V1 k m} (hξ : ξ ≠ 0) : xi0 k m ᵥ* gmat (sect ξ)⁻¹ = ξ := by
   rw [sect, dite_eq_right hξ, inv_inv]
-  exact Classical.choose_spec (GlobalTheory.T.exists_GL_last_basis_vecMul_eq k m ξ hξ)
+  exact Classical.choose_spec (GlobalTheory.CompanionTheory.RowSect.exists_GL_last_row k m ξ hξ)
 open Classical in
 def Df (ξ : V1 k m) : SForm V := if ξ = 0 then 0 else Ct π h' s C (sect ξ)
 theorem Df_zero : Df π h' s C (0 : V1 k m) = 0 := by simp [Df]

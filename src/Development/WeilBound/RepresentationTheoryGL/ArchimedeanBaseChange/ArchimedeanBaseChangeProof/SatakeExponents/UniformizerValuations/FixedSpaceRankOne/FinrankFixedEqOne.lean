@@ -23,15 +23,6 @@ end Sums
 
 variable {G : Type} [Group G] {V : Type} [AddCommGroup V] [Module ℂ V]
 
-theorem mem_fixed_iff {ρ : Representation ℂ G V} {K : Subgroup G} {v : V} :
-    v ∈ fixed ρ K ↔ ∀ k ∈ K, ρ k v = v := by
-  change (∀ h : K, ρ (h : G) v = ((1 : K →* ℂˣ) h : ℂ) • v) ↔ _
-  constructor
-  · intro h k hk
-    simpa using h ⟨k, hk⟩
-  · intro h k
-    simpa using h k k.2
-
 
 def GelPair (K : Subgroup G) : Prop :=
   (∀ g : G, (K.map (MulAut.conj g).toMonoidHom).relIndex K ≠ 0) ∧

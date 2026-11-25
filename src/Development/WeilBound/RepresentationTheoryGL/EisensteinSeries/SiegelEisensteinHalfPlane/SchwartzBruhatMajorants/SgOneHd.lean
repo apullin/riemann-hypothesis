@@ -344,11 +344,6 @@ theorem val_square (hU : Algebra.Unramified (𝓞 F) (𝓞 E)) {δ : E} {d : F} 
   simp only [Function.comp_apply, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', Algebra.algebraMap_self, RingHom.id_apply] at h1
   rw [← h1, hd, map_pow]
 
-theorem valued_alg {K : Type} [Field K] [NumberField K] (v : HeightOneSpectrum (𝓞 K)) (x : K) :
-    Valued.v (algebraMap K (v.adicCompletion K) x) = v.valuation K x := by
-  rw [HeightOneSpectrum.algebraMap_adicCompletion]
-  simp only [Function.comp_apply, HeightOneSpectrum.valuedAdicCompletion_eq_valuation', Algebra.algebraMap_self, RingHom.id_apply]
-
 theorem exists_finIdele {d : F} (hd0 : d ≠ 0) :
     ∃ (X : (FiniteAdeleRing (𝓞 F) F)ˣ), ∀ (v : HeightOneSpectrum (𝓞 F)) (k : ℤ),
       v.valuation F d = WithZero.exp (2 * k) → Valued.v ((X : FiniteAdeleRing (𝓞 F) F) v) = WithZero.exp k := by
@@ -361,10 +356,10 @@ theorem exists_finIdele {d : F} (hd0 : d ≠ 0) :
     filter_upwards [h1, h2] with v a b
     have a' : v.valuation F d ≤ 1 := by
       have := (HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 F) F v).1 a
-      exact (valued_alg v d).symm.le.trans this
+      exact (Formalism.UG.P.levelaf_valued_algebraMap v d).symm.le.trans this
     have b' : v.valuation F d⁻¹ ≤ 1 := by
       have := (HeightOneSpectrum.mem_adicCompletionIntegers (𝓞 F) F v).1 b
-      exact (valued_alg v d⁻¹).symm.le.trans this
+      exact (Formalism.UG.P.levelaf_valued_algebraMap v d⁻¹).symm.le.trans this
     have : v.valuation F d = 1 := by
       rw [map_inv₀] at b'
       exact le_antisymm a' ((inv_le_one₀ (zero_lt_iff.2 (by simpa using hd0))).1 b')
@@ -376,7 +371,7 @@ theorem exists_finIdele {d : F} (hd0 : d ≠ 0) :
     simp [f, hv, one_mem]
   let X (s : ℤ) : FiniteAdeleRing (𝓞 F) F := ⟨f s, hfmem s⟩
   have hne : ∀ v : HeightOneSpectrum (𝓞 F), algebraMap F (v.adicCompletion F) (π v) ≠ 0 := fun v h => by
-    have := valued_alg v (π v)
+    have := Formalism.UG.P.levelaf_valued_algebraMap v (π v)
     rw [h, map_zero, hπ v] at this
     exact WithZero.exp_ne_zero this.symm
   refine ⟨⟨X (-1), X 1, ?_, ?_⟩, fun v k hk => ?_⟩
@@ -396,7 +391,7 @@ theorem exists_finIdele {d : F} (hd0 : d ≠ 0) :
       rw [hk, WithZero.log_exp]
       omega
     simp only [f, hn]
-    rw [map_zpow₀, valued_alg, hπ]
+    rw [map_zpow₀, Formalism.UG.P.levelaf_valued_algebraMap, hπ]
     rw [← WithZero.exp_zsmul]
     simp
 
@@ -471,7 +466,7 @@ theorem bDel : PositivityTheory.RgEis.So.BDel := by
     have hc : (adeleMap F E α).2 w * y.2 w = algebraMap E (w.adicCompletion E) δ :=
       congrArg (fun z : 𝔸[E] => z.2 w) h1
     have hv := congrArg Valued.v hc
-    rw [map_mul, hA, show Valued.v (algebraMap E (w.adicCompletion E) δ) = w.valuation E δ from valued_alg w δ, hk] at hv
+    rw [map_mul, hA, show Valued.v (algebraMap E (w.adicCompletion E) δ) = w.valuation E δ from Formalism.UG.P.levelaf_valued_algebraMap w δ, hk] at hv
     exact mul_left_cancel₀ (WithZero.exp_ne_zero (a := k)) (hv.trans (mul_one _).symm)
   have hfin' : ∀ w : HeightOneSpectrum (𝓞 E), Valued.v (y'.2 w) = 1 := by
     intro w
@@ -1354,15 +1349,10 @@ theorem conj_apply (t : Rˣ) (g : GL (ι ⊕ ι) R) (m n : ι ⊕ ι) :
         Sum.elim (fun _ => 1) (fun _ => ((t⁻¹ : Rˣ) : R)) n := by
   rw [Units.val_mul, Units.val_mul, dg_inv_val, dg_val, Matrix.mul_diagonal, Matrix.diagonal_mul]
 
-theorem det_two (i : ι) (hi : ∀ x, x = i) (M : Matrix (ι ⊕ ι) (ι ⊕ ι) R) :
-    M.det = M (Sum.inl i) (Sum.inl i) * M (Sum.inr i) (Sum.inr i) -
-      M (Sum.inl i) (Sum.inr i) * M (Sum.inr i) (Sum.inl i) := by
-  apply _root_.GlobalTheory.CompanionTheory.RgEis.Cover.det_two <;> assumption
-
 theorem det_dg (i : ι) (hi : ∀ x, x = i) (x : Rˣ) :
     Matrix.GeneralLinearGroup.det (dg ι x) = x := by
   apply Units.ext
-  rw [Matrix.GeneralLinearGroup.val_det_apply, det_two i hi, dg_val]
+  rw [Matrix.GeneralLinearGroup.val_det_apply, GlobalTheory.CompanionTheory.RgEis.Cover.det_two i hi, dg_val]
   simp
 
 end Gen
@@ -1398,7 +1388,7 @@ theorem sig_entries (A : Ad E R) (ε : ℤˣ) (t : Rˣ) (ht : A.σ t = -(((ε : 
   haveI : Unique ι := ⟨⟨i⟩, hi⟩
   have hd : (default : ι) = i := hi _
   have hg' : (g : Matrix (ι ⊕ ι) (ι ⊕ ι) R)ᵀ * Ad.J R ε ι * (g : Matrix (ι ⊕ ι) (ι ⊕ ι) R).map A.σ = Ad.J R ε ι := hg
-  rw [conj_apply, Matrix.GeneralLinearGroup.val_det_apply, det_two i hi]
+  rw [conj_apply, Matrix.GeneralLinearGroup.val_det_apply, GlobalTheory.CompanionTheory.RgEis.Cover.det_two i hi]
   set M : Matrix (ι ⊕ ι) (ι ⊕ ι) R := (g : Matrix (ι ⊕ ι) (ι ⊕ ι) R) with hM
   set e : R := ((ε : ℤ) : R) with he'
   have he : e * e = 1 := by
@@ -1503,7 +1493,7 @@ theorem sup_rat [TopologicalSpace R] {ε : ℤˣ} (A : Ad E R) (ν : 𝔸[F] →
   obtain ⟨m, n, hmn⟩ : ∃ m n, (n₀ : Matrix (ι ⊕ ι) (ι ⊕ ι) E) m n ≠ 0 := by
     by_contra! hc
     apply hdn
-    rw [det_two i hi]
+    rw [GlobalTheory.CompanionTheory.RgEis.Cover.det_two i hi]
     simp [hc]
   set a₀ : E := (n₀ : Matrix (ι ⊕ ι) (ι ⊕ ι) E) m n with ha₀
   set d : R := ((Matrix.GeneralLinearGroup.det g.1 : Rˣ) : R) with hd
@@ -1522,7 +1512,7 @@ theorem sup_rat [TopologicalSpace R] {ε : ℤˣ} (A : Ad E R) (ν : 𝔸[F] →
   choose y hy using hy
   let h₀ : Matrix (ι ⊕ ι) (ι ⊕ ι) F := Matrix.of y
   have hdet : algebraMap F E h₀.det = a₀⁻¹ * a₀⁻¹ * (n₀ : Matrix (ι ⊕ ι) (ι ⊕ ι) E).det := by
-    rw [det_two i hi h₀, det_two i hi (n₀ : Matrix (ι ⊕ ι) (ι ⊕ ι) E)]
+    rw [GlobalTheory.CompanionTheory.RgEis.Cover.det_two i hi h₀, GlobalTheory.CompanionTheory.RgEis.Cover.det_two i hi (n₀ : Matrix (ι ⊕ ι) (ι ⊕ ι) E)]
     simp only [h₀, Matrix.of_apply, map_sub, map_mul, hy]
     ring
   have hdet0 : h₀.det ≠ 0 := by
@@ -1622,16 +1612,6 @@ section Ring
 
 variable {S : Type} [CommRing S] {ι : Type} [Fintype ι] [DecidableEq ι]
 
-theorem conj_entry (d : Sˣ) (g : GL (ι ⊕ ι) S) (r c : ι ⊕ ι) :
-    (((dg ι d)⁻¹ * g * dg ι d : GL (ι ⊕ ι) S) : Matrix (ι ⊕ ι) (ι ⊕ ι) S) r c =
-      Sum.elim (fun _ => (1 : S)) (fun _ => ((d⁻¹ : Sˣ) : S)) r * (g : Matrix (ι ⊕ ι) (ι ⊕ ι) S) r c *
-        Sum.elim (fun _ => (1 : S)) (fun _ => (d : S)) c := by
-  have h1 : (((dg ι d)⁻¹ : GL (ι ⊕ ι) S) : Matrix (ι ⊕ ι) (ι ⊕ ι) S) =
-      Matrix.diagonal (Sum.elim (fun _ => 1) fun _ => ((d⁻¹ : Sˣ) : S)) := rfl
-  have h2 : ((dg ι d : GL (ι ⊕ ι) S) : Matrix (ι ⊕ ι) (ι ⊕ ι) S) =
-      Matrix.diagonal (Sum.elim (fun _ => 1) fun _ => (d : S)) := rfl
-  rw [Units.val_mul, Units.val_mul, h1, h2, Matrix.mul_diagonal, Matrix.diagonal_mul]
-
 theorem mem_stab_line {i : ι} (hi : ∀ x, x = i) (s : Set (ι ⊕ ι)) (hs : s = {Sum.inl i}) (g : GL (ι ⊕ ι) S) :
     g ∈ stab S s ↔ (g : Matrix (ι ⊕ ι) (ι ⊕ ι) S) (Sum.inr i) (Sum.inl i) = 0 ∧
       ((g⁻¹ : GL (ι ⊕ ι) S) : Matrix (ι ⊕ ι) (ι ⊕ ι) S) (Sum.inr i) (Sum.inl i) = 0 := by
@@ -1685,7 +1665,7 @@ theorem j_entry {δ : Eˣ} {j : cover A ν ι →* A.U ε ι} (hJ : IsJ δ j) (x
       (Sum.elim (fun _ => (1 : R)) (fun _ => (((Units.map A.i.toMonoidHom δ)⁻¹ : Rˣ) : R)) r *
         ν ((x.1.2 : Matrix (ι ⊕ ι) (ι ⊕ ι) 𝔸[F]) r c) *
         Sum.elim (fun _ => (1 : R)) (fun _ => ((Units.map A.i.toMonoidHom δ : Rˣ) : R)) c) := by
-  rw [hJ x, Matrix.smul_apply, smul_eq_mul, conj_entry]
+  rw [hJ x, Matrix.smul_apply, smul_eq_mul, GlobalTheory.CompanionTheory.EisSec.dg_conj]
   rfl
 
 theorem j_low {δ : Eˣ} {j : cover A ν ι →* A.U ε ι} (hJ : IsJ δ j) (hν : Function.Injective ν) (x : cover A ν ι)

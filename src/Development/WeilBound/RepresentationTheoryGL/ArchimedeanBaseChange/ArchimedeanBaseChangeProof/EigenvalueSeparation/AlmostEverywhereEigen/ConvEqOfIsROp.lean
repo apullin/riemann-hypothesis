@@ -22,13 +22,13 @@ theorem ker_approx (X : Ctx) (φ : X.G → ℂ) (hφ : Tst φ) (x y : X.G) (ε :
     IsBump X ψ → tsupport ψ ⊆ W → ‖ker X.Γ (cv X.μ (adj ψ) (cv X.μ φ ψ)) x y - ker X.Γ φ x y‖ ≤ ε := by
   obtain ⟨N, hN, hN1⟩ := exists_compact_mem_nhds (1 : X.G)
   have hK : IsCompact (N⁻¹ * (tsupport φ * N)) := hN.inv.mul (IsCompact.mul hφ.2 hN)
-  obtain ⟨C, hC0, hC⟩ := kerClose X _ x y hK
+  obtain ⟨C, hC0, hC⟩ := GlobalTheory.CompanionTheory.KernelClose.kerClose X _ x y hK
   obtain ⟨W, hW, h⟩ := approxU X φ (ε / (C + 1)) hφ (by positivity)
   refine ⟨W ∩ N, Filter.inter_mem hW hN1, fun ψ hψ hs => (hC _ φ _ ?_ ?_ fun z =>
     (h ψ hψ (hs.trans Set.inter_subset_left) z).2).trans ?_⟩
-  · have a1 := cvTest X φ ψ hφ hψ.1
+  · have a1 := GlobalTheory.CompanionTheory.ConvTest.cvTest X φ ψ hφ hψ.1
     have hsN := hs.trans Set.inter_subset_right
-    refine (cvTest X _ _ (kerBasic X ψ hψ.1).2.2.2.1 a1.1).2.1.trans (Set.mul_subset_mul ?_ ?_)
+    refine (GlobalTheory.CompanionTheory.ConvTest.cvTest X _ _ (kerBasic X ψ hψ.1).2.2.2.1 a1.1).2.1.trans (Set.mul_subset_mul ?_ ?_)
     · refine closure_minimal (fun z hz => Set.mem_inv.2 (hsN (subset_tsupport _ fun e => hz ?_))) hN.inv.isClosed
       simp [adj, e]
     · exact closure_minimal (a1.2.1.trans (Set.mul_subset_mul_left hsN)) (IsCompact.mul hφ.2 hN).isClosed
@@ -44,7 +44,7 @@ theorem ker_eq_of_isOp (X : Ctx) {ι : Type} [Fintype ι] {Φ Φ' : Matrix ι ι
   refine eq_of_forall_dist_le fun ε hε => ?_
   obtain ⟨W, hW, a⟩ := ker_approx X _ (h i j) x y _ (half_pos hε)
   obtain ⟨W', hW', a'⟩ := ker_approx X _ (h' i j) x y _ (half_pos hε)
-  obtain ⟨ψ, hψ, hs⟩ := bumpEx X _ (Filter.inter_mem hW hW')
+  obtain ⟨ψ, hψ, hs⟩ := GlobalTheory.CompanionTheory.Bump.bumpEx X _ (Filter.inter_mem hW hW')
   obtain ⟨c1, c2⟩ := colOp X ι ψ hψ.1
   obtain ⟨u, hu⟩ := c1 y j
   obtain ⟨v, hv⟩ := c1 x i

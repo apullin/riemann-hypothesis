@@ -918,10 +918,6 @@ section CM
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem cA_inclR (σ : E →ₐ[F] E) (x : E) :
-    cA σ (inclR (F := F) (AF F) x) = inclR (F := F) (AF F) (σ x) := by
-  simp [cA, inclR, Algebra.TensorProduct.map_tmul]
-
 theorem cA_cA {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (z : AE F E) : cA σ (cA σ z) = z := by
   induction z using TensorProduct.inductionOn with
   | tmul a x => simp [cA, Algebra.TensorProduct.map_tmul, GlobalTheory.OppLagr.conj_conj h]
@@ -937,7 +933,7 @@ theorem cA_mem_intHat (σ : E →ₐ[F] E) {z : AE F E} (hz : z ∈ intHat F E) 
     obtain ⟨a, h1, h2, o, rfl⟩ := hz
     have ho : IsIntegral ℤ (σ (o : E)) := (RingOfIntegers.isIntegral_coe o).map σ
     refine AddSubgroup.subset_closure ⟨a, h1, h2, (⟨σ o, ho⟩ : 𝓞 E), ?_⟩
-    rw [map_smul, cA_inclR]
+    rw [map_smul, GlobalTheory.CompanionTheory.SiegelFrame.cA_inclR]
     rfl
   | zero => simp [zero_mem]
   | add x y _ _ hx hy => rw [map_add]; exact add_mem hx hy
@@ -982,7 +978,7 @@ theorem cmGood : StdGood → Dict → DictInf → CMGood := by
   · intro w x
     exact (hI F E σ hcm).1 w x
   · intro x
-    exact ⟨σ x, cA_inclR σ x⟩
+    exact ⟨σ x, GlobalTheory.CompanionTheory.SiegelFrame.cA_inclR σ x⟩
   · intro x
     exact ResEtaPow.map_conj hξ hres x
 
@@ -1826,13 +1822,8 @@ namespace PositivityTheory.RgEis.Hd
 
 open Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes GlobalTheory.IndefiniteRowSideFullHecke.WeilTensorModels
 
-theorem idTube : IdTube := _root_.GlobalTheory.CompanionTheory.Eis.idTube
-theorem tubeChain : TubeChain := _root_.GlobalTheory.CompanionTheory.TubeFourier.tubeChain
 theorem secLaw : SecLaw := _root_.GlobalTheory.CompanionTheory.RgEisSec.secLaw
-theorem htLip : HtLip := _root_.GlobalTheory.CompanionTheory.RgEis.htLip
-theorem stage : PiLocalization₂ := _root_.GlobalTheory.CompanionTheory.RgEis.stage
 theorem wallLaw_of : SecLaw → WallLaw := _root_.GlobalTheory.CompanionTheory.RgEis.wallLaw_of_secLaw
-theorem scale : Scale := _root_.GlobalTheory.CompanionTheory.RgEisScale.scale
 theorem grpTop : GrpTop := _root_.GlobalTheory.CompanionTheory.RgEisTop.grpTop
 theorem bdetLaw : BdetLaw := _root_.GlobalTheory.CompanionTheory.RgEis.bdetLaw
 theorem extLaw : ExtLaw := _root_.GlobalTheory.CompanionTheory.RgEisExt.extLaw
@@ -1845,8 +1836,6 @@ theorem stdGood : StdGood := _root_.GlobalTheory.CompanionTheory.StdGoodAd.stdGo
 theorem dict : Dict := _root_.GlobalTheory.CompanionTheory.EisDict.dict
 theorem dictInf : DictInf := _root_.GlobalTheory.CompanionTheory.RgEis.dictInf
 theorem cmGood_of : StdGood → Dict → DictInf → CMGood := _root_.GlobalTheory.CompanionTheory.RgEisCM.cmGood
-theorem siegelMult_of : SecLaw → WallLaw → Dict → DictInf → CMGood → GrpTop → BdetLaw → ExtLaw → ParLaw → SgAll →
-    SiegelEisensteinSeries.BRoad.SiegelMult := _root_.GlobalTheory.CompanionTheory.SiegelFrame.siegelMult_of
 
 theorem sgAll_of (hG : CMGood) (hM : CMMir) (h1 : SgOne) (hS : SgStep) : SgAll := by
   intro F E _ _ _ _ _ σ χ c h h' hχ hc ε
@@ -1868,7 +1857,7 @@ theorem sgAll : SgAll :=
   have hM := _root_.PositivityTheory.RgEis.MG.mirGen secLaw stdGood bdetLaw _root_.GlobalTheory.CompanionTheory.EpConvB.epConv (_root_.GlobalTheory.CompanionTheory.EpsteinMain.Hd.epMain_of_epConv _root_.GlobalTheory.CompanionTheory.EpConvB.epConv) _root_.PositivityTheory.RgEis.TF.testFun _root_.GlobalTheory.CompanionTheory.RgEisTestSph.testSph
   sgAll_of hG (_root_.GlobalTheory.CompanionTheory.CMMirror.cmMir dict hG grpTop bdetLaw extLaw hP hM)
     (_root_.PositivityTheory.RgEis.So.sgOne_hd secLaw hW _root_.GlobalTheory.CompanionTheory.RgEisScale.scale stdGood dict dictInf hG grpTop bdetLaw extLaw hP hM)
-    (_root_.GlobalTheory.CompanionTheory.RgEis.sgStep (_root_.GlobalTheory.CompanionTheory.RgEisGal.gallery secLaw _root_.GlobalTheory.CompanionTheory.Eis.idTube _root_.GlobalTheory.CompanionTheory.TubeFourier.tubeChain (_root_.GlobalTheory.CompanionTheory.RgEisCross.cross secLaw htLip _root_.GlobalTheory.CompanionTheory.RgEis.stage hW)) (_root_.GlobalTheory.CompanionTheory.RgTransfer.transfer secLaw hW)
+    (_root_.GlobalTheory.CompanionTheory.RgEis.sgStep (_root_.GlobalTheory.CompanionTheory.RgEisGal.gallery secLaw _root_.GlobalTheory.CompanionTheory.Eis.idTube _root_.GlobalTheory.CompanionTheory.TubeFourier.tubeChain (_root_.GlobalTheory.CompanionTheory.RgEisCross.cross secLaw GlobalTheory.CompanionTheory.RgEis.htLip _root_.GlobalTheory.CompanionTheory.RgEis.stage hW)) (_root_.GlobalTheory.CompanionTheory.RgTransfer.transfer secLaw hW)
       (_root_.GlobalTheory.CompanionTheory.RgEisTwist.twist secLaw) grpTop hP (_root_.GlobalTheory.CompanionTheory.RgEisLevi.leviS bdetLaw extLaw grpTop) (_root_.GlobalTheory.CompanionTheory.RgEisLeviQUnit.leviQ bdetLaw extLaw grpTop)
       (_root_.GlobalTheory.CompanionTheory.Plucker.convGrOf bdetLaw extLaw) (_root_.GlobalTheory.CompanionTheory.RgEis.UnitaryConv.convU_of_parLaw hP))
 
@@ -1878,10 +1867,10 @@ theorem eisBL : GlobalTheory.ThK.Dbl.EisBL :=
   have hG := cmGood_of stdGood dict dictInf
   have hM := _root_.PositivityTheory.RgEis.MG.mirGen secLaw stdGood bdetLaw epConv (epMain_of epConv) testFun testSph
   SiegelEisensteinSeries.BRoad.eisBL_of _root_.GlobalTheory.CompanionTheory.SiegelEisHalf.eisHalf
-    (siegelMult_of secLaw hW dict dictInf hG grpTop bdetLaw extLaw hP
+    (GlobalTheory.CompanionTheory.SiegelFrame.siegelMult_of secLaw hW dict dictInf hG grpTop bdetLaw extLaw hP
       (sgAll_of hG (_root_.GlobalTheory.CompanionTheory.CMMirror.cmMir dict hG grpTop bdetLaw extLaw hP hM)
         (_root_.PositivityTheory.RgEis.So.sgOne_hd secLaw hW _root_.GlobalTheory.CompanionTheory.RgEisScale.scale stdGood dict dictInf hG grpTop bdetLaw extLaw hP hM)
-        (_root_.GlobalTheory.CompanionTheory.RgEis.sgStep (_root_.GlobalTheory.CompanionTheory.RgEisGal.gallery secLaw _root_.GlobalTheory.CompanionTheory.Eis.idTube _root_.GlobalTheory.CompanionTheory.TubeFourier.tubeChain (_root_.GlobalTheory.CompanionTheory.RgEisCross.cross secLaw htLip _root_.GlobalTheory.CompanionTheory.RgEis.stage hW)) (_root_.GlobalTheory.CompanionTheory.RgTransfer.transfer secLaw hW)
+        (_root_.GlobalTheory.CompanionTheory.RgEis.sgStep (_root_.GlobalTheory.CompanionTheory.RgEisGal.gallery secLaw _root_.GlobalTheory.CompanionTheory.Eis.idTube _root_.GlobalTheory.CompanionTheory.TubeFourier.tubeChain (_root_.GlobalTheory.CompanionTheory.RgEisCross.cross secLaw GlobalTheory.CompanionTheory.RgEis.htLip _root_.GlobalTheory.CompanionTheory.RgEis.stage hW)) (_root_.GlobalTheory.CompanionTheory.RgTransfer.transfer secLaw hW)
           (_root_.GlobalTheory.CompanionTheory.RgEisTwist.twist secLaw) grpTop hP (_root_.GlobalTheory.CompanionTheory.RgEisLevi.leviS bdetLaw extLaw grpTop) (_root_.GlobalTheory.CompanionTheory.RgEisLeviQUnit.leviQ bdetLaw extLaw grpTop)
           (_root_.GlobalTheory.CompanionTheory.Plucker.convGrOf bdetLaw extLaw) (_root_.GlobalTheory.CompanionTheory.RgEis.UnitaryConv.convU_of_parLaw hP))))
     GlobalTheory.CompanionTheory.Entire.local_factorisation

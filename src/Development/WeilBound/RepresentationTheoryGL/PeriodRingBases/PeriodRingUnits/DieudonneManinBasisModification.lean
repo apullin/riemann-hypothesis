@@ -17,8 +17,6 @@ abbrev GQ : Type := PadicAlgCl l ≃ₐ[ℚ_[l]] PadicAlgCl l
 
 abbrev B : Type := Bcris l
 
-def φ : B l →+* B l := φB l
-
 theorem isUnit_iC_l : IsUnit (iC l (l : ACris.ACris ℂ_[l] l)) := by
   rw [map_natCast, ← map_natCast (qQ l)]
   exact (IsUnit.mk0 (l : ℚ_[l]) (Nat.cast_ne_zero.2 (Fact.out : l.Prime).ne_zero)).map _

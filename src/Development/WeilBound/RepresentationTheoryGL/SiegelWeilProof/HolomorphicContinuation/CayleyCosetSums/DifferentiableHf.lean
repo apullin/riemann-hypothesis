@@ -88,7 +88,7 @@ theorem continuousAt_fz {x : M2 n} (hx : InG x) (m : ℕ) (e : ℤ) (z : ℂ) :
     continuousAt_pi.2 fun i => continuousAt_pi.2 fun j =>
       (contDiffOn_inverse_first_block i j).continuousOn.continuousAt (isOpen_det_ne.mem_nhds hdx)
   have hw : (u1 x).det * (ub1 x).det = ((Complex.normSq (u1 x).det : ℝ) : ℂ) := by
-    rw [inverse_first_block_eq_conjTranspose hx, Matrix.det_conjTranspose, Complex.star_def, Complex.normSq_eq_conj_mul_self]
+    rw [PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group hx, Matrix.det_conjTranspose, Complex.star_def, Complex.normSq_eq_conj_mul_self]
     ring
   have hslit : (u1 x).det * (ub1 x).det ∈ Complex.slitPlane := by
     rw [hw, Complex.ofReal_mem_slitPlane]
@@ -170,7 +170,7 @@ theorem differentiable_Hf (m : ℕ) (e : ℤ) {ψ : (Fin n → Fin n → ℝ) �
     have hG := inG_path hy ha hb t
     have hc : (u1 (y * a * nU (herm t) * b)).det * (ub1 (y * a * nU (herm t) * b)).det ≠ 0 := by
       refine mul_ne_zero (PositivityTheory.Rg.Sw.LVs.det_first_cayley_block_ne_zero hG) ?_
-      rw [inverse_first_block_eq_conjTranspose hG, Matrix.det_conjTranspose]
+      rw [PositivityTheory.Rg.Sw.LVs.inverse_first_block_eq_of_group hG, Matrix.det_conjTranspose]
       exact star_ne_zero.2 (PositivityTheory.Rg.Sw.LVs.det_first_cayley_block_ne_zero hG)
     simp only [fz]
     exact (((differentiableAt_const _).mul (differentiableAt_id.neg.const_cpow (Or.inl hc))).mul_const

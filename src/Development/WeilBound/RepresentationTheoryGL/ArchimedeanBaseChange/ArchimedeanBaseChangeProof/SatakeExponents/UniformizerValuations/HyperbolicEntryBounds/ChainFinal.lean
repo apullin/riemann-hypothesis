@@ -51,10 +51,6 @@ noncomputable section
 
 namespace GlobalTheory.BCT
 
-theorem ev_int_exsplit {E : Type} [Field E] [NumberField E] (x : E) :
-    ∀ᶠ w : Pl E in cofinite, algebraMap E (w.adicCompletion E) x ∈ w.adicCompletionIntegers E :=
-  (algebraMap E (FiniteAdeleRing (𝓞 E) E) x).eventually
-
 theorem coeff_zero_ne_zero_of_mem_ell {E : Type} [Field E] [NumberField E] {n : ℕ} {P : E[X]} (hP : P ∈ Ell E n) :
     P.coeff 0 ≠ 0 := by
   intro h0
@@ -82,8 +78,8 @@ theorem exists_int_charpoly_atPl_split : ∀ (E : Type) [Field E] [NumberField E
     exact mul_ne_zero (pow_ne_zero _ (neg_ne_zero.2 one_ne_zero)) (coeff_zero_ne_zero_of_mem_ell hP)
   have hev1 : ∀ᶠ w : Pl E in cofinite, ∀ ij : Fin n × Fin n,
       algebraMap E (w.adicCompletion E) (M ij.1 ij.2) ∈ w.adicCompletionIntegers E :=
-    Filter.eventually_all.2 fun ij => ev_int_exsplit (M ij.1 ij.2)
-  have hev2 := ev_int_exsplit (E := E) M.det⁻¹
+    Filter.eventually_all.2 fun ij => GlobalTheory.BCT.UnitInert.eventually_int (M ij.1 ij.2)
+  have hev2 := GlobalTheory.BCT.UnitInert.eventually_int (E := E) M.det⁻¹
   filter_upwards [hev1, hev2] with w hent hinv hs
   let N : Matrix (Fin n) (Fin n) (Ov E w) := fun i j => ⟨_, hent (i, j)⟩
   have hN : (Ov E w).subtype.mapMatrix N = M.map (algebraMap E (w.adicCompletion E)) := by
@@ -614,7 +610,6 @@ open PositivityTheory.Rg.BcB.E PositivityTheory.RgBcC PositivityTheory.Rg.BcB.CG
 open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.Rg.BcB.SpectralAccumulation (Hf)
 open scoped Classical
-
 
 
 namespace PositivityTheory.Rg.BcB.F.F0

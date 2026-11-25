@@ -634,8 +634,8 @@ namespace PositivityTheory.Rg.BcB.E1
 
 open D1
 
-theorem sizeCont : SizeCont := GlobalTheory.CompanionTheory.SizeCont.sizeCont szFin
-theorem degRight : DegRight := GlobalTheory.CompanionTheory.DegRightProof.degRight_of mulF mulI szFin finSupp
+theorem sizeCont : SizeCont := GlobalTheory.CompanionTheory.SizeCont.sizeCont GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin
+theorem degRight : DegRight := GlobalTheory.CompanionTheory.DegRightProof.degRight_of GlobalTheory.CompanionTheory.WedgeMinor.mulF mulI GlobalTheory.CompanionTheory.Dblock.SzFinProof.szFin finSupp
 theorem redBasic : RedBasic := redBasic_of ratProper_holds sizeCont
 theorem cutBox : CutBox := cutBox_of' degBasis degAdelic degBdd
 theorem redCell : RedCell := redCell_of sizeBasic degBdd degRat degRight torNorm_holds cutBox redBasic

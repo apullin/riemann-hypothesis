@@ -1019,12 +1019,6 @@ theorem frame_transport {k : Type} [Field k] {n : ℕ} {c : k →+* k} {δ : GL 
     obtain ⟨a, b, hab⟩ := h.span x hx
     exact ⟨e a, e b, by simpa using hab⟩
 
-theorem decomp (E : Type) [Field E] [NumberField E] [IsCMField E] (s : E) (hs0 : s ≠ 0)
-    (hsc : IsCMField.complexConj E s = -s) (z : E) :
-    ∃ a b : (maximalRealSubfield E),
-      z = algebraMap (maximalRealSubfield E) E a + s * algebraMap (maximalRealSubfield E) E b :=
-  _root_.PositivityTheory.Rg.BcB.G3.InertBaseP.decomp E s hs0 hsc z
-
 end PositivityTheory.Rg.BcB.G3.LocDictP
 
 open PositivityTheory.Rg.BcB.G3.LocDictP in
@@ -1085,7 +1079,7 @@ theorem PositivityTheory.Rg.BcB.G3.locDict_pf (h1 : ClsNorm) (h2 : ClsOnto) (h3 
     obtain ⟨ρ', hρ'1, hρ'⟩ := h4 (maximalRealSubfield E) E
       ((w.under (𝓞 (maximalRealSubfield E))).adicCompletion (maximalRealSubfield E)) (w.adicCompletion E)
       (algebraMap E _) j (IsCMField.complexConj E).toRingEquiv.toRingHom (cj w) s d hj1 (fun x => hcE x) hj2 hs0 hsc
-      (decomp E s hs0 hsc) hj3 n δ hsep (∀ i, K i) ρ hfr
+      (PositivityTheory.Rg.BcB.G3.InertBaseP.decomp E s hs0 hsc) hj3 n δ hsep (∀ i, K i) ρ hfr
     have hTC := fun i => h7 (maximalRealSubfield E) (K i) (w.under (𝓞 (maximalRealSubfield E)))
     choose e he using hTC
     obtain ⟨Φ, hΦ⟩ : ∃ Φ : ((w.under (𝓞 (maximalRealSubfield E))).adicCompletion (maximalRealSubfield E) ⊗[maximalRealSubfield E]
@@ -1419,14 +1413,6 @@ namespace PositivityTheory.Rg.BcB.G3.TensorComplP
 variable {F K : Type} [Field F] [NumberField F] [Field K] [NumberField K] [Algebra F K]
   (v : HeightOneSpectrum (𝓞 F))
 
-theorem finite_over : {w : HeightOneSpectrum (𝓞 K) | w.under (𝓞 F) = v}.Finite := by
-  have := v.isMaximal
-  have h := IsDedekindDomain.primesOver_finite v.asIdeal (𝓞 K)
-  refine (h.preimage (f := HeightOneSpectrum.asIdeal)
-    (fun a _ b _ hab => HeightOneSpectrum.ext hab)).subset ?_
-  rintro w rfl
-  exact ⟨w.isPrime, ⟨rfl⟩⟩
-
 def phi : v.adicCompletion F ⊗[F] K →+*
     (∀ u : {u : HeightOneSpectrum (𝓞 K) // u.under (𝓞 F) = v}, u.1.adicCompletion K) :=
   RingHom.pi fun u => GlobalTheory.LFun.toCompl u.2
@@ -1473,7 +1459,7 @@ theorem phi_surjective : Function.Surjective (phi (K := K) v) := by
   intro z
   obtain ⟨y, hy⟩ := (GlobalTheory.LFun.finAdEquiv F K).surjective
     ⟨fun w => if h : w.under (𝓞 F) = v then z ⟨w, h⟩ else 0, by
-      filter_upwards [(finite_over (K := K) v).compl_mem_cofinite] with u hu
+      filter_upwards [(PositivityTheory.Rg.BcB.G3.ParamP.finite_over (K := K) v).compl_mem_cofinite] with u hu
       rw [dite_eq_right (by simpa using hu)]
       exact zero_mem _⟩
   refine ⟨Algebra.TensorProduct.map (Formalism.MainNotions.GlobalTheoryTheory.GenusMassVolumes.evalV F v) (AlgHom.id F K) y, funext fun u => ?_⟩

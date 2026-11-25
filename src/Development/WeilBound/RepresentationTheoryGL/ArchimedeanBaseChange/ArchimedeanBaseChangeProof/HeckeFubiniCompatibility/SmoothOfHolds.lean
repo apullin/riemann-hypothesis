@@ -1505,10 +1505,6 @@ theorem gI_infGL_val (v : InfinitePlace E) (u : GL (Fin n) (Cinf E)) :
   exact congrArg (fun y : GL (Fin n) (Cinf E) => y.val i j v) (pInf_infGL (E := E) (a := n) u)
 
 omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
-theorem isOpen_GLs₀ : IsOpen (GLs n) :=
-  isOpen_ne.preimage (Continuous.matrix_det continuous_id)
-
-omit [NumberField E] [_root_.NumberField.IsTotallyComplex E] in
 def xv (v : InfinitePlace E) (x : Lie E n) : Mat n := fun i j => x i j v
 
 omit [_root_.NumberField.IsTotallyComplex E] in
@@ -1583,7 +1579,7 @@ def Wset (E : Type) [Field E] [NumberField E] (n : ℕ) : Set ((InfinitePlace E 
 
 omit [_root_.NumberField.IsTotallyComplex E] in
 theorem isOpen_Wset : IsOpen (Wset E n) :=
-  (isOpen_set_pi Set.finite_univ fun _ _ => isOpen_GLs₀).prod isOpen_univ
+  (isOpen_set_pi Set.finite_univ fun _ _ => GlobalTheory.CompanionTheory.KerUniq.isOpen_GLs).prod isOpen_univ
 
 theorem contDiffOn_kerQ {κ : InfinitePlace E → Mat n → ℂ} (hκ : ∀ v, ContDiffOn ℝ ∞ (κ v) (GLs n)) :
     ContDiffOn ℝ ∞ (kerQ κ) (invSet E n ×ˢ Wset E n) := by
@@ -1592,13 +1588,13 @@ theorem contDiffOn_kerQ {κ : InfinitePlace E → Mat n → ℂ} (hκ : ∀ v, C
   refine (contDiffAt_prod fun v _ => ?_).mul (contDiff_snd.comp contDiff_snd).contDiffAt
   have hinv : ContDiffAt ℝ ∞ (fun q : Lie E n × ((InfinitePlace E → Mat n) × ℂ) => (xv v q.1)⁻¹) (x, m, b) :=
     ContDiffAt.comp (g := fun A : Mat n => A⁻¹) (f := fun q : Lie E n × ((InfinitePlace E → Mat n) × ℂ) => xv v q.1)
-      (x, m, b) (GlobalTheory.CompanionTheory.WaveCp.Rep.Frame.contDiffOn_inv_real.contDiffAt (isOpen_GLs₀.mem_nhds (xv_mem hx v)))
+      (x, m, b) (GlobalTheory.CompanionTheory.WaveCp.Rep.Frame.contDiffOn_inv_real.contDiffAt (GlobalTheory.CompanionTheory.KerUniq.isOpen_GLs.mem_nhds (xv_mem hx v)))
       ((contDiff_xv v).comp contDiff_fst).contDiffAt
   have hmv : ContDiffAt ℝ ∞ (fun q : Lie E n × ((InfinitePlace E → Mat n) × ℂ) => q.2.1 v) (x, m, b) :=
     by fun_prop
   exact ContDiffAt.comp (g := κ v)
     (f := fun q : Lie E n × ((InfinitePlace E → Mat n) × ℂ) => (xv v q.1)⁻¹ * q.2.1 v) (x, m, b)
-    ((hκ v).contDiffAt (isOpen_GLs₀.mem_nhds (inv_mul_mem (xv_mem hx v) (hm v trivial))))
+    ((hκ v).contDiffAt (GlobalTheory.CompanionTheory.KerUniq.isOpen_GLs.mem_nhds (inv_mul_mem (xv_mem hx v) (hm v trivial))))
     (contDiffAt_matMul (f := fun q : Lie E n × ((InfinitePlace E → Mat n) × ℂ) => (xv v q.1)⁻¹)
       (g := fun q : Lie E n × ((InfinitePlace E → Mat n) × ℂ) => q.2.1 v) hinv hmv)
 
@@ -1714,9 +1710,6 @@ omit [IsCMField E] in
 theorem continuous_gFin₀ : Continuous (gFin : GA E n → GL (Fin n) (Af E)) :=
   Continuous.units_map _ (continuous_id.matrix_map continuous_snd)
 
-theorem continuous_hFin₀ {a b : ℕ} : Continuous (hFin : H E a b → Hf E a b) :=
-  (continuous_gFin₀.comp continuous_fst).prodMk (continuous_gFin₀.comp continuous_snd)
-
 theorem gFin_infGL₀ (u : GL (Fin n) (Cinf E)) : gFin (infGL E n u) = 1 := pFin_infGL u
 
 end SmoothIntegrals
@@ -1731,7 +1724,7 @@ theorem smoothOf (hTT : TensTest) : SmoothOf := by
     have : IsFiniteMeasureOnCompacts D.μ := isFiniteMeasureOnCompacts_of_isLocallyFiniteMeasure
     obtain ⟨hfc, c, hc, hconv⟩ := hR
     have hTest := (hTT E a b μa μb Ma Mb ι ka kb va vb T ψ hka hkb hψ).1
-    have hψc : ∀ x y, Continuous fun w : H E a b => ψ x y (hFin w) := fun x y => (hψ x y).1.comp continuous_hFin₀
+    have hψc : ∀ x y, Continuous fun w : H E a b => ψ x y (hFin w) := fun x y => (hψ x y).1.comp PositivityTheory.Rg.BcB.CG.continuous_hFin
 
     have hrep : ∀ i z, f i z = c⁻¹ * ∑ j, ∫ y, tens ka kb ψ i j y * f j (z * y) ∂D.μ := by
       intro i z

@@ -125,7 +125,7 @@ theorem siegelOrb : SiegelOrb := by
   have hSu' : IsUnit Sᴴ.det := by
     rw [Matrix.det_conjTranspose]
     exact hSu.star
-  refine ⟨mkGR (nU X) (by rw [det_nU]; exact one_ne_zero) (inG_nU hX) * mkGR (mM S) (det_mM hSu) (inG_mM hSu), ?_, ?_⟩
+  refine ⟨mkGR (nU X) (by rw [PositivityTheory.Rg.Sw.Glob.DecH.det_nU]; exact one_ne_zero) (inG_nU hX) * mkGR (mM S) (det_mM hSu) (PositivityTheory.Rg.Sw.Glob.DecH.inG_mM hSu), ?_, ?_⟩
   · rw [mR_mul, mR_mkGR, mR_mkGR, toBlocks₂₁_mul]
     simp [nU, mM]
   · unfold actZ
@@ -281,8 +281,8 @@ theorem pLaw (hN : LawN) (hMul : LocMul) {V : HSp D} {ψ : AddChar (AF D.host.F)
       gZf ε (tLoc l τ) (cLoc l τ) (actZ q Z) u := by
   obtain ⟨hA, hDd, hb⟩ := siegelP_data q hq
   have hAh : IsUnit ((mR q).toBlocks₁₁ᴴ).det := by rw [Matrix.det_conjTranspose]; exact hA.star
-  set q1 := mkGR (nU ((mR q).toBlocks₁₂ * (mR q).toBlocks₁₁ᴴ)) (by rw [det_nU]; exact one_ne_zero) (inG_nU hb)
-  set q2 := mkGR (mM (mR q).toBlocks₁₁) (det_mM hA) (inG_mM hA)
+  set q1 := mkGR (nU ((mR q).toBlocks₁₂ * (mR q).toBlocks₁₁ᴴ)) (by rw [PositivityTheory.Rg.Sw.Glob.DecH.det_nU]; exact one_ne_zero) (inG_nU hb)
+  set q2 := mkGR (mM (mR q).toBlocks₁₁) (det_mM hA) (PositivityTheory.Rg.Sw.Glob.DecH.inG_mM hA)
   have hq12 : q = q1 * q2 := by
     apply GR_ext
     rw [mR_mul, mR_mkGR, mR_mkGR]

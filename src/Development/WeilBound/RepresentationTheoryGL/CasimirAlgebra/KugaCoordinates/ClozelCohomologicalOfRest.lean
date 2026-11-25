@@ -241,16 +241,6 @@ open NumberField Matrix GlobalTheory.CuspRep GlobalTheory.GKCoh
 
 namespace PositivityTheory.Rg.Cz.J
 
-section DetDeriv
-
-variable {ι : Type} [Fintype ι] [DecidableEq ι]
-
-theorem hasDerivAt_det_one (A : ℝ → Matrix ι ι ℂ) (A' : Matrix ι ι ℂ) (h0 : A 0 = 1)
-    (h : ∀ i j, HasDerivAt (fun t => A t i j) (A' i j) 0) :
-    HasDerivAt (fun t => (A t).det) A'.trace 0 :=
-  _root_.Bl.ProductIdentities.goal1 A A' h0 h
-
-end DetDeriv
 
 section
 variable {E : Type} [Field E] [NumberField E] {a : ℕ}
@@ -356,7 +346,7 @@ theorem bigM_der (lab : Q → (E →+* ℂ)) (s : ℤ) (c : ℝ → GL (Fin a) (
   have hco : ∀ (τ : E →+* ℂ) i j, HasDerivAt (fun t => coord τ ((c t).val i j)) (coord τ (X i j)) 0 :=
     fun τ i j => (coordL τ).hasFDerivAt.comp_hasDerivAt (0 : ℝ) (he i j)
   have hdet : ∀ τ : E →+* ℂ, HasDerivAt (fun t => coord τ (c t).val.det) (∑ i, coord τ (X i i)) 0 := fun τ => by
-    have h2 := hasDerivAt_det_one (fun t => (c t).val.map (coord τ)) ((Matrix.of X).map (coord τ))
+    have h2 := Bl.ProductIdentities.goal1 (fun t => (c t).val.map (coord τ)) ((Matrix.of X).map (coord τ))
       (by rw [h0]; simp) (fun i j => hco τ i j)
     have e : (fun t => coord τ (c t).val.det) = fun t => ((c t).val.map (coord τ)).det :=
       funext fun t => RingHom.map_det _ _

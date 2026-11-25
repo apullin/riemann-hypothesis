@@ -17,9 +17,6 @@ variable {E : Type} [Field E] [NumberField E] [IsCMField E] {a b : ℕ}
 
 def chiH (τ : ℝ) (x : H E a b) : ℝ := (cutSet E a τ ×ˢ cutSet E b τ).indicator 1 x
 
-def hs2 (D : Dom E a b) (τ : ℝ) (φ : H E a b → ℂ) : ENNReal :=
-  ∫⁻ x, ENNReal.ofReal (chiH τ x) * ∫⁻ y, ‖kerH φ x y‖ₑ ^ 2 ∂D.ν ∂D.ν
-
 def SmoothSeminormGrowth : Prop := ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (D : Dom E a b) (ι : Type) [Fintype ι]
   (Φ : Matrix ι ι (H E a b → ℂ)), IsTestM Φ →
     ∃ T : Hs (ι := ι) D →L[ℂ] Hs (ι := ι) D, IsROp D Φ T ∧ IsROp D (adjM Φ) (ContinuousLinearMap.adjoint T) ∧

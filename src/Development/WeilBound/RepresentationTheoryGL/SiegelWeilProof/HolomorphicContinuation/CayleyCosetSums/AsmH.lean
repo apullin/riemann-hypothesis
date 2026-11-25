@@ -445,12 +445,7 @@ theorem herm_herm (x : Fin n → Fin n → ℝ) : (herm x)ᴴ = herm x := by
   simp only [conjTranspose_apply, herm]
   apply Complex.ext <;> simp <;> ring
 
-theorem isUnit_of_inG {x : M2 n} (hx : InG x) : IsUnit x := by
-  rw [Matrix.isUnit_iff_isUnit_det]
-  apply Matrix.isUnit_det_of_left_inverse (B := -(JJ n * xᴴ * JJ n))
-  rw [neg_mul, Matrix.mul_assoc, Matrix.mul_assoc, ← Matrix.mul_assoc xᴴ, hx, IwaPf.JJ_mul_self, neg_neg]
-
-def grOf (x : M2 n) (hx : InG x) : GR n := ⟨(isUnit_of_inG hx).unit, hx⟩
+def grOf (x : M2 n) (hx : InG x) : GR n := ⟨(PositivityTheory.Rg.Sw.HSt.isUnit_of_inG hx).unit, hx⟩
 
 theorem mR_grOf (x : M2 n) (hx : InG x) : mR (grOf x hx) = x := IsUnit.unit_spec _
 
@@ -475,7 +470,7 @@ theorem continuous_nG : Continuous (nG (n := n)) := by
   constructor
   · simpa only [Function.comp_def, IsUnit.unit_spec] using continuous_nU_comp_herm
   · have hinv : ∀ s : Fin n → Fin n → ℝ,
-        ((isUnit_of_inG (HolB.inG_upper (herm_herm s))).unit⁻¹ : GL (Fin n ⊕ Fin n) ℂ).val =
+        ((PositivityTheory.Rg.Sw.HSt.isUnit_of_inG (HolB.inG_upper (herm_herm s))).unit⁻¹ : GL (Fin n ⊕ Fin n) ℂ).val =
           nU (-herm s) := by
       intro s
       apply Units.inv_eq_of_mul_eq_one_right
@@ -1038,15 +1033,6 @@ open PositivityTheory.Rg.Sw PositivityTheory.Rg.Sw.LVs PositivityTheory.SiegelWe
 
 variable {n : ℕ}
 
-theorem lift_mR (φ : GR n → ℂ) (w : GR n) : lift φ (mR w) = φ w := by
-  have h : IsUnit (mR w) ∧ InG (mR w) := ⟨⟨w.1, rfl⟩, w.2⟩
-  unfold lift
-  rw [dite_eq_left h]
-  congr 1
-  apply Subtype.ext
-  apply Units.ext
-  simp [mR]
-
 theorem ιK_apply (k : KR n) : ιK n k = mR (k : GR n) := rfl
 
 theorem mR_mul' (g h : GR n) : mR (g * h) = mR g * mR h := rfl
@@ -1066,7 +1052,7 @@ theorem tOp_resG {G : Type} [Group G] (ι : GR n →* G) [MeasurableSpace (KR n)
   have e1 : mR y * ιK n k * a * nU (herm t) * b =
       mR (y * ((k : GR n) * LocOpA.mkG a ha * LocOpA.nbEl t * LocOpA.mkG b hb)) := by
     simp only [mR_mul', ιK_apply, LocOpA.mR_mkG, LocOpA.nbEl, Matrix.mul_assoc]
-  rw [e1, lift_mR, map_mul]
+  rw [e1, PositivityTheory.Rg.Sw.HSt.FarP.lift_mR, map_mul]
   simp only [mul_assoc]
 
 theorem hol_int {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G] {ι : GR n →* G} (hιc : Continuous ι)
@@ -1157,22 +1143,13 @@ theorem topHol : TopHol := by
     exact H.1
   · rw [hfun Ê, H.2 s₀ hD.hs r, tOp_resG ι μ ρ ψ ha hb _ g y]
 
-theorem JJ_inv : (JJ n)⁻¹ = -JJ n := by
-  refine Matrix.inv_eq_right_inv ?_
-  rw [Matrix.mul_neg, _root_.PositivityTheory.Rg.Sw.AbsSt.LocOpA.JJ_mul_JJ, neg_neg]
-
 theorem JJ_conjTranspose : (JJ n)ᴴ = -JJ n := by
   unfold JJ
   rw [fromBlocks_conjTranspose, Matrix.fromBlocks_neg]
   simp
 
-theorem sig_eq (X : M2 n) : sig X = JJ n * Xᴴ * JJ n := by
-  unfold sig
-  rw [JJ_inv]
-  simp
-
 theorem sig_conjTranspose (X : M2 n) : (sig X)ᴴ = JJ n * X * JJ n := by
-  rw [sig_eq]
+  rw [PositivityTheory.Rg.Sw.HSt.FL.sig_eq]
   simp only [Matrix.conjTranspose_mul, Matrix.conjTranspose_conjTranspose, JJ_conjTranspose, Matrix.neg_mul,
     Matrix.mul_neg, neg_neg, Matrix.mul_assoc]
 
@@ -1181,7 +1158,7 @@ theorem lie_half1 (Z : M2 n) (t : ℝ) :
   have h := _root_.PositivityTheory.Rg.Sw.AbsSt.LocOpA.JJ_mul_JJ (n := n)
   simp only [Matrix.conjTranspose_smul, Matrix.conjTranspose_add, sig_conjTranspose, Complex.star_def,
     Complex.conj_ofReal, map_div₀, map_one, map_ofNat]
-  rw [sig_eq]
+  rw [PositivityTheory.Rg.Sw.HSt.FL.sig_eq]
   simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc, h]
   rw [← Matrix.mul_assoc (JJ n) (JJ n), h]
   simp only [Matrix.mul_neg, Matrix.mul_one, Matrix.neg_mul, Matrix.one_mul]
@@ -1196,7 +1173,7 @@ theorem lie_half2 (Z : M2 n) (t : ℝ) :
     simp [Complex.conj_ofNat]
   simp only [Matrix.conjTranspose_smul, Matrix.conjTranspose_sub, sig_conjTranspose, hI, Complex.star_def,
     Complex.conj_ofReal]
-  rw [sig_eq]
+  rw [PositivityTheory.Rg.Sw.HSt.FL.sig_eq]
   simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_assoc, h]
   rw [← Matrix.mul_assoc (JJ n) (JJ n), h]
   simp only [Matrix.mul_neg, Matrix.mul_one, Matrix.neg_mul, Matrix.one_mul]

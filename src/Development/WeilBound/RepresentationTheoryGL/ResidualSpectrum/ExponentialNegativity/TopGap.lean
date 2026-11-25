@@ -980,30 +980,14 @@ theorem mem_gmap {g : GL (Fin N) k} {M : Submodule k (Fin N → k)} {y : Fin N �
   delta gmap
   simp only [Submodule.mem_map, Matrix.toLin'_apply]
 
-theorem gmap_mul (g h : GL (Fin N) k) (M : Submodule k (Fin N → k)) : gmap (g * h) M = gmap g (gmap h M) := by
-  delta gmap
-  simp only [Units.val_mul, Matrix.toLin'_mul, Submodule.map_comp]
-
-theorem gmap_one (M : Submodule k (Fin N → k)) : gmap (1 : GL (Fin N) k) M = M := by
-  delta gmap
-  simp
-
 theorem gmap_inv_mul_eq_iff (g h : GL (Fin N) k) (M : Submodule k (Fin N → k)) :
     gmap (g⁻¹ * h) M = M ↔ gmap h M = gmap g M := by
   constructor
   · intro h1
     conv_rhs => rw [← h1]
-    rw [← gmap_mul, mul_inv_cancel_left]
+    rw [← GlobalTheory.CompanionTheory.GLFirstBasisOrbit.gmap_mul, mul_inv_cancel_left]
   · intro h1
-    rw [gmap_mul, h1, ← gmap_mul, inv_mul_cancel, gmap_one]
-
-theorem finrank_gmap (g : GL (Fin N) k) (M : Submodule k (Fin N → k)) :
-    finrank k (gmap g M) = finrank k M := by
-  have hinj : Function.Injective (Matrix.toLin' (g : Matrix (Fin N) (Fin N) k)) := by
-    intro x y hxy
-    have h2 := congrArg (fun v => ((g⁻¹ : GL (Fin N) k) : Matrix (Fin N) (Fin N) k) *ᵥ v) hxy
-    simpa [Matrix.toLin'_apply, Matrix.mulVec_mulVec] using h2
-  exact (LinearEquiv.finrank_eq (Submodule.equivMapOfInjective _ hinj M)).symm
+    rw [GlobalTheory.CompanionTheory.GLFirstBasisOrbit.gmap_mul, h1, ← GlobalTheory.CompanionTheory.GLFirstBasisOrbit.gmap_mul, inv_mul_cancel, GlobalTheory.CompanionTheory.GLFirstBasisOrbit.gmap_one]
 
 theorem gmap_le_Mj_iff (g : GL (Fin N) k) (j : ℕ) :
     gmap g (Mj k N j) ≤ Mj k N j ↔
@@ -1036,7 +1020,7 @@ theorem mem_par_iff [Finite k] (g : GL (Fin N) k) (j : ℕ) :
   rw [hmem, ← gmap_le_Mj_iff]
   constructor
   · intro hle
-    exact Submodule.eq_of_le_of_finrank_eq hle (finrank_gmap g _)
+    exact Submodule.eq_of_le_of_finrank_eq hle (GlobalTheory.CompanionTheory.GLFirstBasisOrbit.finrank_gmap g _)
   · intro heq
     exact heq.le
 
@@ -1417,7 +1401,7 @@ theorem vv_eq (hϖ : IsUnifV E w ϖ) {V : Type} [AddCommGroup V] [Module ℂ V] 
     (hx : ∀ κ ∈ GLint (Fin N) (Ov E w), ρ κ x = x) {j : ℕ} (hj : j ≤ N) (γ : GLint (Fin N) (Ov E w))
     (M : Submodule (Res E w) (Fin N → Res E w)) (h : gmap (tjcosets_red (Ov E w) N γ) (Mj (Res E w) N j) = M) :
     vv hϖ N ρ x M = ρ ((γ : GL (Fin N) (w.adicCompletion E)) * dd hϖ N j) x := by
-  have hf : finrank (Res E w) M = N - j := by rw [← h, finrank_gmap, finrank_Mj N j hj]
+  have hf : finrank (Res E w) M = N - j := by rw [← h, GlobalTheory.CompanionTheory.GLFirstBasisOrbit.finrank_gmap, finrank_Mj N j hj]
   have hj' : N - finrank (Res E w) M = j := by omega
   unfold vv
   split_ifs with hh
@@ -1438,7 +1422,7 @@ theorem vv_exists (w : HeightOneSpectrum (𝓞 E)) {N : ℕ} (M : Submodule (Res
 theorem vv_top (hϖ : IsUnifV E w ϖ) {V : Type} [AddCommGroup V] [Module ℂ V] {N : ℕ}
     (ρ : Representation ℂ (GL (Fin N) (w.adicCompletion E)) V) (x : V)
     (hx : ∀ κ ∈ GLint (Fin N) (Ov E w), ρ κ x = x) : vv hϖ N ρ x ⊤ = x := by
-  rw [vv_eq hϖ ρ x hx (Nat.zero_le N) 1 ⊤ (by rw [map_one, gmap_one, Mj_zero]), dd_zero]
+  rw [vv_eq hϖ ρ x hx (Nat.zero_le N) 1 ⊤ (by rw [map_one, GlobalTheory.CompanionTheory.GLFirstBasisOrbit.gmap_one, Mj_zero]), dd_zero]
   simp
 
 theorem vv_equiv (hϖ : IsUnifV E w ϖ) {V : Type} [AddCommGroup V] [Module ℂ V] {N : ℕ}
@@ -1449,7 +1433,7 @@ theorem vv_equiv (hϖ : IsUnifV E w ϖ) {V : Type} [AddCommGroup V] [Module ℂ 
   obtain ⟨γ, hγ⟩ := vv_exists w M
   have hle : finrank (Res E w) M ≤ N := (Submodule.finrank_le M).trans (by simp)
   have hj : N - finrank (Res E w) M ≤ N := Nat.sub_le _ _
-  rw [vv_eq hϖ ρ x hx hj γ M hγ, vv_eq hϖ ρ x hx hj (δ * γ) _ (by rw [map_mul, gmap_mul, hγ])]
+  rw [vv_eq hϖ ρ x hx hj γ M hγ, vv_eq hϖ ρ x hx hj (δ * γ) _ (by rw [map_mul, GlobalTheory.CompanionTheory.GLFirstBasisOrbit.gmap_mul, hγ])]
   rw [← Module.End.mul_apply, ← map_mul, Subgroup.coe_mul, mul_assoc]
 
 theorem fix_conj (hϖ : IsUnifV E w ϖ) (n : ℕ) (γ : GLint (Fin (n + 1)) (Ov E w))
@@ -1657,7 +1641,7 @@ theorem hecke_eq_sum (hϖ : IsUnifV E w ϖ) {V : Type} [AddCommGroup V] [Module 
     exact (hs M hM).symm.trans (((mk_eq_iff hϖ j _ _).1 hMM).trans (hs M' hM'))
   · rintro c ⟨a, ha, b, hb, hc⟩
     have hM : finrank (Res E w) (gmap (tjcosets_red (Ov E w) N ⟨a, ha⟩) (Mj (Res E w) N j)) + j = N := by
-      rw [finrank_gmap, finrank_Mj N j hj]
+      rw [GlobalTheory.CompanionTheory.GLFirstBasisOrbit.finrank_gmap, finrank_Mj N j hj]
       omega
     refine ⟨gmap (tjcosets_red (Ov E w) N ⟨a, ha⟩) (Mj (Res E w) N j), hM, ?_⟩
     show QuotientGroup.mk _ = c

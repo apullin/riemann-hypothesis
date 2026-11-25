@@ -498,11 +498,6 @@ open PositivityTheory.Rg.Rsw.Cell
 
 variable {G : Type} [Group G] [TopologicalSpace G]
 
-theorem mk_inv_mul' {P : Subgroup G} {p : G} (hp : p ∈ P) (g : G) :
-    (QuotientGroup.mk (p * g)⁻¹ : G ⧸ P) = QuotientGroup.mk g⁻¹ := by
-  rw [QuotientGroup.eq]
-  simpa using hp
-
 theorem mk_inv_rp' {P : Subgroup G} (q : G ⧸ P) : (QuotientGroup.mk (rp q)⁻¹ : G ⧸ P) = q := by
   simp [rp]
 
@@ -552,7 +547,7 @@ theorem sec_of_real {P : Subgroup G} {h : G → ℝ} (hc : Continuous h) {F : G 
   · have : Continuous fun g : G => (QuotientGroup.mk g⁻¹ : G ⧸ P) :=
       QuotientGroup.continuous_mk.comp continuous_inv
     exact (Complex.continuous_ofReal.comp (hF.comp this)).mul (Complex.continuous_ofReal.comp hc)
-  · simp only [mk_inv_mul' hp]
+  · simp only [GlobalTheory.CompanionTheory.RswCell.mk_inv_mul hp]
     ring
 
 theorem continuous_density {P : Subgroup G} {h : G → ℝ} {mu : (G → ℂ) → ℂ} (S : Setup P h mu) (x : G) :
@@ -570,10 +565,6 @@ theorem continuous_density {P : Subgroup G} {h : G → ℝ} {mu : (G → ℂ) �
 theorem continuous_smul_quot {P : Subgroup G} (x : G) : Continuous fun q : G ⧸ P => x • q := by
   rw [(QuotientGroup.isOpenQuotientMap_mk (N := P)).isQuotientMap.continuous_iff]
   exact QuotientGroup.continuous_mk.comp (continuous_const_mul x)
-
-theorem compact_quot' {P : Subgroup G}
-    (hco : ∃ C : Set G, IsCompact C ∧ ∀ g, ∃ q ∈ P, ∃ c ∈ C, g = q * c) : CompactSpace (G ⧸ P) := by
-  apply _root_.GlobalTheory.CompanionTheory.RswCell.compact_quot <;> assumption
 
 theorem integral_translate {P : Subgroup G} [MeasurableSpace (G ⧸ P)] {h : G → ℝ} {mu : (G → ℂ) → ℂ}
     (S : Setup P h mu) {ν : Measure (G ⧸ P)} (hR : Repr P h mu ν) {x : G} (hx : Inv P h mu x)
@@ -602,7 +593,7 @@ theorem inv_measure [T2Space G] [SecondCountableTopology G] (P : Subgroup G) [Me
     (hR : Repr P h mu ν) (x : G) (hx : Inv P h mu x) :
     (ν.withDensity fun q => ENNReal.ofReal (h (rp q * x) / h (rp q))).map (fun q => x⁻¹ • q) = ν := by
   have : IsClosed (P : Set G) := S.closed
-  have : CompactSpace (G ⧸ P) := compact_quot' S.cocpt
+  have : CompactSpace (G ⧸ P) := GlobalTheory.CompanionTheory.RswCell.compact_quot S.cocpt
   have : IsFiniteMeasure ν := hR.1
   have hj := continuous_density S x
   have hsm := continuous_smul_quot (P := P) x⁻¹
@@ -758,11 +749,6 @@ theorem few_roots {m p M : ℕ} {Ω : Fin m → Type} [∀ i, Field (Ω i)] [∀
     _ ≤ ∑ _i : Fin m, p := Finset.sum_le_sum fun i _ => hone i
     _ = m * p := by simp
 
-theorem submatrix_fromBlocks_mul {R : Type} [CommRing R] {n : ℕ} (a b c d a' b' c' d' : Matrix (Fin n) (Fin n) R) :
-    blk4 a b c d * blk4 a' b' c' d' = blk4 (a * a' + b * c') (a * b' + b * d') (c * a' + d * c') (c * b' + d * d') := by
-  unfold blk4
-  rw [Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
-
 theorem block_matrix_one {R : Type} [CommRing R] {n : ℕ} : blk4 (1 : Matrix (Fin n) (Fin n) R) 0 0 1 = 1 := by
   unfold blk4
   rw [Matrix.fromBlocks_one, Matrix.submatrix_one_equiv]
@@ -788,9 +774,6 @@ theorem adj_rat (y : HermE D p) : adj (rat y.1 : Mx D p p) = rat y.1 := by
 theorem mat_mul (g h : G D p) : mat (g * h) = mat g * mat h := by
   simp [mat, map_mul]
 
-theorem mat_one' : mat (1 : G D p) = 1 := by
-  simp [mat]
-
 theorem matrix_eq_block_decomposition (g : G D p) :
     mat g = blk4 ((mat g).submatrix finSumFinEquiv finSumFinEquiv).toBlocks₁₁
       ((mat g).submatrix finSumFinEquiv finSumFinEquiv).toBlocks₁₂ (cB g) (dB g) := by
@@ -802,13 +785,13 @@ theorem matrix_eq_block_decomposition (g : G D p) :
 theorem mat_conj (w n : G D p) (b : Mx D p p) (hw : IsW w) (hn : mat n = blk4 1 b 0 1) :
     mat (w * n * w⁻¹) = blk4 1 0 (-b) 1 := by
   have hK : (blk4 0 (-1) 1 0 : Mx D (p + p) (p + p)) * mat w = 1 := by
-    rw [hw, submatrix_fromBlocks_mul]
+    rw [hw, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul]
     simpa using block_matrix_one
   have hinv : mat w⁻¹ = blk4 0 (-1) 1 0 := by
-    have h1 : mat w * mat w⁻¹ = 1 := by rw [← mat_mul, mul_inv_cancel, mat_one']
+    have h1 : mat w * mat w⁻¹ = 1 := by rw [← mat_mul, mul_inv_cancel, GlobalTheory.StdUnn.LeftInvSect.mat_one]
     calc mat w⁻¹ = (blk4 0 (-1) 1 0 * mat w) * mat w⁻¹ := by rw [hK, one_mul]
       _ = blk4 0 (-1) 1 0 := by rw [mul_assoc, h1, mul_one]
-  rw [mat_mul, mat_mul, hinv, hn, hw, submatrix_fromBlocks_mul, submatrix_fromBlocks_mul]
+  rw [mat_mul, mat_mul, hinv, hn, hw, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul]
   simp
 
 theorem cB_of (g : G D p) {a b c d : Mx D p p} (h : mat g = blk4 a b c d) : cB g = c := by
@@ -820,7 +803,7 @@ theorem cB_of (g : G D p) {a b c d : Mx D p p} (h : mat g = blk4 a b c d) : cB g
 theorem cB_mul_conj (x γ : G D p) (b : Mx D p p) (h : mat γ = blk4 1 0 (-b) 1) :
     cB (x * γ) = cB x - dB x * b := by
   have h1 := mat_mul x γ
-  rw [h, matrix_eq_block_decomposition x, submatrix_fromBlocks_mul] at h1
+  rw [h, matrix_eq_block_decomposition x, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul] at h1
   rw [cB_of _ h1]
   simp [sub_eq_add_neg]
 

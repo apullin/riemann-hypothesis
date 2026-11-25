@@ -887,7 +887,7 @@ theorem locRedSplit : LocRedSplit := by
     simp [vecMul, dotProduct, hPent]
   refine ⟨1, Matrix.nonsingInvUnit P hPdet, I, ?_⟩
   have hPv : ((Matrix.nonsingInvUnit P hPdet : GL (Fin n) k) : Matrix (Fin n) (Fin n) k) = P := rfl
-  rw [Matrix.mul_assoc, wIm, block_matrix_mul, block_lower_right_mul_block_matrix, ← hGs, ← hC, ← hD, isUnit_iff_ne_zero, hPv]
+  rw [Matrix.mul_assoc, wIm, GlobalTheory.StdUnn.Frame.submatrix_fromBlocks_mul, block_lower_right_mul_block_matrix, ← hGs, ← hC, ← hD, isUnit_iff_ne_zero, hPv]
   simp only [Units.val_one, Matrix.zero_mul, add_zero, zero_add, Matrix.one_mul]
   rw [← Matrix.mul_assoc D]
   intro hdet

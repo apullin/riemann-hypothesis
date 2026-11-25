@@ -13,7 +13,9 @@ import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCellJacquet
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCellJacquetMapSurjectiveWhittaker
 import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.OpenCellLeviUnipotentConjugationStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.OpenCellUnipotentUniquenessClosedStatement
-import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.ProjectionToTwistedEigenfunctionSupportStatement
+import Development.AbelianVarietyTheory.Definitions.Foundations.SmoothPartStable
+import Mathlib.Basic.Complex.Basic
+import Development.AutomorphicSpectrum.Proofs.BlockDecomposition.ProjectionToTwistedEigenfunctionSupport
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.SmoothVectorCompactUnipotentFixerStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.TwistedJacquetTensorProductEquivStatement
 import Development.WeilBound.RepresentationTheoryGL.UnitaryDualProof.Prelims.UnipotentRadicalDecompositionNormalStatement
@@ -255,7 +257,7 @@ theorem openJ (ψ : AddChar k Circle) (hψ : Continuous ψ) (h N : ℕ) (d : Fin
     have hopen : IsOpen (θL.ker : Set L) :=
       (isSmoothChar_whitChar (N := N) hψ).preimage (f := Subgroup.inclusion hLB')
         (continuous_subtypeVal.subtype_mk fun x => hLB' x.2)
-    obtain ⟨f', hd1, hd2, hd3⟩ := GlobalTheory.T.projection_to_twisted_eigenfunction_support _ _ L hLc θL hopen f.1
+    obtain ⟨f', hd1, hd2, hd3⟩ := GlobalTheory.CompanionTheory.TwAvgInd.exists_twisted_average_smInd _ _ L hLc θL hopen f.1
     have hsupp' : ∀ g, f'.1.1 g ≠ 0 → ∃ p ∈ parab k e, ∃ u ∈ L, g = p * w * u := fun g hg => by
       obtain ⟨l, hl, hne⟩ := hd2 g hg; obtain ⟨p, hp, u, hu, he⟩ := hsupp _ hne
       exact ⟨p, hp, u * l⁻¹, mul_mem hu (inv_mem hl), by rw [← mul_assoc, ← he]; group⟩

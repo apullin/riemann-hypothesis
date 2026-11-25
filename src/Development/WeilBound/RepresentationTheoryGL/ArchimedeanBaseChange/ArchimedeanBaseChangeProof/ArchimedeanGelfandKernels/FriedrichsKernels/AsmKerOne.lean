@@ -661,9 +661,6 @@ theorem isOpen_GLs : IsOpen (GLs n) := by
   have h : Continuous (fun g : Mat n => g.det) := Continuous.matrix_det continuous_id
   exact isOpen_ne.preimage h
 
-theorem val_mem_GLs (y : G n) : y.val ∈ GLs n :=
-  ((Matrix.isUnit_iff_isUnit_det _).1 y.isUnit).ne_zero
-
 theorem isOpen_far (hlg : ContinuousOn (lg : Mat n → ℝ) (GLs n)) (R : ℝ) :
     IsOpen {y : Mat n | y ∈ GLs n ∧ R < lg y} := by
   have h := hlg.isOpen_inter_preimage isOpen_GLs (isOpen_Ioi (a := R))
@@ -730,9 +727,9 @@ theorem memLp_of_van [MeasurableSpace (G n)] [BorelSpace (G n)] (μ : Measure (G
     (hK : IsCompact {y : G n | lg y.val ≤ R}) (hc : ContinuousOn g (GLs n)) (hv : Van R g) :
     MemLp (fun y : G n => g y.val) 2 μ := by
   have hcont : Continuous (fun y : G n => g y.val) :=
-    hc.comp_continuous Units.continuous_val val_mem_GLs
+    hc.comp_continuous Units.continuous_val GlobalTheory.CompanionTheory.LengthGL.mem_GLs_val
   have hsupp : HasCompactSupport (fun y : G n => g y.val) :=
-    HasCompactSupport.intro hK fun y hy => hv y.val (val_mem_GLs y) (not_le.1 hy)
+    HasCompactSupport.intro hK fun y hy => hv y.val (GlobalTheory.CompanionTheory.LengthGL.mem_GLs_val y) (not_le.1 hy)
   exact hcont.memLp_of_hasCompactSupport hsupp
 
 theorem cptSob : CptSob := by
@@ -873,11 +870,6 @@ theorem om_congr (hOm : OmFormula) {f f' : Mat n → V} (hc : ContDiffOn ℝ ∞
   refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun c _ => ?_
   rw [rd_congr (rd_congr h _) _ g hg, rd_congr (rd_congr h _) _ g hg]
 
-theorem cls_zero' : cls μ (0 : Mat n → V) = 0 := by
-  have h0 : MemLp (fun y : G n => (0 : Mat n → V) y.val) 2 μ := MemLp.zero'
-  have := cls_add_smul μ (1 : ℂ) h0 h0
-  simpa using this
-
 theorem cls_sub' {f f' : Mat n → V} (hf : MemLp (fun y : G n => f y.val) 2 μ)
     (hf' : MemLp (fun y : G n => f' y.val) 2 μ) :
     cls μ (fun g => f g - f' g) = cls μ f - cls μ f' := by
@@ -893,7 +885,7 @@ theorem cls_sum' {ι : Type} (s : Finset ι) (F : ι → Mat n → V)
   induction s using Finset.induction_on with
   | empty =>
     simp only [Finset.sum_empty]
-    exact cls_zero'
+    exact GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero
   | insert a s ha ih =>
     have h1 := h a (Finset.mem_insert_self a s)
     have h2 : ∀ i ∈ s, MemLp (fun y : G n => F i y.val) 2 μ :=
@@ -948,7 +940,7 @@ theorem msob_rep (hLg : LgFacts) (hU : Unimod) (hR : RCalc) (hOps : SobOps) (hCp
     {x : Lp V 2 μ} (hx : x ∈ Msob μ V) : ∃ f, Sob μ f ∧ cls μ f = x := by
   induction hx using Submodule.span_induction with
   | mem x h => exact h
-  | zero => exact ⟨0, sob_zero hLg hR hCpt, cls_zero'⟩
+  | zero => exact ⟨0, sob_zero hLg hR hCpt, GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero⟩
   | add x y _ _ hx hy =>
     obtain ⟨f, hf, rfl⟩ := hx
     obtain ⟨f', hf', rfl⟩ := hy
@@ -958,7 +950,7 @@ theorem msob_rep (hLg : LgFacts) (hU : Unimod) (hR : RCalc) (hOps : SobOps) (hCp
     obtain ⟨f, hf, rfl⟩ := hx
     have h0 := sob_zero (μ := μ) (V := V) (n := n) hLg hR hCpt
     refine ⟨a • f + 0, ((hOps n μ V hLg hU hR f hf).2.2.2.1 a 0 h0).1, ?_⟩
-    rw [cls_add_smul μ a (sob_memLp hf) (sob_memLp h0), cls_zero', add_zero]
+    rw [cls_add_smul μ a (sob_memLp hf) (sob_memLp h0), GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero, add_zero]
 
 theorem cls_om_comb (hLg : LgFacts) (hU : Unimod) (hR : RCalc) (hOps : SobOps) (a : ℂ)
     {f f' : Mat n → V} (hf : Sob μ f) (hf' : Sob μ f') :
@@ -1005,7 +997,7 @@ theorem exists_Om (hLg : LgFacts) (hU : Unimod) (hR : RCalc) (hOps : SobOps) (hC
     apply Subtype.ext
     change cls μ (Om (r (a • x))) = a • cls μ (Om (r x))
     have e : cls μ (a • r x + 0) = ((a • x : Msob μ V) : Lp V 2 μ) := by
-      rw [cls_add_smul μ a (sob_memLp (hr x)) (sob_memLp h0), hc, cls_zero', add_zero]
+      rw [cls_add_smul μ a (sob_memLp (hr x)) (sob_memLp h0), hc, GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero, add_zero]
       rfl
     rw [key (a • x) _ (comb _ _ _ (hr x) h0) e, cls_om_comb hLg hU hR hOps a (hr x) h0, hz,
       add_zero]
@@ -1028,7 +1020,7 @@ theorem exists_Dm (hLg : LgFacts) (hU : Unimod) (hR : RCalc) (hOps : SobOps) (hC
     fun f hc hp => (hCpt n μ V hLg hR f hc hp).1
   have z : Cpt (0 : Mat n → V) := ⟨0, fun _ _ _ => rfl⟩
   refine ⟨{ carrier := {x | ∃ f : Mat n → V, ContDiffOn ℝ ∞ f (GLs n) ∧ Cpt f ∧ cls μ f = x},
-            add_mem' := ?_, zero_mem' := ⟨0, contDiffOn_const, z, cls_zero'⟩, smul_mem' := ?_ },
+            add_mem' := ?_, zero_mem' := ⟨0, contDiffOn_const, z, GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero⟩, smul_mem' := ?_ },
     fun x => Iff.rfl⟩
   · rintro _ _ ⟨f, hc, hp, rfl⟩ ⟨f', hc', hp', rfl⟩
     have hf := sob f hc hp
@@ -1040,7 +1032,7 @@ theorem exists_Dm (hLg : LgFacts) (hU : Unimod) (hR : RCalc) (hOps : SobOps) (hC
     have hf := sob f hc hp
     have h0 := sob 0 contDiffOn_const z
     refine ⟨a • f + 0, ((hOps n μ V hLg hU hR f hf).2.2.2.1 a 0 h0).1.1, cpt_comb a hp z, ?_⟩
-    rw [cls_add_smul μ a (sob_memLp hf) (sob_memLp h0), cls_zero', add_zero]
+    rw [cls_add_smul μ a (sob_memLp hf) (sob_memLp h0), GlobalTheory.CompanionTheory.WaveFc.Asm.cls_zero, add_zero]
 
 theorem cpt_transl (hLg : LgFacts) (h : G n) {f : Mat n → V} (hp : Cpt f) :
     Cpt (fun y => f (y * h.val)) := by
@@ -1218,12 +1210,6 @@ open PositivityTheory.RgTw (Mat G)
 open PositivityTheory.RgBcC
 open PositivityTheory.RgBcC.Fc
 
-theorem val_emb (n : ℕ) : IsOpenEmbedding (Units.val : G n → Mat n) := by
-  letI := Matrix.linftyOpNormedRing (n := Fin n) (α := ℂ)
-  letI := Matrix.linftyOpNormedAlgebra (n := Fin n) (R := ℂ) (α := ℂ)
-  haveI : CompleteSpace (Matrix (Fin n) (Fin n) ℂ) := FiniteDimensional.complete ℂ _
-  exact Units.isOpenEmbedding_val
-
 attribute [local instance] Matrix.normedAddCommGroup Matrix.normedSpace
 
 theorem val_mem {n : ℕ} (y : G n) : y.val ∈ GLs n :=
@@ -1231,7 +1217,7 @@ theorem val_mem {n : ℕ} (y : G n) : y.val ∈ GLs n :=
 
 theorem continuous_extend {n : ℕ} {V : Type} [NormedAddCommGroup V] {b : G n → V} (hb : Continuous b)
     (hs : HasCompactSupport b) : Continuous (Function.extend (Units.val : G n → Mat n) b 0) := by
-  have he := val_emb n
+  have he := GlobalTheory.CompanionTheory.SobGL.HaarDom.isOpenEmbedding_valG n
   refine continuous_of_tsupport fun x h => ?_
   obtain ⟨u, -, rfl⟩ := hs.tsupport_extend_zero_subset he.continuous h
   rw [← he.continuousAt_iff]
@@ -1244,7 +1230,7 @@ theorem exists_smooth {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace �
     (hb : Continuous b) (hs : HasCompactSupport b) {δ : ℝ} (hδ : 0 < δ) :
     ∃ f : Mat n → V, ContDiff ℝ ∞ f ∧ (∀ y : G n, dist (b y) (f y.val) ≤ δ) ∧
       ∀ y, y ∉ (Units.val : G n → Mat n) '' tsupport b → f y = 0 := by
-  have he := val_emb n
+  have he := GlobalTheory.CompanionTheory.SobGL.HaarDom.isOpenEmbedding_valG n
   obtain ⟨f, hf, hd, hsu⟩ := (continuous_extend hb hs).exists_contDiff_approx ⊤ (ε := fun _ => δ)
     continuous_const fun _ => hδ
   refine ⟨f, hf, fun y => ?_, fun y hy => ?_⟩
@@ -1257,7 +1243,7 @@ theorem exists_smooth {n : ℕ} {V : Type} [NormedAddCommGroup V] [NormedSpace �
 
 theorem cpt_of {n : ℕ} {V : Type} [Zero V] (hL : LgFacts) {K : Set (G n)} (hK : IsCompact K) {f : Mat n → V}
     (hf : ∀ y, y ∉ (Units.val : G n → Mat n) '' K → f y = 0) : Cpt f := by
-  have he := val_emb n
+  have he := GlobalTheory.CompanionTheory.SobGL.HaarDom.isOpenEmbedding_valG n
   have hc : IsCompact ((Units.val : G n → Mat n) '' K) := hK.image he.continuous
   have hsub : (Units.val : G n → Mat n) '' K ⊆ GLs n := by
     rintro _ ⟨u, -, rfl⟩; exact val_mem u
@@ -1271,8 +1257,8 @@ theorem denseD : DenseD := by
   intro n _ _ μ _ V _ _ hL
   haveI : SecondCountableTopology (Mat n) := inferInstanceAs (SecondCountableTopology (Fin n → Fin n → ℂ))
   haveI : LocallyCompactSpace (Mat n) := inferInstanceAs (LocallyCompactSpace (Fin n → Fin n → ℂ))
-  haveI : SecondCountableTopology (G n) := (val_emb n).isInducing.secondCountableTopology
-  haveI : LocallyCompactSpace (G n) := (val_emb n).locallyCompactSpace
+  haveI : SecondCountableTopology (G n) := (GlobalTheory.CompanionTheory.SobGL.HaarDom.isOpenEmbedding_valG n).isInducing.secondCountableTopology
+  haveI : LocallyCompactSpace (G n) := (GlobalTheory.CompanionTheory.SobGL.HaarDom.isOpenEmbedding_valG n).locallyCompactSpace
   intro x
   refine (mem_closure_iff_nhds_basis Metric.nhds_basis_closedBall).2 fun ε hε => ?_
   have hp : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
@@ -1513,9 +1499,6 @@ variable {n : ℕ}
 
 alias mul_mem := _root_.GlobalTheory.CompanionTheory.WaveAll.mul_mem_GLs
 
-theorem inv_mem {x : Mat n} (hx : x ∈ GLs n) : x⁻¹ ∈ GLs n :=
-  (Matrix.isUnit_nonsing_inv_det x (isUnit_iff_ne_zero.mpr hx)).ne_zero
-
 theorem val_mem (y : G n) : y.val ∈ GLs n :=
   ((Matrix.isUnit_iff_isUnit_det _).mp y.isUnit).ne_zero
 
@@ -1537,12 +1520,12 @@ theorem cutAt_smooth (hL : LgFacts) (r : ℝ) {x : Mat n} (hx : x ∈ GLs n) :
   have hm : ContDiff ℝ ∞ (fun y : Mat n => x⁻¹ * y) :=
     (LinearMap.toContinuousLinearMap (LinearMap.mulLeft ℝ x⁻¹)).contDiff
   have h1 : ContDiffOn ℝ ∞ (fun y : Mat n => lg (x⁻¹ * y)) (GLs n) :=
-    (hL n).2.2.2.1.comp hm.contDiffOn fun _ hy => mul_mem (inv_mem hx) hy
+    (hL n).2.2.2.1.comp hm.contDiffOn fun _ hy => mul_mem (GlobalTheory.CompanionTheory.RCalc.ByParts.inv_mem_GLs hx) hy
   exact (step_contDiff r).comp_contDiffOn h1
 
 theorem cutAt_mul_unitary (hL : LgFacts) (r : ℝ) {x g : Mat n} (hx : x ∈ GLs n) (hg : g ∈ GLs n)
     (k : Matrix.unitaryGroup (Fin n) ℂ) : cutAt r x (g * k.1) = cutAt r x g := by
-  have h := (hL n).2.2.1 (x⁻¹ * g) (mul_mem (inv_mem hx) hg) 1 k
+  have h := (hL n).2.2.1 (x⁻¹ * g) (mul_mem (GlobalTheory.CompanionTheory.RCalc.ByParts.inv_mem_GLs hx) hg) 1 k
   have e : ((1 : Matrix.unitaryGroup (Fin n) ℂ)).1 * (x⁻¹ * g) * k.1 = x⁻¹ * (g * k.1) := by
     rw [show ((1 : Matrix.unitaryGroup (Fin n) ℂ)).1 = 1 from rfl, one_mul, mul_assoc]
   rw [e] at h
@@ -1563,7 +1546,7 @@ theorem cutSec_cpt (hL : LgFacts) (r : ℝ) {x : Mat n} (hx : x ∈ GLs n) {V : 
     [NormedSpace ℂ V] (f : Mat n → V) : Cpt (cutSec r x f) := by
   refine ⟨lg x + (r + 1), fun y hy h => ?_⟩
   have e : x * (x⁻¹ * y) = y := Matrix.mul_nonsing_inv_cancel_left x y (isUnit_iff_ne_zero.mpr hx)
-  have hs := (hL n).1 x hx (x⁻¹ * y) (mul_mem (inv_mem hx) hy)
+  have hs := (hL n).1 x hx (x⁻¹ * y) (mul_mem (GlobalTheory.CompanionTheory.RCalc.ByParts.inv_mem_GLs hx) hy)
   rw [e] at hs
   have h0 : cutAt r x y = 0 := step_eq_zero (by linarith)
   simp [cutSec, h0]

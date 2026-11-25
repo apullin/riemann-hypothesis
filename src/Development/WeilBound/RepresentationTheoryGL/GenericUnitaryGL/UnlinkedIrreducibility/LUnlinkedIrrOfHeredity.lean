@@ -30,11 +30,8 @@ open GlobalTheory.PRep GlobalTheory.SmGL GlobalTheory.LocGL GlobalTheory.SplitWe
 
 namespace GlobalTheory.RgGu
 
-theorem irreducibleAdmissibleGL : GlobalTheory.Published.IrreducibleAdmissibleGL :=
-  fun k _ _ _ _ n V _ _ π hs hi => (GlobalTheory.CompanionTheory.Published.bernsteinZelevinskyFiniteness k).1 (Fin n) V π hs hi
-
 theorem prodIrrFiniteLength : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k], GlobalTheory.BZSeg.ProdIrrFiniteLength k :=
-  fun _ _ _ _ _ _ _ x hd => _root_.GlobalTheory.CompanionTheory.ProdFL.main irreducibleAdmissibleGL x hd
+  fun _ _ _ _ _ _ _ x hd => _root_.GlobalTheory.CompanionTheory.ProdFL.main CompanionTheory.Tls2.BZGL.irreducibleAdmissibleGL_top x hd
 
 end GlobalTheory.RgGu
 
@@ -68,7 +65,7 @@ theorem lUnlinkedIrr_nu (hJ : Zc.LSegJacquet k) (hG : GlobalTheory.Published.Geo
   exact _root_.GlobalTheory.CompanionTheory.BZSeg.NuPairIrr.lUnlinkedIrr k hA hJ hG hN (whitRankStd k) hF
 
 theorem lUnlinkedComm_of_irr (hL : GlobalTheory.BZSeg.LUnlinkedIrr k) : GlobalTheory.BZSeg.LUnlinkedComm k :=
-  _root_.GlobalTheory.CompanionTheory.BZSegComm.lUnlinkedComm k GlobalTheory.RgGu.irreducibleAdmissibleGL hL
+  _root_.GlobalTheory.CompanionTheory.BZSegComm.lUnlinkedComm k CompanionTheory.Tls2.BZGL.irreducibleAdmissibleGL_top hL
 
 end GlobalTheory.RgGu.Unl
 

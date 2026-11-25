@@ -520,26 +520,6 @@ section -- clump:auto
 
 open Finset Matrix PositivityTheory.RgHe.Frame
 
-namespace GlobalTheory.CompanionTheory.RgHe
-
-theorem hs_mul_le_mul {m : ℕ} (P Q : Matrix (Fin m) (Fin m) ℂ) :
-    Formalism.REAL.hs (P * Q) ≤ Formalism.REAL.hs P * Formalism.REAL.hs Q := by
-  have key : ∀ i j, ‖(P * Q) i j‖ ^ 2 ≤ (∑ k, ‖P i k‖ ^ 2) * (∑ k, ‖Q k j‖ ^ 2) := by
-    intro i j
-    have h1 : ‖(P * Q) i j‖ ≤ ∑ k, ‖P i k‖ * ‖Q k j‖ := by
-      rw [Matrix.mul_apply]
-      exact (norm_sum_le _ _).trans (Finset.sum_le_sum fun k _ => norm_mul_le _ _)
-    exact (pow_le_pow_left₀ (norm_nonneg _) h1 2).trans
-      (Finset.sum_mul_sq_le_sq_mul_sq _ _ _)
-  have hQ : Formalism.REAL.hs Q = ∑ j, ∑ k, ‖Q k j‖ ^ 2 := by
-    unfold Formalism.REAL.hs
-    exact Finset.sum_comm
-  rw [hQ]
-  unfold Formalism.REAL.hs
-  rw [Finset.sum_mul_sum]
-  exact Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => key i j
-
-end GlobalTheory.CompanionTheory.RgHe
 end -- clump:auto
 end -- clump:auto
 
@@ -989,8 +969,8 @@ theorem frame : PositivityTheory.RgHe.Frame := by
     have i1 := hAc (B - 1) hAv
     rw [key] at i1
     have i2 : hs (B * (g * δ * g⁻¹)) ≤ hs B * (hs g * hs δ * hs g⁻¹) := by
-      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_left ?_ (Formalism.REAL.frobenius_nonneg_matrix _))
-      refine (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _).trans (mul_le_mul_of_nonneg_right (_root_.GlobalTheory.CompanionTheory.RgHe.hs_mul_le_mul _ _) (Formalism.REAL.frobenius_nonneg_matrix _))
+      refine (Formalism.REAL.frobenius_mul_le _ _).trans (mul_le_mul_of_nonneg_left ?_ (Formalism.REAL.frobenius_nonneg_matrix _))
+      refine (Formalism.REAL.frobenius_mul_le _ _).trans (mul_le_mul_of_nonneg_right (Formalism.REAL.frobenius_mul_le _ _) (Formalism.REAL.frobenius_nonneg_matrix _))
     have i3 : hs (um h - 1) = hs (B - 1) := (hs_emb_sub (e := e) (um h)).symm
     rw [i3]
     have := _root_.Formalism.REAL.frobenius_nonneg_matrix B; have := _root_.Formalism.REAL.frobenius_nonneg_matrix δ; have := _root_.Formalism.REAL.frobenius_nonneg_matrix g; have := _root_.Formalism.REAL.frobenius_nonneg_matrix g⁻¹

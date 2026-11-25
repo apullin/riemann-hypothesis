@@ -97,7 +97,6 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 open IsDedekindDomain NumberField
 
 
-
 namespace PositivityTheory.Rg.Rsw.L.LToS
 
 variable {D : D7} {a b c r t : ℕ}
@@ -176,7 +175,6 @@ open GlobalTheory.StdUnn PositivityTheory.GramSchwartzFunctions PositivityTheory
 open IsDedekindDomain NumberField
 open GlobalTheory.RegSch (ikS projS Lvl)
 open PositivityTheory.Rg.Rsw.L.LToS
-
 
 
 namespace PositivityTheory.Rg.Rsw.L.LToS
@@ -364,9 +362,6 @@ theorem continuous_jn (hn : r + t = n) : Continuous fun z : Mx D a r × Mx D a t
     · exact (continuous_apply k).comp ((continuous_apply i).comp continuous_snd)
   exact h.matrix_submatrix _ _
 
-theorem continuous_yv (V : HSp D) (b₀ : HermE D r) : Continuous fun z : Mx D V.rank r × Mx D V.rank t => yv V b₀ z :=
-  continuous_const.matrix_mul ((continuous_adj.comp continuous_fst).matrix_mul (continuous_const.matrix_mul continuous_snd))
-
 theorem measurable_sm (e : AE D) : Measurable fun z : Mx D a r × Mx D a t => (e • z.1, e • z.2) :=
   ((continuous_const_smul e).measurable.comp measurable_fst).prodMk ((continuous_const_smul e).measurable.comp measurable_snd)
 
@@ -388,7 +383,7 @@ theorem transfer (hn : r + t = n) {V : HSp D} {b₀ : HermE D r} {S : Finset (Pl
       fun z => (e • z.1, e • z.2)) = ∫ z, Φ (jn hn z.1 z.2) * conj (η (yv V b₀ z)) ∂ν := by
   set F : Mx D V.rank r × Mx D V.rank t → ℂ := fun z => Φ (jn hn z.1 z.2) * conj (η (yv V b₀ z)) with hF
   set s : Set (Mx D V.rank r × Mx D V.rank t) := {z | IntOff S z.1 ∧ IntOff S z.2} with hs
-  have hFc : Continuous F := (hΦc.comp (continuous_jn hn)).mul (Complex.continuous_conj.comp (hηc.comp (continuous_yv V b₀)))
+  have hFc : Continuous F := (hΦc.comp (continuous_jn hn)).mul (Complex.continuous_conj.comp (hηc.comp (PositivityTheory.Rg.Rsw.L.LToS.continuous_yv V b₀)))
   have hfc : Continuous fun z : Mx D V.rank r × Mx D V.rank t => (e • z.1, e • z.2) :=
     ((continuous_const_smul e).comp continuous_fst).prodMk ((continuous_const_smul e).comp continuous_snd)
   have key : ∀ z ∈ s, F (e • z.1, e • z.2) = F z := by
@@ -595,30 +590,10 @@ theorem jst_map (D : D7) (n : ℕ) : (Jst D n).map (D.sp.cm.sig : D.host.E →+*
   rcases a with a | a <;> rcases b with b | b <;>
     simp [Matrix.one_apply, apply_ite]
 
-theorem jst_mul (D : D7) (n : ℕ) : Jst D n * Jst D n = -1 := by
-  simp only [Jst, blk4, Matrix.submatrix_mul_equiv, Matrix.fromBlocks_multiply]
-  ext i j
-  revert i j
-  refine jst_cases D n _ fun a b => ?_
-  simp only [Matrix.submatrix_apply, Matrix.neg_apply, Equiv.symm_apply_apply]
-  rw [← Matrix.submatrix_one_equiv (finSumFinEquiv.symm : Fin (n + n) ≃ Fin n ⊕ Fin n)]
-  simp only [Matrix.submatrix_apply]
-  rcases a with a | a <;> rcases b with b | b <;>
-    simp [Matrix.one_apply, Equiv.eq_symm_apply, Equiv.symm_apply_eq, Fin.ext_iff] <;> omega
-
-theorem jst_det (D : D7) (n : ℕ) : (Jst D n).det ≠ 0 := by
-  intro h
-  have := congrArg Matrix.det (jst_mul D n)
-  rw [Matrix.det_mul, h, zero_mul, Matrix.det_neg, Matrix.det_one, mul_one] at this
-  exact (neg_one_pow_ne_zero (R := D.host.E) _) this.symm
-
-theorem sig_sig (D : D7) (x : D.host.E) : D.sp.cm.sig (D.sp.cm.sig x) = x := by
-  simp [Formalism.BasicNotions.CMData.sig]
-
 theorem exists_skew (D : D7) : ∃ δ : D.host.E, δ ≠ 0 ∧ D.sp.cm.sig δ = -δ := by
   obtain ⟨z, hz⟩ := _root_.GlobalTheory.VolHeckeCompare.exists_not_fixed D
   refine ⟨z - D.sp.cm.sig z, sub_ne_zero.2 (Ne.symm hz), ?_⟩
-  rw [map_sub, sig_sig]
+  rw [map_sub, Formalism.IndefR.Fin.U1.sig_sig]
   ring
 
 theorem approx_loc (D : D7) (n : ℕ) (v : Pl D) (x : GLoc D.sp.cm.sig (Jst D n) v)
@@ -639,7 +614,7 @@ theorem approx_loc (D : D7) (n : ℕ) (v : Pl D) (x : GLoc D.sp.cm.sig (Jst D n)
     rw [hδ', neg_mul_neg]
   have hdet' : (δ • Jst D n).det ≠ 0 := by
     rw [Matrix.det_smul]
-    exact mul_ne_zero (pow_ne_zero _ hδ0) (jst_det D n)
+    exact mul_ne_zero (pow_ne_zero _ hδ0) (GlobalTheory.CompanionTheory.Jp.Jst_det_ne_zero D n)
   have hE : Formalism.UG.UJ (D.sp.cm.sig : D.host.E →+* D.host.E) (δ • Jst D n) =
       Formalism.UG.UJ (D.sp.cm.sig : D.host.E →+* D.host.E) (Jst D n) := uj_smul _ _ (Ne.isUnit hδ0)
   have hR : HR (Fv D.host.F v) D.sp.cm.sig (δ • Jst D n) = HR (Fv D.host.F v) D.sp.cm.sig (Jst D n) := by
@@ -650,7 +625,7 @@ theorem approx_loc (D : D7) (n : ℕ) (v : Pl D) (x : GLoc D.sp.cm.sig (Jst D n)
       simp [JR, map_mul]
     rw [e]
     exact uj_smul _ _ ((Ne.isUnit hδ0).map _)
-  have hd := dense_loc D.host.F D.host.E v D.sp.cm.sig (sig_sig D) (_root_.GlobalTheory.VolHeckeCompare.exists_not_fixed D) (δ • Jst D n) hJ' hdet'
+  have hd := dense_loc D.host.F D.host.E v D.sp.cm.sig (Formalism.IndefR.Fin.U1.sig_sig D) (_root_.GlobalTheory.VolHeckeCompare.exists_not_fixed D) (δ • Jst D n) hJ' hdet'
   have hind := (isEmbedding_matHom (Fv D.host.F v) D.sp.cm.sig (Jst D n)).isInducing
   have hind' := (isEmbedding_matHom (Fv D.host.F v) D.sp.cm.sig (δ • Jst D n)).isInducing
   obtain ⟨O₀, hO₀, rfl⟩ := hind.isOpen_iff.1 hO
@@ -780,15 +755,12 @@ open GlobalTheory.CompanionTheory.PcFc (chn)
 
 variable {D : D7} {n : ℕ}
 
-theorem chn_eq (ψ : AddChar (AF D.host.F) ℂ) (β : HermE D n) (b : hermA D n) :
-    chn ψ β b = ψ (-GlobalTheory.CompanionTheory.FourierN.pr β.1 b.1) := rfl
-
 theorem chn_cont {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) (β : HermE D n) : Continuous (chn ψ β) :=
   hψ.1.comp ((GlobalTheory.CompanionTheory.FourierN.continuous_pr β.1).neg.comp continuous_subtype_val)
 
 theorem chn_per {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) (β : HermE D n) (γ : hermA D n)
     (hγ : γ ∈ ratHerm D n) (x : hermA D n) : chn ψ β (γ + x) = chn ψ β x := by
-  rw [chn_eq, chn_eq, show (γ + x).1 = γ.1 + x.1 from rfl, GlobalTheory.CompanionTheory.FourierN.pr_add_right, neg_add, AddChar.map_add_eq_mul,
+  rw [GlobalTheory.CompanionTheory.PcFc.chn_eq, GlobalTheory.CompanionTheory.PcFc.chn_eq, show (γ + x).1 = γ.1 + x.1 from rfl, GlobalTheory.CompanionTheory.FourierN.pr_add_right, neg_add, AddChar.map_add_eq_mul,
     GlobalTheory.CompanionTheory.FourierN.ker_of_rat hψ γ hγ, one_mul]
 
 theorem per_nb {F : G D n → ℂ} (hinv : LeftInv (GF D n) F) {nb : hermA D n → G D n} (hnb : IsNMap nb) (g : G D n)
@@ -811,7 +783,7 @@ theorem fc_eq (ψ : AddChar (AF D.host.F) ℂ) (lam : Measure (hermA D n)) (𝓖
 
 theorem chn_shift (ψ : AddChar (AF D.host.F) ℂ) (β : HermE D n) (b x : hermA D n) :
     chn ψ β b = chn ψ β (b + x) * pch ψ x.1 (rat β.1) := by
-  rw [chn_eq, chn_eq, pch_rat, ← AddChar.map_add_eq_mul]
+  rw [GlobalTheory.CompanionTheory.PcFc.chn_eq, GlobalTheory.CompanionTheory.PcFc.chn_eq, pch_rat, ← AddChar.map_add_eq_mul]
   congr 1
   rw [show (b + x).1 = b.1 + x.1 from rfl, GlobalTheory.CompanionTheory.FourierN.pr_add_right]
   abel
@@ -923,9 +895,6 @@ open GlobalTheory.CompanionTheory.PcFc (chn)
 
 variable {D : D7} {n : ℕ}
 
-theorem conj_psi {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) (t : AF D.host.F) : conj (ψ t) = ψ (-t) := by
-  rw [AddChar.map_neg_eq_inv, Complex.inv_eq_conj (hψ.2.1 t)]
-
 theorem cutR_left {nb : hermA D n → G D n} {v : Pl D} (C : Cut D n v) {F : G D n → ℂ} (hinv : LeftInv (GF D n) F) :
     LeftInv (GF D n) (cutR nb C F) := fun γ hγ g => by
   unfold cutR
@@ -971,7 +940,7 @@ theorem vanish_at {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsCharAF D.host.F ψ) 
       rw [fc_eq]
       refine integral_congr_ae (.of_forall fun b => ?_)
       show _ * conj (pch ψ b.1 (rat β.1)) = _ * chn ψ β b
-      rw [pch_rat, conj_psi hψ, chn_eq]
+      rw [pch_rat, GlobalTheory.CompanionTheory.RCellInv.conj_char hψ, GlobalTheory.CompanionTheory.PcFc.chn_eq]
     rw [e]
     by_cases hβ : β.1.rank < r
     · exact fc_cutR_low hψ hC hF hinv hK C hkill β hβ hg
@@ -1112,11 +1081,6 @@ section Lattice
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E) {n r m : ℕ}
   (J : Matrix (Fin n) (Fin n) E)
-
-
-
-
-
 
 
 end Lattice
@@ -1618,17 +1582,6 @@ theorem oneTh (hW : L.WMaj) {p : ℕ} (μ : Measure (Mx D 1 p)) (𝓕 : Set (Mx 
   rw [map_one]
   rfl
 
-theorem hecke_mul_inv {χ ε : (AE D)ˣ →* Circle} (hχ : IsHeckeChar D χ) (hε : IsHeckeChar D ε) :
-    IsHeckeChar D (χ * ε⁻¹) := by
-  have e : ⇑(χ * ε⁻¹) = fun x => χ x * (ε x)⁻¹ := by
-    funext x
-    simp
-  refine ⟨?_, fun x => ?_⟩
-  · rw [e]
-    exact hχ.1.mul hε.1.inv
-  · rw [e]
-    simp only [hχ.2 x, hε.2 x, inv_one, mul_one]
-
 theorem resEta_mul_inv {χ ε : (AE D)ˣ →* Circle} {k : ℕ} (hχ : ResEta D χ (k + 1)) (hε : ResEta D ε 1) :
     ResEta D (χ * ε⁻¹) k := by
   refine ⟨hχ.1, fun η hη a => ?_⟩
@@ -1736,7 +1689,7 @@ theorem succ (hW : L.WMaj) {p : ℕ} {ψ : AddChar (AF D.host.F) ℂ} (hψ : IsC
     obtain ⟨ε, hε, hεr⟩ := GlobalTheory.CompanionTheory.HeckeEtaExist.heckeEta D 1
     obtain ⟨μr, 𝓕r, hμr⟩ := GlobalTheory.MixModel.exists_isCovolOne D (k + 1) p
     obtain ⟨μs, 𝓕s, hμs⟩ := GlobalTheory.MixModel.exists_isCovolOne D 1 p
-    obtain ⟨Ωr, hTr, hr1⟩ := ih (topH b₀) (topH_diag hb) (χ * ε⁻¹) (hecke_mul_inv hχ hε)
+    obtain ⟨Ωr, hTr, hr1⟩ := ih (topH b₀) (topH_diag hb) (χ * ε⁻¹) (GlobalTheory.WeilVacChar.hecke_mul_inv hχ hε)
       (resEta_mul_inv hr (by simpa using hεr)) μr 𝓕r hμr (fun i => η (Fin.castSucc i)) fun i => hη _
     obtain ⟨Ωs, hTs, hs1⟩ := oneTh hW μs 𝓕s hμs hψ (botH b₀) (botH_det hb) hε (by simpa using hεr) hθ
       (η (Fin.last (k + 1))) (hη _)

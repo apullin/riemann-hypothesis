@@ -1499,9 +1499,6 @@ namespace PositivityTheory.Rg.BcB.F.MLM
 theorem matchLMIdOf : MatchLMIdOf := _root_.GlobalTheory.CompanionTheory.MatchId.matchLMIdOf
 theorem matchLMUnitOf : MatchLMUnitOf := _root_.GlobalTheory.CompanionTheory.MatchUnit.matchLMUnitOf
 
-theorem muInert : MuInert := _root_.GlobalTheory.CompanionTheory.MuInertPlace.muInert
-theorem regPowT : RegPowT := _root_.GlobalTheory.CompanionTheory.RegPow.regPowT
-theorem sepPowT : SepPowT := _root_.GlobalTheory.CompanionTheory.SepPow.sepPowT
 theorem ctStar : CtStar := _root_.GlobalTheory.CompanionTheory.CtAdj.ctStar
 theorem matchLMWordSOf : MatchLMWordSOf := _root_.GlobalTheory.CompanionTheory.LeviMatchingWords.matchLMWordSOf
 

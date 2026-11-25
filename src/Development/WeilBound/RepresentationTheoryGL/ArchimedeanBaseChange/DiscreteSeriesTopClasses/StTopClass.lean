@@ -47,16 +47,6 @@ namespace PositivityTheory.RgTw
 
 variable {n : ℕ}
 
-def KU (n : ℕ) : Subgroup (G n) where
-  carrier := {k | th k = k}
-  one_mem' := th_one
-  mul_mem' := fun {x y} hx hy => by
-    simp only [Set.mem_ofPred_eq, th, star_mul, _root_.mul_inv_rev] at *
-    rw [hx, hy]
-  inv_mem' := fun {x} hx => by
-    simp only [Set.mem_ofPred_eq, th, star_inv] at *
-    rw [hx]
-
 section
 
 variable (n) [MeasurableSpace (G n)] [BorelSpace (G n)]

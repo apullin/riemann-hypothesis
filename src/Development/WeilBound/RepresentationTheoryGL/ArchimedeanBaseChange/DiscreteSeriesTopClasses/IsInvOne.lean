@@ -26,8 +26,6 @@ def hb (p : Fin n × Fin n) : Mat n :=
 
 def th (g : G n) : G n := (star g)⁻¹
 
-theorem th_one : th (1 : G n) = 1 := by simp [th]
-
 def tw (x d : G n) : G n := x⁻¹ * d * th x
 
 end PositivityTheory.RgTw

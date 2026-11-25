@@ -121,7 +121,7 @@ private theorem tau_conj (h : Hyp τ Z) {g : GL (Fin n) k} (hg : g ∈ Gz Z) {y}
 
 private def adL {g : GL (Fin n) k} (hg : g ∈ Gz Z) : (Fin (dd Z) → k) →ₗ[k] (Fin (dd Z) → k) where
   toFun u := (bas Z).equivFun
-    ⟨g.val * E Z u * g⁻¹.val, PositivityTheory.RgUd.T.Nil.Four.Phi2.conj_mem_Bz hg (E_mem Z u)⟩
+    ⟨g.val * E Z u * g⁻¹.val, PositivityTheory.RgUd.T.conj_mem_Bz_shared hg (E_mem Z u)⟩
   map_add' _ _ := by rw [← map_add]; congr 1; ext1; simp [E_add, mul_add, add_mul]
   map_smul' _ _ := by rw [← map_smul]; congr 1; ext1; simp [E_smul]
 

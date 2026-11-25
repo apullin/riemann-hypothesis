@@ -525,10 +525,6 @@ theorem pick (σ : Bool) (x y : Fin n) (h : x < y) (G : Bool → Fin n → Fin n
   · intro hmem
     exact absurd (Finset.mem_univ _) hmem
 
-theorem lt_of_lev {lev : Fin n → ℕ} (hm : Monotone lev) {x y : Fin n} (h : lev x < lev y) : x < y := by
-  by_contra hxy
-  exact absurd (hm (not_lt.mp hxy)) (not_le.mpr h)
-
 theorem sum_adCL {lev : Fin n → ℕ} (hm : Monotone lev) (s : Bool) {p q : Fin n} (hpq : lev p = lev q) (l : Lt n)
     (hl : inUU lev l) (G : Bool → Fin n → Fin n → ℂ) :
     ∑ j : Lt n, adCL s p q l j * G j.1 j.2.1.1 j.2.1.2 =
@@ -538,12 +534,12 @@ theorem sum_adCL {lev : Fin n → ℕ} (hm : Monotone lev) (s : Bool) {p q : Fin
   simp only [sub_mul, Finset.sum_sub_distrib]
   refine congrArg₂ _ ?_ ?_
   · by_cases hq : q = l.2.1.1
-    · have hlt : p < l.2.1.2 := GlobalTheory.CompanionTheory.LevChainRel.lt_of_lev hm (by rw [hpq, hq]; exact hl)
+    · have hlt : p < l.2.1.2 := GlobalTheory.CompanionTheory.RgCOBlock.LeviBd.lt_of_lev hm (by rw [hpq, hq]; exact hl)
       simp only [hq, true_and, ite_true]
       exact GlobalTheory.CompanionTheory.LevChainRel.pick _ _ _ hlt G
     · simp [hq]
   · by_cases hp : l.2.1.2 = p
-    · have hlt : l.2.1.1 < q := GlobalTheory.CompanionTheory.LevChainRel.lt_of_lev hm (by rw [← hpq, ← hp]; exact hl)
+    · have hlt : l.2.1.1 < q := GlobalTheory.CompanionTheory.RgCOBlock.LeviBd.lt_of_lev hm (by rw [← hpq, ← hp]; exact hl)
       simp only [hp, true_and, ite_true]
       exact GlobalTheory.CompanionTheory.LevChainRel.pick _ _ _ hlt G
     · simp [hp]

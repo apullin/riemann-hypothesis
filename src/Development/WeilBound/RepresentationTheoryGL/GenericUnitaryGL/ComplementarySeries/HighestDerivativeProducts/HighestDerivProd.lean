@@ -950,9 +950,6 @@ theorem smooth_GL_zero {V : Type} [AddCommGroup V] [Module ℂ V] (a : Represent
 theorem sm_tw {n : ℕ} {σ : GRep k n} (hσ : IsSmooth σ.ρ) (s : ℝ) : IsSmooth (σ.tw s).ρ :=
   isSmooth_twist hσ (GlobalTheory.CompanionTheory.BZPsiPG.Norm.isSmoothChar_dpow n s)
 
-theorem sm_gres {n : ℕ} {σ : GRep k (n + 1)} (hσ : IsSmooth σ.ρ) : IsSmooth (gres σ).ρ :=
-  isSmooth_comp hσ _ continuous_subtype_val
-
 theorem sm_mtw {n : ℕ} {τ : MRep k n} (hτ : IsSmooth τ.ρ) (s : ℝ) : IsSmooth (mtw τ s).ρ :=
   isSmooth_twist hτ ((GlobalTheory.CompanionTheory.BZPsiPG.Norm.isSmoothChar_dpow (n + 1) s).preimage continuous_subtype_val)
 
@@ -1047,7 +1044,7 @@ theorem final_match (m : Mir k (0 + t)) (x : τ.V ⊗[ℂ] σ.V) :
 
 theorem smooth_rho0 (hσ : IsSmooth σ.ρ) : IsSmooth (rho0 τ σ) := smooth_pg 0 (t + 1) _ _ (smooth_mirabolic_zero _) (sm_tw hσ _)
 
-theorem sm_rhoR (hσ : IsSmooth σ.ρ) : IsSmooth (rhoR τ σ) := smooth_gp 0 t _ _ (smooth_GL_zero _) (sm_mtw (sm_gres hσ) _)
+theorem sm_rhoR (hσ : IsSmooth σ.ρ) : IsSmooth (rhoR τ σ) := smooth_gp 0 t _ _ (smooth_GL_zero _) (sm_mtw (GlobalTheory.CompanionTheory.LeibOrd.isSmooth_gres hσ) _)
 
 theorem dpowM_one (n : ℕ) (m : Mir k n) :
     ((dpowM n 1 m : ℂˣ) : ℂ) = ((nabs k (Matrix.GeneralLinearGroup.det (m : GL (Fin (n + 1)) k)) : ℝ) : ℂ) := by
@@ -1342,7 +1339,6 @@ theorem blockIndex_true_castSucc (m j : ℕ) (b : Fin j) :
     | rfl
 
 
-
 end SlopeTestRemainingChoices
 
 theorem gpProj_levi : ∀ (k : Type) [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] (m j : ℕ) (p : GL (Fin (m + j)) k) (hp : p ∈ parab k (two (stdSum (rfl : m + j = m + j)))) (hp' : levi k (m + j) p ∈ MirabolicParabolic k m j), gpProj k m j ⟨levi k (m + j) p, hp'⟩ = (leviProj k (two (stdSum (rfl : m + j = m + j))) ⟨p, hp⟩ false, levi k j (leviProj k (two (stdSum (rfl : m + j = m + j))) ⟨p, hp⟩ true)) := by
@@ -1490,7 +1486,6 @@ theorem parab_mul_KO {α n : Type} {m : α → Type} [Fintype α] [LinearOrder �
     ∀ g : GL n k, ∃ p ∈ parab k e, ∃ x ∈ GlobalTheory.SplitWeil.KO k n, g = p * x := by
   obtain ⟨-, -, -, -, -, -, -, -, h⟩ := GlobalTheory.SmGL.LeviInt.levi_integral_facts k α n m e
   exact h
-
 
 
 theorem scalar_id (m j : ℕ) (a b : kˣ) :

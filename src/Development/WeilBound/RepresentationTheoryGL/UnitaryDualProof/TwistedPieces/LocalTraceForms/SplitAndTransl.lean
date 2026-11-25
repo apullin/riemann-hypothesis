@@ -380,7 +380,7 @@ private theorem locChi_pf : LocChi k := by
           funext fun _ => by simp only [Pi.smul_apply, smul_eq_mul]; ring, map_smul, ha V hV, smul_zero] }
   intro g hg
   have key : g ∈ W := by
-    refine mem_of_forall_fiber (U := univ) ((LocStepPf.isClosed_Bz Z).prod isClosed_univ) hp
+    refine mem_of_forall_fiber (U := univ) ((PositivityTheory.RgUd.T.Desc.Asm.isClosed_Bz Z).prod isClosed_univ) hp
       (fun w ⟨hw1, hw2⟩ V hV => hS _ (indicator_mul_mem (hV.preimage hp) hw1) fun q hq => by
         simp [(mem_vanishingOn.1 hw2) q hq])
       (fun V hV w hw V' hV' => by

@@ -152,7 +152,6 @@ namespace PositivityTheory.Pf1.SegRepC.PiLocalization₂
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
 
-
 set_option synthInstance.maxHeartbeats 400000 in
 theorem isSubquotient_jac_of_le {d l : ℕ} (σ : IrrRep (GL (Fin d) k))
     {S T : Subrepresentation (multiProd (consecBlocks l d) (segTerm σ.ρ l))} (hST : S.toSubmodule ≤ T.toSubmodule)
@@ -394,7 +393,6 @@ private theorem exists_irreducible_subrep_le_of_ne_bot {G V : Type} [Group G] [A
     exact hu
 
 
-
 theorem exists_irred_le {d l : ℕ} (hd : 0 < d) (hl : 0 < l) (σ : IrrRep (GL (Fin d) k))
     (hσ : IsCuspidal σ.ρ) (T : Subrepresentation (multiProd (consecBlocks l d) (segTerm σ.ρ l)))
     (hT : T.toSubmodule ≠ ⊥) :
@@ -403,7 +401,6 @@ theorem exists_irred_le {d l : ℕ} (hd : 0 < d) (hl : 0 < l) (σ : IrrRep (GL (
   have hfl := hasFiniteLength_prod (l := l) σ
   rw [hasFiniteLength_iff_wellFounded] at hfl
   exact exists_irreducible_subrep_le_of_ne_bot hfl.2 T hT
-
 
 
 theorem isIrreducible_segTensor {d : ℕ} (hd : 0 < d) (σ : IrrRep (GL (Fin d) k)) :
@@ -447,17 +444,9 @@ namespace PositivityTheory.Pf1.SegRepC.MultOne
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k]
 
-theorem isSmooth_segTerm {d l : ℕ} (σ : IrrRep (GL (Fin d) k)) (a : Fin l) :
-    IsSmooth (segTerm σ.ρ l a) :=
-  isSmooth_twist σ.smooth (GlobalTheory.SmGL.isSmoothChar_of_isUnram (isUnram_absPow k _)).detChar
-
-theorem isIrreducible_segTerm {d l : ℕ} (σ : IrrRep (GL (Fin d) k)) (a : Fin l) :
-    (segTerm σ.ρ l a).IsIrreducible :=
-  GlobalTheory.LocGL.isIrreducible_twist σ.irr _
-
 theorem hasFiniteLength_segTerm {d l : ℕ} (σ : IrrRep (GL (Fin d) k)) (a : Fin l) :
     HasFiniteLength (segTerm σ.ρ l a) :=
-  (⟨_, segTerm σ.ρ l a, isSmooth_segTerm σ a, isIrreducible_segTerm σ a⟩ :
+  (⟨_, segTerm σ.ρ l a, PositivityTheory.RgGu.SRC.SrMult.isSmooth_segTerm' σ a, PositivityTheory.RgGu.SRC.SrMult.isIrreducible_segTerm' σ a⟩ :
     IrrRep (GL (Fin d) k)).hasFiniteLength
 
 end PositivityTheory.Pf1.SegRepC.MultOne
@@ -523,9 +512,6 @@ theorem entries_zero_or_d {d l : ℕ} (hd : 0 < d) (σ : IrrRep (GL (Fin d) k)) 
   apply hxy
   have : x' = y' := Subtype.ext (Subsingleton.elim _ _)
   rw [this]
-
-
-
 
 
 end PositivityTheory.Pf1.SegRepC.Perm
@@ -606,8 +592,8 @@ theorem col_class {α : Type} [Fintype α] [LinearOrder α] {N : ℕ} (b : α �
   exact ⟨σ i₀, GlobalTheory.CompanionTheory.WordProd.OneBlockProd.multiProd_single b i₀ h0 σ g, rfl⟩
 
 def segIrr {d : ℕ} (σ : IrrRep (GL (Fin d) k)) (l : ℕ) (a : Fin l) : IrrRep (GL (Fin d) k) :=
-  ⟨σ.V, segTerm σ.ρ l a, PositivityTheory.Pf1.SegRepC.MultOne.isSmooth_segTerm σ a,
-    PositivityTheory.Pf1.SegRepC.MultOne.isIrreducible_segTerm σ a⟩
+  ⟨σ.V, segTerm σ.ρ l a, PositivityTheory.RgGu.SRC.SrMult.isSmooth_segTerm' σ a,
+    PositivityTheory.RgGu.SRC.SrMult.isIrreducible_segTerm' σ a⟩
 
 theorem exists_perm_of_cell {d l : ℕ} (hd : 0 < d) (σ : IrrRep (GL (Fin d) k))
     (b : SizeMatrix (fun _ : Fin l => Fin d) (fun _ : Fin l => Fin d))
@@ -655,16 +641,15 @@ theorem exists_perm_of_cell {d l : ℕ} (hd : 0 < d) (σ : IrrRep (GL (Fin d) k)
     exact ⟨E.trans φ⟩
   have hT : (piTensor fun a => segTerm σ.ρ l (w a)).IsIrreducible :=
     GlobalTheory.ProdFiniteLength.piTensor_isIrreducible_of_schur _
-      (fun a => PositivityTheory.Pf1.SegRepC.MultOne.isIrreducible_segTerm σ (w a))
-      fun a φ hφ => GlobalTheory.CompanionTheory.SocleFrob.exists_eq_smul_id _ (PositivityTheory.Pf1.SegRepC.MultOne.isSmooth_segTerm σ (w a))
-        (PositivityTheory.Pf1.SegRepC.MultOne.isIrreducible_segTerm σ (w a)) φ hφ
+      (fun a => PositivityTheory.RgGu.SRC.SrMult.isIrreducible_segTerm' σ (w a))
+      fun a φ hφ => GlobalTheory.CompanionTheory.SocleFrob.exists_eq_smul_id _ (PositivityTheory.RgGu.SRC.SrMult.isSmooth_segTerm' σ (w a))
+        (PositivityTheory.RgGu.SRC.SrMult.isIrreducible_segTerm' σ (w a)) φ hφ
   have h2 : IsSubquotient π (piTensor fun a => segTerm σ.ρ l (w a)) :=
     sq_right h (GlobalTheory.LocGL.piTensorEquiv fun j => (hcol j).some)
   obtain ⟨φ⟩ := h2.nonempty_equiv hπ hT
   exact ⟨w, ⟨φ.symm⟩⟩
 
 end SrPerm
-
 
 
 theorem exists_perm_of_isSubquotient_jac (hG : GeometricLemma) {d l : ℕ} (hd : 0 < d) (hl : 0 < l)
@@ -674,7 +659,7 @@ theorem exists_perm_of_isSubquotient_jac (hG : GeometricLemma) {d l : ℕ} (hd :
     (h : IsSubquotient π (jac (consecBlocks l d) (multiProd (consecBlocks l d) (segTerm σ.ρ l)))) :
     ∃ w : Equiv.Perm (Fin l), Nonempty (π.Equiv (piTensor fun a => segTerm σ.ρ l (w a))) := by
   obtain ⟨b, f, g, s, hs, hπs⟩ := exists_cell_of_isSubquotient (hG k).1 (hG k).2
-    (consecBlocks l d) (consecBlocks l d) (PositivityTheory.Pf1.SegRepC.MultOne.isSmooth_segTerm σ)
+    (consecBlocks l d) (consecBlocks l d) (PositivityTheory.RgGu.SRC.SrMult.isSmooth_segTerm' σ)
     (PositivityTheory.Pf1.SegRepC.MultOne.hasFiniteLength_segTerm σ) hπ h
   exact SrPerm.exists_perm_of_cell hd σ b (PositivityTheory.Pf1.SegRepC.Perm.entries_zero_or_d hd σ hσ b f s hs) f g s hs
     π hπ hπs
