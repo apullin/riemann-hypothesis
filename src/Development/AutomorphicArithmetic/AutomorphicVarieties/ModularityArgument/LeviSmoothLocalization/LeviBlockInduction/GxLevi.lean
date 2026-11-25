@@ -1,6 +1,7 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.LeviBlockInduction.GxMulti
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.LeviBlockInduction.GxDefs
+import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.LeviBlockInduction.BlockProduct
 public import GroundTheory.AutomorphicForms.GL2.GJFELevi
 
 @[expose] public section
@@ -57,7 +58,7 @@ theorem gxLevi (hB : GxBlock) {F : Type} [Field F] [ValuativeRel F] [Topological
     obtain ⟨v, hv⟩ := exists_ne (0 : W)
     apply hv
     have h1 : σ (blockUnif F a)⁻¹ (σ (blockUnif F a) v) = v := by
-      rw [← Module.End.mul_apply, ← map_mul, inv_mul_cancel, map_one, Module.End.one_apply]
+      rw [← mul_apply_eq_comp, ← map_mul, inv_mul_cancel, map_one, one_apply_eq_self]
     rw [← h1, hω, h0, zero_smul, map_zero]
   set αc : Set.range β → ℂ := fun a => ((κ (blockUnif F a) : ℝ) : ℂ) * ω a with hαc
   have hα0 : ∀ a, αc a ≠ 0 := fun a =>
@@ -82,7 +83,7 @@ theorem gxLevi (hB : GxBlock) {F : Type} [Field F] [ValuativeRel F] [Topological
     · have hmul := apply_centralPow ρ hα0 hα j (ρ (x, 1) v)
       have h2 : ρ ((fun a => centralUnif F (blockSize β a) ^ j a) * x, 1) v =
           (∏ a, αc a ^ j a) • ρ (x, 1) v := by
-        rw [← hmul, ← Module.End.mul_apply, ← map_mul, Prod.mk_mul_mk, mul_one]
+        rw [← hmul, ← mul_apply_eq_comp, ← map_mul, Prod.mk_mul_mk, mul_one]
       have h3 := hρ ((fun a => centralUnif F (blockSize β a) ^ j a) * x) 1 v
       intro h0
       apply hx
@@ -104,7 +105,8 @@ theorem gxLevi (hB : GxBlock) {F : Type} [Field F] [ValuativeRel F] [Topological
   have _ : ∀ a : Set.range β, NeZero (blockSize β a) := fun a => ⟨(blockSize_pos β a).ne'⟩
   set μb : ∀ a : Set.range β, Measure (GL (Fin (blockSize β a)) F) := fun a => Measure.haar
     with hμb
-  obtain ⟨γ, hshape, hmain⟩ := gxMulti_all (W := W) hB hψ hψ1
+  obtain ⟨γ, hshape, hmain⟩ := Gam.productShape_of_blockShape (W := W)
+    hB gxShape_one gxShape_mul hψ hψ1
     (Fintype.card (Set.range β)) (Set.range β) rfl (fun a => blockSize β a) μb
     PUnit.{1} ρ hadm hirr αc hα0 hα hsupp
   obtain ⟨s₀, hconv⟩ := exists_integrable_multi ρ hadm.1 hα0 hα hsupp μb

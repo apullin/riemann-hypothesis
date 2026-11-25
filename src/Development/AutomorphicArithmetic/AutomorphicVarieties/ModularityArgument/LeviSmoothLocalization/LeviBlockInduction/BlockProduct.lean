@@ -1,80 +1,30 @@
 module
 
-public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.LeviSmoothLocalization.LeviBlockInduction.GxDefs
+public import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.GammaLaurentFactors.LaurentBlockInduction.LdDefs
 public import GroundTheory.AutomorphicForms.GL2.GJFELeviConv
-import Development.AbelianVarietyTheory.Definitions.Divisors.LineOppositeParabolicUnitaryLeviSectionEq
-import Development.AbelianVarietyTheory.Definitions.Divisors.T2SpaceGeneralLinearGroup
-import Formalism.DoubleCosetMeasures.Statement
-import GroundTheory.AutomorphicForms.GL2.ExistsEqPowMulOfValuationLe
 public import GroundTheory.AutomorphicForms.GL2.GJFEBlock
 public import GroundTheory.AutomorphicForms.GL2.GJFELeviMulti
-import GroundTheory.AutomorphicForms.LocallyProfinite
-import GroundTheory.AutomorphicForms.WhittakerGroups
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Normed.Algebra.GelfandRadius
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.Tactic.Basify
-import Mathlib.Tactic.ENatToNat
-import Mathlib.Tactic.Echelon.Zsqrtd
-import Mathlib.Tactic.Inclusion.Extension.Core.Core
-import Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp
-import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic
-import Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses
-import Mathlib.Tactic.Linter.Style
-import Mathlib.Tactic.NormNum.Irrational
-import Mathlib.Tactic.NormNum.IsCoprime
-import Mathlib.Tactic.NormNum.IsSquare
-import Mathlib.Tactic.NormNum.LegendreSymbol
-import Mathlib.Tactic.NormNum.ModEq
-import Mathlib.Tactic.NormNum.NatFib
-import Mathlib.Tactic.NormNum.NatLog
-import Mathlib.Tactic.NormNum.NatSqrt
-import Mathlib.Tactic.NormNum.Ordinal
-import Mathlib.Tactic.NormNum.Parity
-import Mathlib.Tactic.NormNum.Prime
-import Mathlib.Tactic.NormNum.RealSqrt
-import Mathlib.Tactic.Polynomial.Basic
-import Mathlib.Tactic.ReduceModChar
-import Mathlib.Topology.Sheaves.Init
 
 @[expose] public section
 
 noncomputable section
 
-open MeasureTheory Measure GroundTheory GroundTheory.Automorphic GroundTheory.Automorphic.GLnLocal GroundTheory.Automorphic.Parabolic
-open GroundTheory.Automorphic.GodementJacquet
+open MeasureTheory Measure GroundTheory GroundTheory.Automorphic GroundTheory.Automorphic.GLnLocal
+open GroundTheory.Automorphic.Parabolic GroundTheory.Automorphic.GodementJacquet
 open scoped NNReal ENNReal Classical ValuativeRel
 
-
-set_option linter.unusedSectionVars false
-
-namespace UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
+namespace UpperTheory.V.Z.Gam
 
 variable {F : Type} [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F]
   [MeasurableSpace F] [BorelSpace F]
-  [∀ n : ℕ, MeasurableSpace (GL (Fin n) F)] [∀ n : ℕ, BorelSpace (GL (Fin n) F)]
+  [∀ n : ℕ, MeasurableSpace (GL (Fin n) F)]
   {W : Type} [AddCommGroup W] [Module ℂ W]
 
+variable {M : Type*} [CommMonoid M] {shape : ℂ → RatFunc ℂ → M → Prop} {factor : ℂ → M}
 
-variable (F W) in
-def GxMulti (ψ : AddChar F Circle) (r : ℕ) : Prop :=
+variable (F W shape factor) in
+/-- The shape and functional equation for a product of `r` blocks. -/
+def ProductShape (ψ : AddChar F Circle) (r : ℕ) : Prop :=
   ∀ (ι : Type) [Fintype ι] [DecidableEq ι], Fintype.card ι = r →
   ∀ (d : ι → ℕ) [∀ i, NeZero (d i)] (μ : ∀ i, Measure (GL (Fin (d i)) F))
     [∀ i, (μ i).IsHaarMeasure]
@@ -86,19 +36,19 @@ def GxMulti (ψ : AddChar F Circle) (r : ℕ) : Prop :=
       (∀ v : W, ∀ ℓ ∈ smoothVectors (Representation.dual ρ),
         ∃ C : Set (∀ i, GL (Fin (d i)) F), IsCompact C ∧
           ∀ x, ℓ (ρ (x, 1) v) ≠ 0 → ∃ j : ι → ℤ, (fun i => centralUnif F (d i) ^ j i) * x ∈ C) →
-    ∃ γ : RatFunc ℂ, GxShape ((GroundTheory.LocalField.residueCard F : ℕ) : ℂ) γ
+    ∃ γ : RatFunc ℂ, shape ((GroundTheory.LocalField.residueCard F : ℕ) : ℂ) γ
         (∏ i, if d i = 1 ∧ ∀ g ∈ integralGL F (d i), ρ (Pi.mulSingle i g, 1) = 1 then
-          1 - Polynomial.C (α i) * Polynomial.X else 1) ∧
+          factor (α i) else 1) ∧
       ∀ Ψ : ∀ i, Matrix (Fin (d i)) (Fin (d i)) F → ℂ,
       (∀ i, IsSchwartzBruhat (Ψ i)) → ∀ w : W, ∀ ℓ ∈ smoothVectors (Representation.dual ρ),
         RatFE F γ (fun s => ∫ x, multiA ρ Ψ w ℓ s x ∂Measure.pi μ)
           (fun s => ∫ x, multiB ρ (fun i => GJMatrix.localMatrixFourier ψ (Ψ i)) w ℓ s x
             ∂Measure.pi μ)
 
-theorem gxMulti_zero (ψ : AddChar F Circle) : GxMulti F W ψ 0 := by
+private theorem productShape_zero (hOne : ∀ q, shape q 1 1) (ψ : AddChar F Circle) : ProductShape F W shape factor ψ 0 := by
   intro ι _ _ hcard d _ μ _ H _ _ _ _ _ _ _ ρ _ _ α _ _ _
   have hempty : IsEmpty ι := Fintype.card_eq_zero_iff.1 hcard
-  refine ⟨1, by simpa using gxShape_one _, fun Ψ _ w ℓ _ => ?_⟩
+  refine ⟨1, by simpa using hOne _, fun Ψ _ w ℓ _ => ?_⟩
   have hval : ∀ f : (∀ i, GL (Fin (d i)) F) → ℂ,
       ∫ x, f x ∂Measure.pi μ = f 1 := by
     intro f
@@ -120,10 +70,13 @@ theorem gxMulti_zero (ψ : AddChar F Circle) : GxMulti F W ψ 0 := by
     rw [show ((1 : ∀ i, GL (Fin (d i)) F), (1 : H)) = 1 from rfl, map_one]
     rfl
 
-theorem gxMulti_succ (hB : GxBlock) {ψ : AddChar F Circle} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) {r : ℕ}
-    (ih : GxMulti F W ψ r) : GxMulti F W ψ (r + 1) := by
+variable [∀ n : ℕ, BorelSpace (GL (Fin n) F)]
+
+private theorem productShape_succ (hB : BlockShape shape factor)
+    (hMul : ∀ {q γ₁ γ₂ x y}, shape q γ₁ x → shape q γ₂ y → shape q (γ₁ * γ₂) (x * y)) {ψ : AddChar F Circle} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) {r : ℕ}
+    (ih : ProductShape F W shape factor ψ r) : ProductShape F W shape factor ψ (r + 1) := by
   intro ι _ _ hcard d _ μ _ H _ _ _ _ _ _ _ ρ hadm hirr α hα0 hα hsupp
-  obtain ⟨a⟩ : Nonempty ι := Fintype.card_pos_iff.1 (by omega)
+  obtain ⟨a⟩ : Nonempty ι := Fintype.card_pos_iff.1 (by lia)
 
   set ρ₁ : Representation ℂ (GL (Fin (d a)) F × ((∀ i : {i // i ≠ a}, GL (Fin (d i)) F) × H)) W :=
     ρ.comp (peelFst d H a).symm.toMonoidHom with hρ₁def
@@ -206,7 +159,7 @@ theorem gxMulti_succ (hB : GxBlock) {ψ : AddChar F Circle} (hψ : Continuous ψ
       rw [hρ₂, splitSymm_one_mulSingle]
     rw [Fintype.prod_eq_mul_prod_subtype_ne _ a]
     simp only [e₁, e₂] at hsh₁ hsh₂
-    exact gxShape_mul hsh₁ hsh₂
+    exact hMul hsh₁ hsh₂
   have hℓ₁ : ℓ ∈ smoothVectors (Representation.dual ρ₁) := (hsm₁ ℓ).2 hℓ
   have hℓ₂ : ℓ ∈ smoothVectors (Representation.dual ρ₂) := (hsm₂ ℓ).2 hℓ
 
@@ -316,7 +269,7 @@ theorem gxMulti_succ (hB : GxBlock) {ψ : AddChar F Circle} (hψ : Continuous ψ
           (μy : Module.Dual ℂ W) (ρ₁ (g, 1) w)) := fun g => by
         simp only [multiA]
         rw [prod_splitSymm (fun i x => Ψ i (x : Matrix (Fin (d i)) (Fin (d i)) F) * detPow x s) g y,
-          hprod1, Module.End.mul_apply, hμyv]
+          hprod1, mul_apply_eq_comp, hμyv]
         ring
       simp_rw [hGy]
       rw [integral_const_mul]
@@ -367,7 +320,7 @@ theorem gxMulti_succ (hB : GxBlock) {ψ : AddChar F Circle} (hψ : Continuous ψ
           detPow g ((d a : ℂ) - s) * (μy : Module.Dual ℂ W) (ρ₁ (g⁻¹, 1) w)) := fun g => by
         simp only [multiB]
         rw [prod_splitSymm (fun i x => Ψh i (x : Matrix (Fin (d i)) (Fin (d i)) F) *
-            detPow x ((d i : ℂ) - s)) g y, splitSymm_inv, hprod1, Module.End.mul_apply, hμyv]
+            detPow x ((d i : ℂ) - s)) g y, splitSymm_inv, hprod1, mul_apply_eq_comp, hμyv]
         ring
       simp_rw [hGy]
       rw [integral_const_mul]
@@ -397,9 +350,12 @@ theorem gxMulti_succ (hB : GxBlock) {ψ : AddChar F Circle} (hψ : Continuous ψ
       (hIH (fun j => Ψ j) (fun j => hΨ j) (b i : W) ℓ hℓ₂)
   exact (RatFE.sum Finset.univ fun i _ => hterm i).congr ⟨_, hA⟩ ⟨_, hB'⟩
 
-theorem gxMulti_all (hB : GxBlock) {ψ : AddChar F Circle} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) :
-    ∀ r, GxMulti F W ψ r
-  | 0 => gxMulti_zero ψ
-  | r + 1 => gxMulti_succ hB hψ hψ1 (gxMulti_all hB hψ hψ1 r)
+/-- A shape law preserved by multiplication extends from single blocks to their product. -/
+theorem productShape_of_blockShape (hB : BlockShape shape factor) (hOne : ∀ q, shape q 1 1)
+    (hMul : ∀ {q γ₁ γ₂ x y}, shape q γ₁ x → shape q γ₂ y → shape q (γ₁ * γ₂) (x * y))
+    {ψ : AddChar F Circle} (hψ : Continuous ψ) (hψ1 : ψ ≠ 1) :
+    ∀ r, ProductShape F W shape factor ψ r
+  | 0 => productShape_zero hOne ψ
+  | r + 1 => productShape_succ hB hMul hψ hψ1 (productShape_of_blockShape hB hOne hMul hψ hψ1 r)
 
-end UpperTheory.V.Z.ImaginaryQuadraticEtaCharacter
+end UpperTheory.V.Z.Gam

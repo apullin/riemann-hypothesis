@@ -91,7 +91,9 @@ def LdUnique : Prop :=
     ∀ (μ : Measure (levi F n β)) [μ.IsHaarMeasure] (ψ : AddChar F Circle) (γ γ' : RatFunc ℂ),
     LeviFE F σ κ μ ψ γ → LeviFE F σ κ μ ψ γ' → γ = γ'
 
-def LdBlock : Prop :=
+/-- The shape of a single block gamma factor. An unramified block of size one contributes
+`factor α`, and every other block contributes the identity. -/
+def BlockShape {M : Type*} [One M] (shape : ℂ → RatFunc ℂ → M → Prop) (factor : ℂ → M) : Prop :=
   ∀ (F : Type) [Field F] [ValuativeRel F] [TopologicalSpace F] [IsNonarchimedeanLocalField F] [MeasurableSpace F] [BorelSpace F]
     (m : ℕ) [NeZero m]
     [MeasurableSpace (GL (Fin m) F)] [BorelSpace (GL (Fin m) F)] (μ : Measure (GL (Fin m) F)) [μ.IsHaarMeasure]
@@ -103,6 +105,10 @@ def LdBlock : Prop :=
     ∀ ψ : AddChar F Circle, Continuous ψ → ψ ≠ 1 → ∀ γ : RatFunc ℂ,
     (∀ Φ : Matrix (Fin m) (Fin m) F → ℂ, IsSchwartzBruhat Φ → ∀ v : W, ∀ ℓ ∈ smoothVectors (Representation.dual σ),
       RatFE F γ (blockA μ σ Φ v ℓ) (blockB μ σ (GJMatrix.localMatrixFourier ψ Φ) v ℓ)) →
-    LdShape ((GroundTheory.LocalField.residueCard F : ℕ) : ℂ) γ (if m = 1 ∧ ∀ g ∈ integralGL F m, σ (g, 1) = 1 then 1 else 0)
+    shape ((GroundTheory.LocalField.residueCard F : ℕ) : ℂ) γ
+      (if m = 1 ∧ ∀ g ∈ integralGL F m, σ (g, 1) = 1 then factor α else 1)
+
+def LdBlock : Prop :=
+  BlockShape (M := Multiplicative ℕ) (fun q γ n => LdShape q γ n.toAdd) (fun _ => Multiplicative.ofAdd 1)
 
 end UpperTheory.V.Z.Gam
